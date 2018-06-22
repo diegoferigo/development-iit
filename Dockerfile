@@ -19,28 +19,30 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
     rm -rf /var/lib/apt/lists/*
 
 # https://github.com/osrf/docker_images/blob/master/ros/
-# ENV ROS_DISTRO lunar
-# RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
-#                 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
-#     echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
-#         > /etc/apt/sources.list.d/ros-latest.list
-# RUN apt-get update &&\
-#     apt-get install --no-install-recommends -y \
-#         python-rosdep \
-#         python-rosinstall \
-#         python-vcstools \
-#         &&\
-#     rm -rf /var/lib/apt/lists/* &&\
-#     rosdep init &&\
-#     rosdep update
-# RUN apt-get update &&\
-#     apt-get install -y \
-#         ros-${ROS_DISTRO}-desktop \
-#         # ros-${ROS_DISTRO}-desktop-full &&\
-#         #ros-${ROS_DISTRO}-fake-localization \
-#         #ros-${ROS_DISTRO}-map-server &&\
-#         &&\
-#     rm -rf /var/lib/apt/lists/*
+ENV ROS_DISTRO melodic
+# tzdata configuration
+RUN ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
+                --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
+    echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
+        > /etc/apt/sources.list.d/ros-latest.list
+RUN apt-get update &&\
+    apt-get install --no-install-recommends -y \
+        python-rosdep \
+        python-rosinstall \
+        python-vcstools \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    rosdep init &&\
+    rosdep update
+RUN apt-get update &&\
+    apt-get install -y \
+        ros-${ROS_DISTRO}-desktop \
+        # ros-${ROS_DISTRO}-desktop-full \
+        #ros-${ROS_DISTRO}-fake-localization \
+        #ros-${ROS_DISTRO}-map-server \
+        &&\
+    rm -rf /var/lib/apt/lists/*
 
 # Install libraries and tools
 # ===========================
@@ -275,16 +277,16 @@ ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
 
 # SIMMECHANICS-TO-URDF
-ENV ROS_DISTRO lunar
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
-                --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
-    echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
-        > /etc/apt/sources.list.d/ros-latest.list &&\
-    apt-get update &&\
-    apt-get install --no-install-recommends -y \
-        python-catkin-pkg \
-        &&\
-    rm -rf /var/lib/apt/lists/*
+# ENV ROS_DISTRO melodic
+# RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
+#                 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
+#     echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
+#         > /etc/apt/sources.list.d/ros-latest.list &&\
+#     apt-get update &&\
+#     apt-get install --no-install-recommends -y \
+#         python-catkin-pkg \
+#         &&\
+#     rm -rf /var/lib/apt/lists/*
 RUN \
     # Dependencies
     cd ${IIT_SOURCES}/urdf_parser_py &&\
