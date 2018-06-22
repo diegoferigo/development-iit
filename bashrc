@@ -100,8 +100,8 @@ compiler.set clang${CLANG_VER%.*} >/dev/null
 # Enable matlab
 if [ -x "/usr/local/MATLAB/bin/matlab" ] ; then
 	export PATH=${PATH}:/usr/local/MATLAB/bin
-	export MATLABPATH=${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/mex/:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WB-Toolbox/:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WB-Toolbox/images
-	# https://github.com/robotology/WB-Toolbox#problems-finding-libraries-and-libstdc
+	export MATLABPATH=${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/mex:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WBToolbox:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WBToolbox/images
+	# https://github.com/robotology/wb-toolbox#problems-finding-libraries-and-libstdc
 	alias matlab="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab"
 	# Set the bindings up
 	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab
