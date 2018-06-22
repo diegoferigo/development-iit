@@ -76,9 +76,6 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/*
 
-# Concurrent compilation jobs
-ENV GCC_JOBS=6
-
 # Install YARP, iCub and friends from sources
 # ===========================================
 
