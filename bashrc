@@ -89,14 +89,13 @@ export PATH=${IIT_PATH:+${IIT_PATH}:}${PATH}:/opt/qtcreator/bin
 
 # Enable ccache for the user created during runtime
 if [ -x $(which ccache) ] ; then
-	export PATH=/usr/lib/ccache:${PATH}
+	mkdir -p /home/${USERNAME}/.ccachebin
+	chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.ccachebin
+	export PATH=/home/${USERNAME}/.ccachebin:/usr/lib/ccache:${PATH}
 fi
 
-# If clang is installed, use it as default compiler
-if [[ -x $(which clang-${CLANG_VER}) && -x $(which clang++-${CLANG_VER}) ]] ; then
-	export CC="clang-${CLANG_VER}"
-	export CXX="clang++-${CLANG_VER}"
-fi
+# Set clang as default compiler
+compiler.set clang${CLANG_VER%.*} >/dev/null
 
 # Enable matlab
 if [ -x "/usr/local/MATLAB/bin/matlab" ] ; then
