@@ -195,7 +195,8 @@ EXPOSE 10000/tcp
 
 # ICUB-MAIN
 RUN cd ${IIT_SOURCES}/icub-main &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
+    # git checkout ${SOURCES_GIT_BRANCH} &&\
+    git checkout devel &&\
     mkdir -p build && cd build &&\
     cmake \
           -G $CMAKE_GENERATOR \
@@ -333,7 +334,6 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
 # ROBOTOLOGY-SUPERBUILD
 # The bashrc-dev will source the variables exported by this repo
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
-    git checkout add_LDLIBPATH_template &&\
     mkdir -p build && cd build &&\
     cmake \
           -G "Unix Makefiles" \
