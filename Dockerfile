@@ -99,7 +99,7 @@ ENV PATH=${IIT_PATH}:${PATH}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20180208"
+ARG IIT_DOCKER_SOURCES="20180622"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
@@ -113,7 +113,10 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/ros/urdf_parser_py &&\
     git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
-    git clone https://github.com/diegoferigo/robotology-superbuild.git
+    git clone https://github.com/diegoferigo/robotology-superbuild.git &&\
+    git clone https://github.com/robotology-playground/xsens-mvn.git &&\
+    git clone https://github.com/robotology/human-dynamics-estimation.git &&\
+    git clone https://github.com/bulletphysics/bullet3.git
 
 # Env variables for configuring the sources
 # -----------------------------------------
@@ -381,9 +384,38 @@ RUN ([ ${ROBOTOLOGY_USES_MATLAB} = "ON" ] &&\
     cd ${IIT_SOURCES}/WB-Toolbox/build &&\
     cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_SOURCES}/robotology-superbuild/build/install \
+# xsens-mvn
+RUN cd ${IIT_SOURCES}/xsens-mvn &&\
+    mkdir -p build && cd build &&\
+    cmake \
+          -G $CMAKE_GENERATOR \
+          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DENABLE_mvnx_parser:BOOL=NO \
+          -DENABLE_xsens_mnv_remote:BOOL=ON \
           .. &&\
-    make -j ${GCC_JOBS} install) \
-    || true
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+
+# human-dynamics-estimation
+RUN cd ${IIT_SOURCES}/human-dynamics-estimation &&\
+    mkdir -p build && cd build &&\
+    cmake \
+          -G $CMAKE_GENERATOR \
+          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          .. &&\
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+
+# Bullet
+RUN cd ${IIT_SOURCES}/bullet3 &&\
+    mkdir -p build && cd build &&\
+    cmake \
+    -G $CMAKE_GENERATOR \
+    -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+    -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+    -DBUILD_SHARED_LIBS=ON \
+    .. &&\
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
 
 # Misc setup of the image
 # =======================
