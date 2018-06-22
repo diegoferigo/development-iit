@@ -17,13 +17,16 @@ RUN apt-get update &&\
         libgnome-keyring0 \
         gnupg2 \
         python-pip \
-        python-pygments \
         colordiff \
         octave \
         locales \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
-    pip install colour-valgrind
+    pip install \
+        colour-valgrind \
+        Pygments \
+        mkdocs \
+        mkdocs-material
 
 # Setup locales
 RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && \
@@ -54,6 +57,7 @@ RUN apt-get update &&\
         valkyrie \
         ccache \
         doxygen \
+        graphviz \
         &&\
     rm -rf /var/lib/apt/lists/*
 
