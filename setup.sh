@@ -4,9 +4,6 @@ set -e
 # Setup the parent image
 source /usr/sbin/setup_tools.sh
 
-# TODO: Move to setup_tools.sh
-echo "${USERNAME}    ALL=(ALL:ALL) ALL" >> /etc/sudoers
-
 # Setup the custom bashrc
 echo "Including an additional bashrc configuration"
 # -colors
