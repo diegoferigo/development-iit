@@ -146,9 +146,8 @@ RUN apt-get update &&\
         libpcre3-dev &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp/ &&\
-    git clone https://github.com/jaeandersson/swig.git &&\
+    git clone -b matlab https://github.com/robotology-dependencies/swig.git &&\
     cd swig &&\
-    git checkout matlab &&\
     sh autogen.sh &&\
     CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} ./configure &&\
     make -j2 &&\
