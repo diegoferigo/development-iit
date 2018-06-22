@@ -1,0 +1,226 @@
+#!/bin/bash
+
+# Utility functions
+# =================
+
+msg() {
+	echo -e "$BGreen==>$Color_Off $1"
+}
+
+msg2() {
+	echo -e "  $BBlue->$Color_Off $1"
+}
+
+err() {
+	echo -e "$BRed==>$Color_Off $1"
+}
+
+function mkdircd() {
+	if [ ! -d  $1 ] ; then
+		mkdir -p $1
+		cd $1 || return 1
+	fi
+}
+
+# cd and ls in one
+function cl() {
+	dir=$1
+	if [[ -d "$dir" ]] ; then
+		cd "$dir"
+		ls
+	else
+		err "cl: '$dir': Directory not found"
+	fi
+}
+
+# Start and configure yarp
+function yarpinit() {
+	if [[ -n "${YARP_NAME_SPACE}" || -n "$1" ]] ; then
+		if [ -n "${YARP_NAME_SPACE}" ] ; then
+			Y_NAMESPACE=${YARP_NAME_SPACE}
+		else
+			Y_NAMESPACE="$1"
+		fi
+		msg "Setting the YARP namespace"
+		eval "yarp namespace ${Y_NAMESPACE}"
+		# If no yarp server is running, spawn a new instance
+		msg "Detecting YARP..."
+		yarp detect &>/dev/null
+		if [ $? -ne 0 ] ; then
+			msg2 "YARP is not running"
+			msg2 "Spawning a new yarpserver"
+			yarpserver --write &
+			sleep 2
+		else
+			msg2 "YARP is already running"
+		fi
+		msg "Storing the configuration of the server"
+		yarp detect --write &>/dev/null || return 1
+	else
+		err "No yarp namespace is set. Export a YARP_NAME_SPACE env variable or pass it as $1"
+	fi
+}
+
+# Configure a CMake project while performing additional operations on files used by the
+# the development toolchain. This function accepts `cmake` or `ccmake` as input argument.
+function cm_template() {
+	msg "Starting the build process"
+	if [ -e CMakeLists.txt ] ; then
+		msg2 "CMakeLists.txt found"
+		if [ -e build/CMakeCache.txt ] ; then
+			msg2 "Using CMake cache"
+		else
+			msg2 "Creating new build folder"
+			mkdir -p build/
+		fi
+		cd build  || return 1
+		# Execute cmake or ccmake. You can pass additional cmake flags and they'll be included
+		BINARY=$1
+		shift 1
+		msg "Executing ${BINARY}"
+		${BINARY} .. \
+		          --warn-uninitialized \
+		          -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+		          "$@"
+		# Copy the compilation database to the project's root (required by linter-clang).
+		# autocomplete-clang instead needs the file to be in the build/ directory
+		cd ..
+		if [ -e build/compile_commands.json ] ; then
+			msg "IDE configuration"
+			msg2 "Generating the compile_commands.json file"
+			cp build/compile_commands.json compile_commands.json
+		else
+			err "File compile_commands.json not found"
+		fi
+	else
+		err "CMakeLists.txt not found in this folder"
+		return 1
+	fi
+	msg "Done"
+}
+
+# Custom execution of c(c)make + make
+function cmm_template() {
+	cm_template "$@"
+	cd build || return 1
+	# Build the sources
+	make -j ${GCC_JOBS}
+	cd ..
+}
+
+# Custom execution of c(c)make + make + make install
+function cmi_template() {
+	cmm_template "$@"
+	cd build || return 1
+	# Install the sources
+	make install
+	cd ..
+}
+
+# Use the _template function with `cmake`
+function cm() {
+	cm_template cmake "$@"
+}
+function cmm() {
+	cmm_template cmake "$@"
+}
+function cmi() {
+	cmi_template cmake "$@"
+}
+
+# Use the _template function with `ccmake`
+function ccm() {
+	cm_template ccmake "$@"
+}
+function ccmm() {
+	cmm_template ccmake "$@"
+}
+function ccmi() {
+	cmi_template ccmake "$@"
+}
+
+# Custom execution of cmake + make + make install into ${IIT_DIR}
+function cmiit() {
+	cmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} "$@"
+}
+function ccmiit() {
+	ccmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} "$@"
+}
+
+# Function to switch gcc/clang compiler
+function compiler.set() {
+		case $1 in
+			gcc|1)
+				msg "Setting gcc"
+				export CC="gcc"   && export CXX="g++"
+			;;
+			clang${CLANG_VER%.*}|2)
+				msg "Setting clang${CLANG_VER%.*}"
+				export CC="clang-${CLANG_VER}" && export CXX="clang++-${CLANG_VER}"
+				if [[ $(which ${CC}) = /usr/bin/clang-${CLANG_VER} ]] ; then
+					ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/clang-${CLANG_VER}
+				fi
+				if [[ $(which ${CXX}) = /usr/bin/clang++-${CLANG_VER} ]] ; then
+					ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/clang++-${CLANG_VER}
+				fi
+			;;
+			*) err "$1: only gcc and clang${CLANG_VER%.*} are supported compilers" ; return 1
+			;;
+		esac
+		return 0
+}
+
+function compiler.get() {
+	if [[ "$CC" = "gcc" && "$CXX" = "g++" ]] ; then
+		msg "The active compiler is: gcc"
+		return 1
+	elif [[ "$CC" = "clang-${CLANG_VER}" && "$CXX" = "clang++-${CLANG_VER}" ]] ; then
+		msg "The active compiler is: clang-${CLANG_VER}"
+		return 2
+	else
+		err "The compiler environment variables aren't set."
+		return 3
+	fi
+}
+
+function compiler.switch() {
+	compiler.get
+	case $? in
+		1) compiler.set 2 ;;
+		2) compiler.set 1 ;;
+		*) compiler.set 2 ;;
+	esac
+}
+
+# Since the codyco-superbuild is not installed, it could be useful having the possibility
+# of storing a second tree of sources somewhere else and configure the environment to find it
+# instead of the original one
+function setlocalcodyco () {
+	if [[ ! -n "$1" || ! -e "$1" ]] ; then
+		err "Folder not found $1"
+		if [[ -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
+			msg2 "The current CODYCO_SUPERBUILD_ROOT is $CODYCO_SUPERBUILD_ROOT"
+		fi
+		return 1
+	elif [[ ! -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
+		err "The variable CODYCO_SUPERBUILD_ROOT is not set"
+		return 1
+	else
+		readarray CODYCO_ENV_VARS < <(env | grep ${CODYCO_SUPERBUILD_ROOT} | sed "s|${CODYCO_SUPERBUILD_ROOT}|${1%/}|g")
+		for ENV_VAR in ${CODYCO_ENV_VARS[*]} ; do
+			export $ENV_VAR
+		done
+	fi
+}
+
+# Matlab support is still rough. Some software compiled while creating the image may have
+# components that depend on Matlab. Considering that there is no easy way to share a local
+# copy of Matlab during for creating the image, those components are explicitly disabled.
+# This function, that must be kept aligned with the development of the Dockerfile,
+# sets up all the variables that enable matlab support.
+# After running this function, copying and pasting the cmake command line should be sufficient
+# to enable all the matlab and simulink flags.
+function enable_matlab() {
+	export ROBOTOLOGY_USES_MATLAB=ON
+	export ROBOTOLOGY_GENERATE_MEX=ON
+}
