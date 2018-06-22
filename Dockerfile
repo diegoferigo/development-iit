@@ -95,7 +95,7 @@ RUN cd /tmp &&\
 ENV PATH=$PATH:/opt/qtcreator/bin
 
 # Gitkraken
-ARG GITKRAKEN_VER=3.3.4
+ARG GITKRAKEN_VER=3.6.4
 RUN cd /tmp &&\
     wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /tmp/v${GITKRAKEN_VER}.deb &&\
