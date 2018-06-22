@@ -349,43 +349,21 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DYCM_EP_EXPERT_MODE:BOOL=ON \
           -DYCM_EP_MAINTAINER_MODE:BOOL=ON \
           .. &&\
-    make update-all -j 1
-# Waiting https://github.com/robotology/robotology-superbuild/issues/33
-RUN cd ${IIT_SOURCES}/robotology-superbuild/build &&\
-    # Checkout codyco-modules devel branch
-    cd ../robotology/codyco-modules &&\
-    git checkout devel &&\
-    git config user.email "you@example.com" &&\
-    git config user.name "Your Name" &&\
-    cd - &&\
-    # Checkout yarp-matlab-bindings devel branch
-    cd ../robotology/yarp-matlab-bindings &&\
-    git checkout devel &&\
-    git config user.email "you@example.com" &&\
-    git config user.name "Your Name" &&\
-    cd - &&\
-    cmake -DYCM_EP_DEVEL_MODE_codyco-modules:BOOL=ON \
-          -DYCM_EP_DEVEL_MODE_yarp-matlab-bindings:BOOL=ON \
-          . &&\
-    make -j ${GCC_JOBS} &&\
-    # Remove the temporary git credentials
-    cd ../robotology/codyco-modules &&\
-    git config --unset user.email &&\
-    git config --unset user.name &&\
-    cd ../yarp-matlab-bindings &&\
-    git config --unset user.email &&\
-    git config --unset user.name
+    make update-all -j1 &&\
+    # NON_INTERACTIVE_BUILD and YCM_EP_DEVEL_MODE don't play well toghether
+    # Setting a temporary git configuration
+    git config --global user.email "username@iit.it" &&\
+    git config --global user.name "Me" &&\
+    for repo in yarp-matlab-bindings codyco-modules ; do \
+        cmake -DYCM_EP_DEVEL_MODE_${repo}:BOOL=ON . &&\
+        cd ../robotology/$repo ;\
+        echo "Checking out $repo to ${BRANCH}" ;\
+        git checkout devel ;\
+        cd ../../build ;\
+    done &&\
+    make -j4 &&\
+    rm $HOME/.gitconfig
 
-# These projects will be included soon in the new superbuild
-RUN cd ${IIT_SOURCES} &&\
-    git clone -b WBT3 https://github.com/robotology-playground/wholeBodyControllers.git &&\
-    git clone -b WB3.0 https://github.com/robotology/WB-Toolbox.git &&\
-    cd ${IIT_SOURCES}/WB-Toolbox &&\
-    mkdir -p build && cd build
-RUN ([ ${ROBOTOLOGY_USES_MATLAB} = "ON" ] &&\
-    cd ${IIT_SOURCES}/WB-Toolbox/build &&\
-    cmake -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_SOURCES}/robotology-superbuild/build/install \
 # xsens-mvn
 RUN cd ${IIT_SOURCES}/xsens-mvn &&\
     mkdir -p build && cd build &&\
