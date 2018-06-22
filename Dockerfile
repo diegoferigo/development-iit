@@ -430,6 +430,7 @@ ENV QT_X11_NO_MITSHM 1
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev
 COPY bashrc-colors /usr/etc/skel/bashrc-colors
+COPY bashrc-functions /usr/etc/skel/bashrc-functions
 
 # Include an additional entrypoint script
 COPY entrypoint.sh /usr/sbin/entrypoint_development.sh
