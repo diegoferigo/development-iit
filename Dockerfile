@@ -51,10 +51,6 @@ RUN apt-get update &&\
     apt-get install -y \
         # MISC
         qt5-default \
-        # SWIG
-        autotools-dev \
-        automake \
-        bison \
         # YARP
         libeigen3-dev \
         libgsl-dev \
@@ -203,10 +199,6 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
 # GAZEBO-YARP-PLUGINS
-RUN ([ ! -e /usr/lib/libblas.so ] && ln -s /usr/lib/x86_64-linux-gnu/atlas/libblas.so /usr/lib/libblas.so) ||\
-    true
-RUN ([ ! -e /usr/lib/liblapack.so ] && ln -s /usr/lib/x86_64-linux-gnu/atlas/liblapack.so /usr/lib/liblapack.so) ||\
-    true
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
@@ -380,13 +372,3 @@ RUN chmod 755 /usr/sbin/entrypoint_development.sh
 COPY setup.sh /usr/sbin/setup_development.sh
 RUN chmod 755 /usr/sbin/setup_development.sh
 ENTRYPOINT ["/usr/sbin/entrypoint_development.sh"]
-
-# nvidia-docker 1.0
-LABEL com.nvidia.volumes.needed="nvidia_driver"
-
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-RUN ldconfig
-
-ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
-ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
