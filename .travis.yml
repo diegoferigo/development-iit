@@ -1,0 +1,91 @@
+language: generic
+
+services:
+  - docker
+
+os:
+  - linux
+
+env:
+  global:
+    - IMAGE_FOLDER=robotology-tdd
+    - DOCKER_IMAGE_NAME="robotology-tdd"
+
+stages:
+  - tools
+  - development
+
+script:
+  - cd $TRAVIS_BUILD_DIR/$IMAGE_FOLDER
+  - >-
+    docker build --rm \
+      --build-arg BASE_IMAGE=$DOCKER_BASE_IMAGE \
+      --build-arg BRANCH=$BRANCH \
+      -t diegoferigo/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG \
+      .
+
+after_success:
+  - if ! [[ "$TRAVIS_REPO_SLUG" = "diegoferigo/development-iit" && "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" ]] ; then travis_terminate 0 ; fi
+  - docker login --username=$DOCKERHUB_USERNAME --password=$DOCKERHUB_PASSWORD
+  - docker push robotology/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+  - >-
+    if [ "$IS_LATEST" = "true" ] ; then
+      docker tag robotology/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG robotology/$DOCKER_IMAGE_NAME:latest
+      docker push robotology/$DOCKER_IMAGE_NAME:latest
+    fi
+
+jobs:
+  include:
+    # Disable test stage
+    - stage: test
+      if: env(DUMMYVAR) is present
+    # =====
+    # TOOLS
+    # =====
+    - &tools_template
+      stage: tools
+      env:
+        - DOCKER_BASE_IMAGE="ubuntu:xenial"
+        - DOCKER_IMAGE_NAME="tools"
+        - DOCKER_IMAGE_TAG="xenial"
+        - IMAGE_FOLDER="Tools"
+    - <<: *tools_template
+      env:
+        - DOCKER_BASE_IMAGE="ubuntu:bionic"
+        - DOCKER_IMAGE_NAME="tools"
+        - DOCKER_IMAGE_TAG="bionic"
+        - IMAGE_FOLDER="Tools"
+        - IS_LATEST=true
+    # ===========
+    # DEVELOPMENT
+    # ===========
+    - &development_template
+      stage: development
+      env:
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:xenial"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="xenial-master"
+        - BRANCH=master
+        - IMAGE_FOLDER="Development"
+    - <<: *development_template
+      env:
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:xenial"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="xenial-devel"
+        - BRANCH=devel
+        - IMAGE_FOLDER="Development"
+    - <<: *development_template
+      env:
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:bionic"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="bionic-master"
+        - BRANCH=master
+        - IMAGE_FOLDER="Development"
+        - IS_LATEST=true
+    - <<: *development_template
+      env:
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:bionic"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="bionic-devel"
+        - BRANCH=devel
+        - IMAGE_FOLDER="Development"
