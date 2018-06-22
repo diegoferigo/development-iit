@@ -120,7 +120,6 @@ RUN apt-get update &&\
         g++-multilib \
         gdb \
         pkg-config \
-        realpath \
         python-pexpect \
         manpages-dev \
         git \
