@@ -85,3 +85,7 @@ if [[ -d /root/.ccache && ! -d "/home/$USERNAME/.ccache" ]] ; then
 	mv /root/.ccache /home/$USERNAME/.ccache
 	chown -R $USERNAME:$USERNAME /home/$USERNAME/.ccache
 fi
+
+# Enable colors in nanorc
+echo "include /usr/share/nano/*.nanorc" > /home/$USERNAME/.nanorc
+chown $USERNAME:$USERNAME /home/$USERNAME/.nanorc
