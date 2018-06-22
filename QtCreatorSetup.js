@@ -12,7 +12,7 @@ function Controller() {
 }
 
 Controller.prototype.WelcomePageCallback = function() {
-    gui.clickButton(buttons.NextButton);
+    gui.clickButton(buttons.NextButton, 2000);
 }
 
 Controller.prototype.CredentialsPageCallback = function() {

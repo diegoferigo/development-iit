@@ -85,7 +85,7 @@ RUN apm install --packages-file /usr/local/etc/atom_packages.txt
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.5.0
+ARG QTCREATOR_VERSION=4.6.1
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 RUN cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-$QTCREATOR_VERSION.run &&\
