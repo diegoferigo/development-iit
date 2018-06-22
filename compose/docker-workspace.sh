@@ -74,6 +74,7 @@ function print_help()
 	echo
 	echo "  start|up    Start the composed setup"
 	echo "  stop|down   Stop the composed setup"
+	# echo "  status      Prints the status of the setup"
 	echo
 	echo "Optional arguments:"
 	echo "  -p    Project directory mounted in the HOME (default: /tmp/docker-tmpfolder)"
@@ -91,9 +92,9 @@ function print_help()
 function find_docker_bin()
 {
 	msg "Finding the docker-compose binary"
-	if [ -x $(which nvidia-docker-compose) ] ; then
+	if [ -x "$(which nvidia-docker-compose)" ] ; then
 		DOCKERCOMPOSE_BIN=$(which nvidia-docker-compose)
-	elif [ -x $(which docker-compose) ] ; then
+	elif [ -x "$(which docker-compose)" ] ; then
 		DOCKERCOMPOSE_BIN=$(which docker-compose)
 	else
 		err "Docker compose not found! Check your \$PATH"
@@ -107,6 +108,7 @@ function handle_persistent_resources()
 	# Persistent files
 	for file in "${PERSISTENT_FILES[@]}" ; do
 		if [ ! -f $file ] ; then
+            mkdir $(dirname $file) || (err2 "Unable to create $(dirname $file)" && exit 1)
 			touch $file || (err2 "Unable to create $file" && exit 1)
 		fi
 	done
@@ -168,6 +170,10 @@ function docker_workspace()
 			fi
 			msg2 "Removing the containers"
 			$DOCKERCOMPOSE_BIN down || exit $EC_DOCKERCOMPOSE
+			;;
+		status)
+			# TODO: show the status of the composed system
+			exit $EC_NOOP
 			;;
 		*)
 			err "$1: command not found"
