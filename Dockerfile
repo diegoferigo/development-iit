@@ -101,6 +101,16 @@ RUN cd /tmp &&\
     apt install /tmp/v${GITKRAKEN_VER}.deb &&\
     rm v${GITKRAKEN_VER}.deb
 
+# Updated CMake for QtCreator
+ARG CMAKE_VER=3.9.6
+RUN cd /tmp &&\
+    wget https://cmake.org/files/v${CMAKE_VER%.*}/cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
+    chmod +x cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
+    mkdir /opt/cmake &&\
+    sh cmake-${CMAKE_VER}-Linux-x86_64.sh --prefix=/opt/cmake --skip-license &&\
+    rm /tmp/cmake-${CMAKE_VER}-Linux-x86_64.sh
+ENV PATH=/opt/cmake/bin:$PATH
+
 # rr
 RUN apt-get update &&\
     apt-get install -y \
