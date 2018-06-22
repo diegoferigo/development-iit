@@ -1,5 +1,5 @@
-# Use artful as default tag. Build with e.g. --build-arg tag=xenial to override.
-ARG tag=artful
+# Use bionic as default tag. Build with e.g. --build-arg tag=xenial to override.
+ARG tag=bionic
 FROM ubuntu:${tag}
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
