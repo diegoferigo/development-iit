@@ -221,7 +221,8 @@ ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICU
 
 # GAZEBO-YARP-PLUGINS
 RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
+    # git checkout ${SOURCES_GIT_BRANCH} &&\
+    git checkout devel &&\
     mkdir -p build && cd build &&\
     cmake \
           -G $CMAKE_GENERATOR \
