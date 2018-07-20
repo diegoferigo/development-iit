@@ -400,9 +400,6 @@ RUN cd ${IIT_SOURCES}/bullet3 &&\
 # Misc setup of the image
 # =======================
 
-# Some QT-Apps/Gazebo don't show controls without this
-ENV QT_X11_NO_MITSHM 1
-
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev
 COPY bashrc-colors /usr/etc/skel/bashrc-colors

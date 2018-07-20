@@ -172,6 +172,9 @@ RUN apt-get update &&\
     /opt/cmake/bin/cmake --build . --target install &&\
     rm -r /tmp/include-what-you-use
 
+# Some QT-Apps/Gazebo don't show controls without this
+ENV QT_X11_NO_MITSHM=1
+
 # Setup an additional entrypoint script
 COPY setup.sh /usr/sbin/setup_tools.sh
 COPY entrypoint.sh /usr/sbin/entrypoint_tools.sh
