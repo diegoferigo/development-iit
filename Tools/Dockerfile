@@ -1,6 +1,5 @@
-# Use bionic as default tag. Build with e.g. --build-arg tag=xenial to override.
-ARG tag=bionic
-FROM ubuntu:${tag}
+ARG from=ubuntu:bionic
+FROM ${from}
 MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Utilities
