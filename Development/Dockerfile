@@ -21,7 +21,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
 ENV ROS_DISTRO melodic
 # tzdata configuration
 RUN ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
                 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
     echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
         > /etc/apt/sources.list.d/ros-latest.list
@@ -70,6 +70,8 @@ RUN apt-get update &&\
         python-yaml \
         python-numpy \
         python-setuptools \
+        # XSENS-MVN
+        libqt5xmlpatterns5-dev \
         # MISC
         libasio-dev \
         &&\
@@ -406,7 +408,8 @@ COPY bashrc-functions /usr/etc/skel/bashrc-functions
 
 # Include an additional entrypoint script
 COPY entrypoint.sh /usr/sbin/entrypoint_development.sh
-RUN chmod 755 /usr/sbin/entrypoint_development.sh
 COPY setup.sh /usr/sbin/setup_development.sh
+RUN chmod 755 /usr/sbin/entrypoint_development.sh
 RUN chmod 755 /usr/sbin/setup_development.sh
 ENTRYPOINT ["/usr/sbin/entrypoint_development.sh"]
+CMD ["bash"]
