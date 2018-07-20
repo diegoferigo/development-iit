@@ -84,17 +84,17 @@ RUN apm install --packages-file /usr/local/etc/atom_packages.txt
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.6.1
+ARG QTCREATOR_VERSION=4.7.0
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 RUN cd /tmp &&\
-    wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-$QTCREATOR_VERSION.run &&\
+    wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
     chmod +x qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
     ./qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run --platform minimal --script QtCreatorSetup.js &&\
     rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js
 ENV PATH=$PATH:/opt/qtcreator/bin
 
 # Gitkraken
-ARG GITKRAKEN_VER=3.6.4
+ARG GITKRAKEN_VER=3.6.6
 RUN cd /tmp &&\
     wget https://release.gitkraken.com/linux/v${GITKRAKEN_VER}.deb &&\
     apt install /tmp/v${GITKRAKEN_VER}.deb &&\
