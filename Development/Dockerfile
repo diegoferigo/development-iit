@@ -20,7 +20,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
 # https://github.com/osrf/docker_images/blob/master/ros/
 ENV ROS_DISTRO melodic
 # tzdata configuration
-RUN ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime
+RUN rm -rf /etc/localtime &&\
+    ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
                 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
     echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
