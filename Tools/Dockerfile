@@ -51,6 +51,9 @@ RUN apt-get update &&\
         lldb-${CLANG_VER} \
         libclang-${CLANG_VER}-dev \
         clang-format-${CLANG_VER} \
+        libclang-common-${CLANG_VER}-dev \
+        llvm-${CLANG_VER}-dev \
+        libllvm${CLANG_VER} \
         gdb \
         valgrind \
         valkyrie \
