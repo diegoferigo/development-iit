@@ -121,22 +121,25 @@ alias nano='nano $NANO_DEFAULT_FLAGS'
 alias nanos='nano $NANO_DEFAULT_FLAGS -Y sh'
 alias cmake='cmake $CMAKE_DEFAULT_FLAGS'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
-if [ -e $(which pygmentize) ] ; then
+if [ -x $(which pygmentize) ] ; then
 	alias ccat='pygmentize -g'
 	alias lesc='LESS="-R" LESSOPEN="|pygmentize -g %s" less'
 	export LESS='-R'
 	export LESSOPEN='|pygmentize -g %s'
 fi
-if [ -e $(which valgrind) ] ; then
+if [ -x $(which valgrind) ] ; then
 	alias valgrind-xml='valgrind --xml=yes --xml-file=/tmp/valgrind.log'
 	if [ -e $(which colour-valgrind) ] ; then
 		alias valgrind='colour-valgrind'
 	fi
 fi
-if [ -e $(which colordiff) ] ; then
+if [ -x $(which colordiff) ] ; then
 	alias diff='colordiff'
 fi
-if [ -e $(which octave) ] ; then
+if [ -x $(which trash) ] ; then
+    alias rm='trash'
+fi
+if [ -x $(which octave) ] ; then
 	OCTAVE_BINDINGS_ROOT="${IIT_INSTALL}/octave"
 	OCTAVE_BINDINGS_DIRS=""
 	for extra_bindings_dir in ${OCTAVE_BINDINGS_ROOT}/+* ; do
@@ -146,6 +149,6 @@ if [ -e $(which octave) ] ; then
 	done
 	alias octave='octave -p ${OCTAVE_BINDINGS_ROOT} ${OCTAVE_BINDINGS_DIRS}'
 fi
-if [ -e $(which gazebo) ] ; then
+if [ -x $(which gazebo) ] ; then
 	alias gazebo='gazebo -u'
 fi
