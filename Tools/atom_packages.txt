@@ -1,10 +1,7 @@
-atom-ros
-autocomplete-clang
 autocomplete-cmake
 autocomplete-xml
 auto-detect-indentation
 busy-signal
-clang-format
 disable-mru-tabbing
 docblockr
 file-icons
@@ -14,8 +11,6 @@ language-cmake
 language-docker
 language-ini
 language-thrift
-linter
-linter-clang
 linter-js-yaml
 linter-markdown
 linter-ui-default
