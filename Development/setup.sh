@@ -6,19 +6,11 @@ source /usr/sbin/setup_tools.sh
 
 # Setup the custom bashrc
 echo "Including additional bashrc configurations"
-# -colors
-cp /usr/etc/skel/bashrc-colors /home/$USERNAME/.bashrc-colors
-chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-colors
-echo "source /home/$USERNAME/.bashrc-colors" >> /home/${USERNAME}/.bashrc
-echo "source /home/$USERNAME/.bashrc-colors" >> /root/.bashrc
 # -dev
 cp /usr/etc/skel/bashrc-dev /home/$USERNAME/.bashrc-dev
 chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-dev
 echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
 echo "source /home/$USERNAME/.bashrc-dev" >> /root/.bashrc
-# -functions
-cp /usr/etc/skel/bashrc-functions /home/$USERNAME/.bashrc-functions
-chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-functions
 
 # Change the permission of all persistent resources mounted inside $HOME.
 # If you don't to get a chowned resource, mount it somewhere else.

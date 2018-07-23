@@ -54,9 +54,14 @@ bind '"\e\e[D": backward-word'
 # Configuration of frameworks and tools
 # =====================================
 
+# Load colors
+if [ -f /usr/etc/skel/bashrc-colors ] ; then
+	source /usr/etc/skel/bashrc-colors
+fi
+
 # Load utility functions
-if [ -x /home/${USERNAME}/.bashrc-functions.sh ] ; then
-	source /home/${USERNAME}/.bashrc-functions.sh
+if [ -f /usr/etc/skel/bashrc-functions ] ; then
+	source /usr/etc/skel/bashrc-functions
 fi
 
 # Explicitly enable gcc colored output
