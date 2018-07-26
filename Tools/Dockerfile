@@ -93,8 +93,8 @@ RUN cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
     chmod +x qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
     ./qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run --platform minimal --script QtCreatorSetup.js &&\
-    rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js
-ENV PATH=$PATH:/opt/qtcreator/bin
+    rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js &&\
+    ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
 
 # Gitkraken
 ARG GITKRAKEN_VER=3.6.6
