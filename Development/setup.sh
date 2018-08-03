@@ -58,8 +58,3 @@ fi
 if [ -n "${YARP_NAME_SPACE}" ] ; then
 	su -c 'eval "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE}"' $USERNAME
 fi
-
-# Setup ROS environment
-if [ -e /opt/ros/$ROS_DISTRO/setup.bash ] ; then
-    source "/opt/ros/$ROS_DISTRO/setup.bash"
-fi
