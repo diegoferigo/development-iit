@@ -5,8 +5,7 @@ set -e
 source /usr/sbin/setup_tools.sh
 
 # Setup the custom bashrc
-echo "Including additional bashrc configurations"
-# -dev
+echo "==> Including additional bashrc configurations"
 cp /usr/etc/skel/bashrc-dev /home/$USERNAME/.bashrc-dev
 chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-dev
 echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
@@ -30,7 +29,7 @@ fi
 
 # Configure git
 if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
-	echo "Setting up git ..."
+	echo "==> Setting up git ..."
 	su -c "git config --global user.name ${GIT_USER_NAME}" $USERNAME
 	su -c "git config --global user.email ${GIT_USER_EMAIL}" $USERNAME
 	su -c "git config --global color.pager true" $USERNAME
@@ -56,5 +55,6 @@ fi
 
 # Configure YARP namespace
 if [ -n "${YARP_NAME_SPACE}" ] ; then
+    echo "==> Setting Yarp namespace"
 	su -c 'eval "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE}"' $USERNAME
 fi

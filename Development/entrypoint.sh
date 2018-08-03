@@ -8,6 +8,7 @@ fi
 
 # Initialize the container
 setup_development.sh
+echo "==> Development container ready"
 
 # If a CMD is passed, execute it
 exec "$@"

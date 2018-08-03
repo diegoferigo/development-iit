@@ -8,6 +8,7 @@ fi
 
 # Initialize the container
 setup_tools.sh
+echo "==> Tools container ready"
 
 # If a CMD is passed, execute it
 exec "$@"

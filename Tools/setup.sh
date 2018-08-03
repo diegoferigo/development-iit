@@ -42,13 +42,16 @@ create_user() {
 }
 
 # Create the user
+echo "==> Creating the runtime user"
 create_user
 
 # Set a default root password
+echo "==> Setting the default root password"
 ROOT_PASSWORD="root"
 echo "root:${ROOT_PASSWORD}" | chpasswd
 
 # Set a default password
+echo "==> Setting the default user password"
 USER_PASSWORD=${USERNAME}
 echo "${USERNAME}:${USER_PASSWORD}" | chpasswd
 echo "${USERNAME}    ALL=(ALL:ALL) ALL" >> /etc/sudoers
@@ -61,7 +64,7 @@ usermod -aG video ${USERNAME}
 # and it should comply the presence of an existing ~/.atom/packages/ folder
 COPY_ATOM_PACKAGES=${COPY_ATOM_PACKAGES:-0}
 if [[ ${COPY_ATOM_PACKAGES} -eq 1 && -d "/root/.atom" ]] ; then
-	echo "Setting up Atom packages into $USERNAME's home ..."
+	echo "==> Setting up Atom packages into $USERNAME's home ..."
 	if [ -d "/home/$USERNAME/.atom_packages_from_root" ] ; then
 		rm -r "/home/$USERNAME/.atom_packages_from_root"
 	fi
