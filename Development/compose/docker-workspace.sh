@@ -92,9 +92,7 @@ function print_help()
 function find_docker_bin()
 {
 	msg "Finding the docker-compose binary"
-	if [ -x "$(which nvidia-docker-compose)" ] ; then
-		DOCKERCOMPOSE_BIN=$(which nvidia-docker-compose)
-	elif [ -x "$(which docker-compose)" ] ; then
+	if [ -x "$(which docker-compose)" ] ; then
 		DOCKERCOMPOSE_BIN=$(which docker-compose)
 	else
 		err "Docker compose not found! Check your \$PATH"
@@ -108,7 +106,7 @@ function handle_persistent_resources()
 	# Persistent files
 	for file in "${PERSISTENT_FILES[@]}" ; do
 		if [ ! -f $file ] ; then
-            mkdir $(dirname $file) || (err2 "Unable to create $(dirname $file)" && exit 1)
+			mkdir $(dirname $file) || (err2 "Unable to create $(dirname $file)" && exit 1)
 			touch $file || (err2 "Unable to create $file" && exit 1)
 		fi
 	done
@@ -126,18 +124,24 @@ function docker_workspace()
 	case $1 in
 		start|up)
 			msg "Starting up..."
+			
 			# Set the X11 authentication resources
 			msg "Setting up X11 resources"
-			if [ ! -e $XAUTH ] ; then
-				msg2 "Creating authentication file"
-				touch $XAUTH
-				chmod 777 $XAUTH
-			else
-				msg2 "X11 authentication file found"
+			if [ -e $XAUTH ] ; then
+				msg2 "Removing old authentication file"
+				rm -rf $XAUTH
 			fi
+			
+			msg2 "Creating authentication file"
+			touch $XAUTH
+			
 			msg2 "Granting X11 permissions"
-			xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
-
+			if [ $(xauth nlist $DISPLAY | grep -v ffff | wc -l) -gt 1 ] ; then
+				err "Your system has more than one authentication entry. Exiting" && exit 1
+			fi
+			xauth nlist $DISPLAY | grep -v ffff | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+			chmod 664 $XAUTH
+			
 			msg "Setting up the project's resources"
 			# If a folder is passed as $2, mount it into the host and set it as
 			# working directory

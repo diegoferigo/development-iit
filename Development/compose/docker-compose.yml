@@ -1,8 +1,9 @@
-version: '2'
+version: '2.3'
 
 services:
   development:
     image: ${DEVELOPMENT_IMAGE}
+    runtime: ${DOCKER_RUNTIME}
     container_name: development
     environment:
       # ROS/YARP Variables
