@@ -175,6 +175,10 @@ RUN apt-get update &&\
     /opt/cmake/bin/cmake --build . --target install &&\
     rm -r /tmp/include-what-you-use
 
+# Support of nvidia-docker 2.0
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=all
+
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1
 
