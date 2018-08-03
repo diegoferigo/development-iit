@@ -79,13 +79,6 @@ if [[ ${COPY_ATOM_PACKAGES} -eq 1 && -d "/root/.atom" ]] ; then
 	echo "... Done"
 fi
 
-# Move the ccache folder into the user's home
-if [[ -d /root/.ccache && ! -d "/home/$USERNAME/.ccache" ]] ; then
-	echo "Moving ccache directory"
-	mv /root/.ccache /home/$USERNAME/.ccache
-	chown -R $USERNAME:$USERNAME /home/$USERNAME/.ccache
-fi
-
 # Enable colors in nanorc
 echo "include /usr/share/nano/*.nanorc" > /home/$USERNAME/.nanorc
 chown $USERNAME:$USERNAME /home/$USERNAME/.nanorc
