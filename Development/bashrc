@@ -67,6 +67,9 @@ fi
 # Explicitly enable gcc colored output
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+# Enable Ninja colored output
+export CXXFLAGS="$CXXFLAGS -fdiagnostics-color=always"
+
 # Set the default editor
 if [[ -e $(which nano) ]] ; then
 	export EDITOR="nano"
