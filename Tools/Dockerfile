@@ -104,7 +104,7 @@ RUN cd /tmp &&\
     rm v${GITKRAKEN_VER}.deb
 
 # Updated CMake for QtCreator
-ARG CMAKE_VER=3.9.6
+ARG CMAKE_VER=3.12.0
 RUN cd /tmp &&\
     wget https://cmake.org/files/v${CMAKE_VER%.*}/cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
     chmod +x cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
