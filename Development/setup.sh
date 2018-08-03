@@ -36,6 +36,7 @@ if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
 	su -c "git config --global color.pager true" $USERNAME
 	su -c "git config --global color.ui auto" $USERNAME
 	su -c "git config --global push.default upstream" $USERNAME
+	su -c "git config --global core.autocrlf input" $USERNAME
 	#if [[ "${GIT_USE_GPG}" = "1" && -n "${GIT_GPG_KEY}" ]] ; then
     #su -c "export GPG_TTY=$(tty)" $USERNAME
 	#	su -c "git config --global commit.gpgsign true" $USERNAME
