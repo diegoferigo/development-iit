@@ -19,6 +19,7 @@ RUN apt-get update &&\
         colordiff \
         octave \
         locales \
+        trash-cli \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     pip install \
