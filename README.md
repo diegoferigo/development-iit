@@ -19,7 +19,7 @@ It constists of a docker-based isolated development environment composed by two 
 
 ## **`Tools`** 
 
-This image ships a complete toolset for C++ development:
+This image provides a complete toolset for C++ development:
 
 - QtCreator
 - Updated CMake
@@ -32,23 +32,23 @@ Furthermore, it provides the following features:
 
 - Runtime user generation
 - Support of Intel HW Acceleration
-- Support of [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) 2
+- Support of Nvidia HW Acceleration through [nvidia-docker 2](https://github.com/NVIDIA/nvidia-docker)
 
 ### How to get `Tools`
 
-#### Building the image
+#### Build the image
 
-You can build `Tools` with the classic `docker build` process. By default, the image is build with the latest version of clang and using `ubuntu:bionic` as a base image. Using command line arguments you can use different versions:
+`Tools` can be built with the classic `docker build` process. By default, the image is built with the latest version of clang and using `ubuntu:bionic` as base image. The image can be customized in the following way:
 
 ```bash
 docker build \
-	--build-arg from=ubuntu:bionic \
+    --build-arg from=ubuntu:bionic \
     --build-arg clang_version=6.0  \
     --rm -t \
     diegoferigo/tools:custom .
 ```
 
-#### Downloading the image
+#### Download the image
 
 This image is also hosted in my dockerhub profile. You can get the prebuilt image with:
 
@@ -74,16 +74,16 @@ touch $XAUTH
 xauth nlist $DISPLAY | grep -v ffff | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 
 docker run -it --rm \
-	-e USER_UID=$(id -u) \
-	-e USER_GID=$(id -g) \
-	-e USERNAME=$(whoami) \
+    -e USER_UID=$(id -u) \
+    -e USER_GID=$(id -g) \
+    -e USERNAME=$(whoami) \
     -v $XSOCK:$XSOCK:rw \
-	-v $XAUTH:$XAUTH:rw \
-	-e XAUTHORITY=${XAUTH} \
-	-e DISPLAY \
-	--name tools \
-	diegoferigo/tools \
-	qtcreator
+    -v $XAUTH:$XAUTH:rw \
+    -e XAUTHORITY=${XAUTH} \
+    -e DISPLAY \
+    --name tools \
+    diegoferigo/tools \
+    qtcreator
 ```
 
 **Note:** if you have an Nvidia GPU, running this simple example requires the `diegoferigo/tools:nvidia` image and the `--runtime nvidia` command line option.
@@ -100,6 +100,6 @@ The configuration of this image is demanded to a [control.sh](Development/script
 
 ### Bumblebee support
 
-The `nvidia` version of the images, thanks to `nvidia-docker`, support natively systems based on Nvidia prime. A system properly configured for using bumblebee (or just bbswitch) can start a container able to access the Nvidia gpu only by prepending `optirun` to the `docker run` / `docker-compose` / `control.sh` command.
+The `nvidia` version of the images, thanks to `nvidia-docker`, supports natively systems based on Nvidia prime. A system properly configured for using bumblebee (or just bbswitch) can start a container able to access the Nvidia gpu only by prepending `optirun` to the `docker run` / `docker-compose` / `control.sh` command.
 
-Be aware that you start in this way detached containers otherwise the `optirun` process dies right after, turning off the GPU, while the container stays active in the background with missing hardware resources.
+Be aware that if you start in this way detached containers (`-d`) the `optirun` process dies right after, turning off the GPU, while the container stays active in the background with missing hardware resources. 
