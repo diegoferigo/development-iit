@@ -82,6 +82,7 @@ function cm_template() {
 		          --warn-uninitialized \
 		          -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		          "$@"
+		cd -
 	else
 		err "CMakeLists.txt not found in this folder"
 		return 1
