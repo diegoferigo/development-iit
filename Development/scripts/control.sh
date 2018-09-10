@@ -11,7 +11,6 @@ set -o nounset
 # CONSTANTS
 # =========
 
-readonly CONTAINER_NAME="development"
 readonly USERNAME=$(whoami)
 readonly XAUTH=/tmp/.docker.xauth
 
@@ -252,8 +251,10 @@ function add_persistent_file()
 
 function configure_base()
 {
+    CONTAINER_NAME="development"
+
     # Image
-    set_image "diegoferigo/development:nvidia"
+    set_image "diegoferigo/development:nvidia-devel"
     set_name "$CONTAINER_NAME"
     
     add_extra_option "-it"
@@ -333,7 +334,7 @@ function configure_development()
 
 function configure_matlab()
 {
-    HOST_MATLAB_DIR=/usr/local/MATLAB/R2017b
+    HOST_MATLAB_DIR=/usr/local/MATLAB/R2018a
     HOST_MATLAB_DOT_DIR=/home/dferigo/.dockerdot/matlab
     
     add_volume "$HOST_MATLAB_DIR:/usr/local/MATLAB:rw"
