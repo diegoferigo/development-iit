@@ -71,7 +71,7 @@ jobs:
         - DOCKER_BASE_IMAGE="diegoferigo/tools:xenial"
         - DOCKER_IMAGE_NAME="diegoferigo/development"
         - DOCKER_IMAGE_TAG="xenial-master"
-        - EXTRA_BUILD_ARGS='--build-arg SOURCES_GIT_BRANCH=master'
+        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=master"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=false
@@ -80,7 +80,7 @@ jobs:
         - DOCKER_BASE_IMAGE="diegoferigo/tools:xenial"
         - DOCKER_IMAGE_NAME="diegoferigo/development"
         - DOCKER_IMAGE_TAG="xenial-devel"
-        - EXTRA_BUILD_ARGS='--build-arg SOURCES_GIT_BRANCH=devel'
+        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=devel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=false
@@ -89,7 +89,7 @@ jobs:
         - DOCKER_BASE_IMAGE="diegoferigo/tools:bionic"
         - DOCKER_IMAGE_NAME="diegoferigo/development"
         - DOCKER_IMAGE_TAG="bionic-master"
-        - EXTRA_BUILD_ARGS='--build-arg SOURCES_GIT_BRANCH=master'
+        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=master"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=true
         - PUSH_TO_DOCKERHUB=false
@@ -98,7 +98,7 @@ jobs:
         - DOCKER_BASE_IMAGE="diegoferigo/tools:bionic"
         - DOCKER_IMAGE_NAME="diegoferigo/development"
         - DOCKER_IMAGE_TAG="bionic-devel"
-        - EXTRA_BUILD_ARGS='--build-arg SOURCES_GIT_BRANCH=devel'
+        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=devel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=false
@@ -107,7 +107,7 @@ jobs:
         - DOCKER_BASE_IMAGE="diegoferigo/tools:nvidia"
         - DOCKER_IMAGE_NAME="diegoferigo/development"
         - DOCKER_IMAGE_TAG="nvidia-devel"
-        - EXTRA_BUILD_ARGS='--build-arg SOURCES_GIT_BRANCH=devel'
+        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=devel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
