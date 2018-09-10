@@ -61,6 +61,9 @@ RUN apt-get update &&\
         ccache \
         doxygen \
         graphviz \
+        lsof \
+        net-tools \
+        iputils-ping \
         &&\
     rm -rf /var/lib/apt/lists/*
 
