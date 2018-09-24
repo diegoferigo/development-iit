@@ -126,7 +126,7 @@ RUN apt-get update &&\
         g++-multilib \
         gdb \
         pkg-config \
-        python-pexpect \
+        python3-pexpect \
         manpages-dev \
         git \
         ninja-build \
