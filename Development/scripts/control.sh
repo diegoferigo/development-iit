@@ -165,7 +165,7 @@ function set_stopsignal()
 
 function set_network()
 {
-    DOCKER_OPTION_NETWORK="--network $1"
+    DOCKER_OPTION_NETWORK="--network $1 "
 }
 
 function add_extra_option()
