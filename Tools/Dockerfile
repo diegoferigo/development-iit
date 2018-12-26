@@ -20,6 +20,7 @@ RUN apt-get update &&\
         octave \
         locales \
         trash-cli \
+        xterm \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     pip install \
