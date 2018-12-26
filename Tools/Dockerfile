@@ -15,19 +15,13 @@ RUN apt-get update &&\
         bash-completion \
         libgnome-keyring0 \
         gnupg2 \
-        python-pip \
         colordiff \
         octave \
         locales \
         trash-cli \
         xterm \
         &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    pip install \
-        colour-valgrind \
-        Pygments \
-        mkdocs \
-        mkdocs-material
+    rm -rf /var/lib/apt/lists/*
 
 # Setup locales and tzdata
 RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && \
@@ -69,6 +63,22 @@ RUN apt-get update &&\
         iputils-ping \
         &&\
     rm -rf /var/lib/apt/lists/*
+
+# Install and setup python tools
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        python3-pip \
+        python3-setuptools \
+        spyder3 \
+        python3-dev \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    pip3 install \
+        python-language-server[all] \
+        colour-valgrind \
+        Pygments \
+        mkdocs \
+        mkdocs-material
 
 # Setup HW Acceleration for Intel graphic cards
 RUN apt-get update &&\
