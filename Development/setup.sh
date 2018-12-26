@@ -1,8 +1,15 @@
 #!/bin/bash
 set -eu -o pipefail
 
-# Setup the parent image
-source /usr/sbin/setup_tools.sh
+if [ ! -x "$(which setup_tools.sh)" ] ; then
+    echo "==> File setup_tools.sh not found."
+    exit 1
+else
+    # Setup the parent image
+    echo "==> Configuring the parent image"
+    source /usr/sbin/setup_tools.sh
+    echo "==> Parent tools image configured"
+fi
 
 # Setup the custom bashrc
 echo "==> Including additional bashrc configurations"

@@ -2,11 +2,12 @@
 set -eu -o pipefail
 
 if [ ! -x "$(which setup_development.sh)" ] ; then
-    echo "File setup_development.sh not found."
+    echo "==> File setup_development.sh not found."
     exit 1
 fi
 
 # Initialize the container
+echo "==> Configuring development image"
 setup_development.sh
 echo "==> Development container ready"
 

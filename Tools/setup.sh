@@ -1,6 +1,16 @@
 #!/bin/bash
 set -eu -o pipefail 
 
+if [ ! -x "$(which setup_devenv.sh)" ] ; then
+    echo "==> File setup_devenv.sh not found."
+    exit 1
+else
+    # Setup the parent image
+    echo "==> Configuring the parent image"
+    source /usr/sbin/setup_devenv.sh
+    echo "==> Parent devenv image configured"
+fi
+
 # Move Atom packages to the user's home
 # This command should work even if ~/.atom is mounted as volume from the host,
 # and it should comply the presence of an existing ~/.atom/packages/ folder
