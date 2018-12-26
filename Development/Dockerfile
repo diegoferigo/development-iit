@@ -71,6 +71,8 @@ RUN apt-get update &&\
         python-setuptools \
         # XSENS-MVN
         libqt5xmlpatterns5-dev \
+        # BLOCKFACTORY
+        libmatio-dev \
         # MISC
         libasio-dev \
         &&\
