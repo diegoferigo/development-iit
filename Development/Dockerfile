@@ -36,7 +36,7 @@ RUN apt-get update &&\
     rosdep init &&\
     rosdep update
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         ros-${ROS_DISTRO}-desktop \
         # ros-${ROS_DISTRO}-desktop-full \
         #ros-${ROS_DISTRO}-fake-localization \
@@ -48,7 +48,7 @@ RUN apt-get update &&\
 # ===========================
 
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         # MISC
         qt5-default \
         # YARP

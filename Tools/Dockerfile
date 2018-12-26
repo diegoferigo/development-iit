@@ -4,7 +4,7 @@ MAINTAINER Diego Ferigo <dgferigo@gmail.com>
 
 # Utilities
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         sudo \
         software-properties-common \
         apt-transport-https \
@@ -41,7 +41,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
 
 # Build and development tools
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         build-essential \
         git \
         cmake \
@@ -78,7 +78,7 @@ RUN apt-get update &&\
 # In the future, check if libxss1 will become an atom package dependency
 RUN add-apt-repository -y ppa:webupd8team/atom &&\
     apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         libxss1 \
         atom &&\
     rm -rf /var/lib/apt/lists/*
@@ -118,7 +118,7 @@ ENV PATH=/opt/cmake/bin:$PATH
 
 # rr
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         ccache \
         cmake \
         make \
@@ -143,7 +143,7 @@ RUN apt-get update &&\
 # SWIG with Matlab / Octave support
 # ... waiting its upstream merge
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         autotools-dev \
         automake \
         bison \
@@ -160,7 +160,7 @@ RUN apt-get update &&\
 
 # IWYU
 RUN apt-get update &&\
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         libncurses5-dev \
         libz-dev \
         &&\
