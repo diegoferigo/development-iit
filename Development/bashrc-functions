@@ -138,23 +138,33 @@ function ccmiit() {
 	ccmi -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} "$@"
 }
 
+function setupCCacheForNonSupportedCompiler() {
+    COMPILER_NAME="$1"
+    COMPILER_VERSION="$2"
+    if [[ $(which ${CC}) = /usr/bin/${COMPILER_NAME}-${COMPILER_VERSION} ]] ; then
+        ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/${COMPILER_NAME}-${COMPILER_VERSION}
+    fi
+    if [[ $(which ${CXX}) = /usr/bin/${COMPILER_NAME}++-${COMPILER_VERSION} ]] ; then
+        ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/${COMPILER_NAME}++-${COMPILER_VERSION}
+    fi
+}
+
 # Function to switch gcc/clang compiler
 function compiler.set() {
 		case $1 in
 			gcc|1)
 				msg "Setting gcc"
-				export CC="gcc"   && export CXX="g++"
+				export CC="gcc" && export CXX="g++"
 			;;
 			clang${CLANG_VER%.*}|2)
 				msg "Setting clang${CLANG_VER%.*}"
 				export CC="clang-${CLANG_VER}" && export CXX="clang++-${CLANG_VER}"
-				if [[ $(which ${CC}) = /usr/bin/clang-${CLANG_VER} ]] ; then
-					ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/clang-${CLANG_VER}
-				fi
-				if [[ $(which ${CXX}) = /usr/bin/clang++-${CLANG_VER} ]] ; then
-					ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/clang++-${CLANG_VER}
-				fi
+				setupCCacheForNonSupportedCompiler "clang" "${CLANG_VER}"
 			;;
+			gcc8|3)
+				msg "Setting gcc8"
+				export CC="gcc-8"  && export CXX="g++-8"
+            ;;
 			*) err "$1: only gcc and clang${CLANG_VER%.*} are supported compilers" ; return 1
 			;;
 		esac
@@ -168,9 +178,12 @@ function compiler.get() {
 	elif [[ "$CC" = "clang-${CLANG_VER}" && "$CXX" = "clang++-${CLANG_VER}" ]] ; then
 		msg "The active compiler is: clang-${CLANG_VER}"
 		return 2
+	elif [[ "$CC" = "gcc-8" && "$CXX" = "g++-8" ]] ; then
+		msg "The active compiler is: gcc-8"
+		return 3
 	else
 		err "The compiler environment variables aren't set."
-		return 3
+		return 0
 	fi
 }
 
@@ -178,7 +191,8 @@ function compiler.switch() {
 	compiler.get
 	case $? in
 		1) compiler.set 2 ;;
-		2) compiler.set 1 ;;
+		2) compiler.set 3 ;;
+		3) compiler.set 1 ;;
 		*) compiler.set 2 ;;
 	esac
 }
