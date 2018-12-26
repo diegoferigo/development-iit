@@ -27,23 +27,6 @@ fi
 [ -d /home/${USERNAME}/.local ] && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.local
 [ -d /home/${USERNAME}/.config ] && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
-# Configure git
-if [[ ! -z ${GIT_USER_NAME:+x} && ! -z ${GIT_USER_EMAIL:+x} ]] ; then
-	echo "==> Setting up git ..."
-	su -c "git config --global user.name ${GIT_USER_NAME}" $USERNAME
-	su -c "git config --global user.email ${GIT_USER_EMAIL}" $USERNAME
-	su -c "git config --global color.pager true" $USERNAME
-	su -c "git config --global color.ui auto" $USERNAME
-	su -c "git config --global push.default upstream" $USERNAME
-	su -c "git config --global core.autocrlf input" $USERNAME
-	#if [[ "${GIT_USE_GPG}" = "1" && -n "${GIT_GPG_KEY}" ]] ; then
-    #su -c "export GPG_TTY=$(tty)" $USERNAME
-	#	su -c "git config --global commit.gpgsign true" $USERNAME
-	#	su -c "git config --global gpg.program gpg2" $USERNAME
-	#	su -c "git config --global user.signingkey ${GIT_GPG_KEY}" $USERNAME
-	#fi
-fi
-
 # Fix permissions of the IIT directory
 CHOWN_SOURCES=${CHOWN_SOURCES:-0}
 if [[ ${CHOWN_SOURCES} -eq 1 && -d ${IIT_DIR} ]] ; then
