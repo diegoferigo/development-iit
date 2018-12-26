@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eu -o pipefail
 
 if [ ! -x "$(which setup_development.sh)" ] ; then
     echo "File setup_development.sh not found."

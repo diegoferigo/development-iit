@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eu -o pipefail
 
 if [ ! -x "$(which setup_tools.sh)" ] ; then
     echo "File setup_tools.sh not found."

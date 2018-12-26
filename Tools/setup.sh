@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eu -o pipefail 
 
 # Move Atom packages to the user's home
 # This command should work even if ~/.atom is mounted as volume from the host,

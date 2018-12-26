@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eu -o pipefail
 
 # Setup the parent image
 source /usr/sbin/setup_tools.sh
