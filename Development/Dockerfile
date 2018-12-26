@@ -158,8 +158,7 @@ RUN cd ${IIT_SOURCES}/ycm &&\
 
 # RTF
 RUN cd ${IIT_SOURCES}/robot-testing &&\
-    #git checkout ${SOURCES_GIT_BRANCH} &&\# TODO
-    git checkout devel &&\
+    git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
     cmake \
           -G $CMAKE_GENERATOR \
