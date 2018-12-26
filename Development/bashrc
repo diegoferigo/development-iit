@@ -71,24 +71,24 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 export CXXFLAGS="$CXXFLAGS -fdiagnostics-color=always"
 
 # Set the default editor
-if [[ -e $(which nano) ]] ; then
+if [[ -x $(which nano) ]] ; then
 	export EDITOR="nano"
 	echo "include /usr/share/nano/*" > ~/.nanorc
 fi
 
 # Load the robotogy-superbuild environment
-if [[ -e ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh && -z $SUPERBUILD_SOURCED ]] ; then
+if [[ -f ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh && -z $SUPERBUILD_SOURCED ]] ; then
     source ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh
     export SUPERBUILD_SOURCED=1
 fi
 
 # Load the ROS environment
-if [[ -e /opt/ros/$ROS_DISTRO/setup.bash ]] ; then
+if [[ -f /opt/ros/$ROS_DISTRO/setup.bash ]] ; then
     source /opt/ros/$ROS_DISTRO/setup.bash
 fi
 
 # Load the gazebo environment
-if [[ -e /usr/share/gazebo/setup.sh ]] ; then
+if [[ -f /usr/share/gazebo/setup.sh ]] ; then
     source /usr/share/gazebo/setup.sh
 fi
 
