@@ -104,7 +104,7 @@ RUN apm install --packages-file /usr/local/etc/atom_packages.txt
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.7.2
+ARG QTCREATOR_VERSION=4.8.0
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 RUN cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
@@ -120,7 +120,7 @@ RUN cd /tmp &&\
     rm /tmp/gitkraken-amd64.deb
 
 # Updated CMake for QtCreator
-ARG CMAKE_VER=3.12.0
+ARG CMAKE_VER=3.13.1
 RUN cd /tmp &&\
     wget https://cmake.org/files/v${CMAKE_VER%.*}/cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
     chmod +x cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
