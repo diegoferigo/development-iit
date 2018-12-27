@@ -380,17 +380,6 @@ RUN cd ${IIT_SOURCES}/human-dynamics-estimation &&\
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
 
-# Bullet
-RUN cd ${IIT_SOURCES}/bullet3 &&\
-    mkdir -p build && cd build &&\
-    cmake \
-    -G $CMAKE_GENERATOR \
-    -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-    -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-    -DBUILD_SHARED_LIBS=ON \
-    .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
-
 # Misc setup of the image
 # =======================
 
