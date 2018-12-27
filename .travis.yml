@@ -1,113 +1,106 @@
 language: generic
-
-services:
-  - docker
-
-os:
-  - linux
+services: docker
+os: linux
 
 stages:
   - tools
   - development
+  - rl
+  # Disable test
+  - name: test
+    if: env(DUMMYVAR) is present
 
 script:
-  - cd $TRAVIS_BUILD_DIR/$IMAGE_FOLDER
-  - >-
-    docker build --rm \
-      --build-arg BASE_IMAGE=$DOCKER_BASE_IMAGE \
-      $EXTRA_BUILD_ARGS \
-      -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG \
-      .
+  - cd $TRAVIS_BUILD_DIR
+  - make ${DOCKER_IMAGE_NAME}-${DOCKER_IMAGE_TAG}
 
 after_success:
-  - if ! [[ "$TRAVIS_REPO_SLUG" = "diegoferigo/development-iit" && "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" ]] ; then travis_terminate 0 ; fi
+  - if ! [[ "$TRAVIS_REPO_SLUG" = "diegoferigo/development-iit" && "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" && "$PUSH_TO_DOCKERHUB" = "true" ]] ; then travis_terminate 0 ; fi
   - docker login --username=$DOCKERHUB_USERNAME --password=$DOCKERHUB_PASSWORD
-  - docker push $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
-  - >-
-    if [ "$IS_LATEST" = "true" ] ; then
-      docker tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG $DOCKER_IMAGE_NAME:latest
-      docker push $DOCKER_IMAGE_NAME:latest
-    fi
+  - make push-${DOCKER_IMAGE_NAME}-${DOCKER_IMAGE_TAG}
+  - if [ "$IS_LATEST" = "true" ] ; then make push-${DOCKER_IMAGE_NAME}-latest ; fi
 
 jobs:
   include:
-    # Disable test stage
-    - stage: test
-      if: env(DUMMYVAR) is present
     # =====
     # TOOLS
     # =====
     - &tools_template
       stage: tools
       env:
-        - DOCKER_BASE_IMAGE="ubuntu:xenial"
-        - DOCKER_IMAGE_NAME="diegoferigo/tools"
-        - DOCKER_IMAGE_TAG="xenial"
-        - IMAGE_FOLDER="Tools"
-        - IS_LATEST=false
-        - PUSH_TO_DOCKERHUB=false
-    - <<: *tools_template
-      env:
-        - DOCKER_BASE_IMAGE="ubuntu:bionic"
-        - DOCKER_IMAGE_NAME="diegoferigo/tools"
-        - DOCKER_IMAGE_TAG="bionic"
+        - DOCKER_BASE_IMAGE="diegoferigo/devenv:intel"
         - IMAGE_FOLDER="Tools"
         - IS_LATEST=true
         - PUSH_TO_DOCKERHUB=true
+        # diegoferigo/tools:intel
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="tools"
+        - DOCKER_IMAGE_TAG="intel"
     - <<: *tools_template
       env:
-        - DOCKER_BASE_IMAGE="nvidia/opengl:1.0-glvnd-runtime-ubuntu18.04"
-        - DOCKER_IMAGE_NAME="diegoferigo/tools"
-        - DOCKER_IMAGE_TAG="nvidia"
+        - DOCKER_BASE_IMAGE="diegoferigo/devenv:nvidia"
         - IMAGE_FOLDER="Tools"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
+        # diegoferigo/tools:nvidia
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="tools"
+        - DOCKER_IMAGE_TAG="nvidia"
     # ===========
     # DEVELOPMENT
     # ===========
     - &development_template
       stage: development
       env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:xenial"
-        - DOCKER_IMAGE_NAME="diegoferigo/development"
-        - DOCKER_IMAGE_TAG="xenial-master"
-        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=master"
-        - IMAGE_FOLDER="Development"
-        - IS_LATEST=false
-        - PUSH_TO_DOCKERHUB=false
-    - <<: *development_template
-      env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:xenial"
-        - DOCKER_IMAGE_NAME="diegoferigo/development"
-        - DOCKER_IMAGE_TAG="xenial-devel"
-        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=devel"
-        - IMAGE_FOLDER="Development"
-        - IS_LATEST=false
-        - PUSH_TO_DOCKERHUB=false
-    - <<: *development_template
-      env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:bionic"
-        - DOCKER_IMAGE_NAME="diegoferigo/development"
-        - DOCKER_IMAGE_TAG="bionic-master"
-        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=master"
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:intel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=true
-        - PUSH_TO_DOCKERHUB=false
+        - PUSH_TO_DOCKERHUB=true
+        # diegoferigo/development:intel-master
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="intel-master"
     - <<: *development_template
       env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:bionic"
-        - DOCKER_IMAGE_NAME="diegoferigo/development"
-        - DOCKER_IMAGE_TAG="bionic-devel"
-        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=devel"
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:intel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=false
+        # diegoferigo/development:intel-devel
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="intel-devel"
     - <<: *development_template
       env:
         - DOCKER_BASE_IMAGE="diegoferigo/tools:nvidia"
-        - DOCKER_IMAGE_NAME="diegoferigo/development"
-        - DOCKER_IMAGE_TAG="nvidia-devel"
-        - EXTRA_BUILD_ARGS="--build-arg SOURCES_GIT_BRANCH=devel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
+        # diegoferigo/development:nvidia-master
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="nvidia-master"
+    - <<: *development_template
+      env:
+        - DOCKER_BASE_IMAGE="diegoferigo/tools:nvidia"
+        - IMAGE_FOLDER="Development"
+        - IS_LATEST=false
+        - PUSH_TO_DOCKERHUB=false
+        # diegoferigo/development:nvidia-devel
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="development"
+        - DOCKER_IMAGE_TAG="nvidia-devel"
+    # ======================
+    # REINFORCEMENT LEARNING
+    # ======================
+    - &rl_template
+      stage: rl
+      env:
+        - DOCKER_BASE_IMAGE="diegoferigo/development:nvidia-master"
+        - IMAGE_FOLDER="RL"
+        - IS_LATEST=true
+        - PUSH_TO_DOCKERHUB=false
+        # diegoferigo/rl:nvidia-master
+        - DOCKER_IMAGE_OWNER="diegoferigo"
+        - DOCKER_IMAGE_NAME="rl"
+        - DOCKER_IMAGE_TAG="nvidia-master"
