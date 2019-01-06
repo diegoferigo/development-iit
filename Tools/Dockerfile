@@ -61,6 +61,7 @@ RUN apt-get update &&\
         lsof \
         net-tools \
         iputils-ping \
+        strace \
         &&\
     rm -rf /var/lib/apt/lists/*
 
