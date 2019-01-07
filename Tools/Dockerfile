@@ -1,6 +1,21 @@
 ARG from=diegoferigo/devenv:latest
 FROM ${from}
-MAINTAINER Diego Ferigo <dgferigo@gmail.com>
+
+# Build-time metadata as defined at http://label-schema.org
+# ARG BUILD_DATE
+# ARG VCS_REF
+# ARG VERSION=0.9
+LABEL \
+    maintainer="Diego Ferigo <dgferigo@gmail.com>" \
+    # org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name="tools-cpp" \
+    org.label-schema.description="" \
+    org.label-schema.url="https://github.com/diegoferigo/development-iit" \
+    # org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/diegoferigo/development-iit" \
+    # org.label-schema.vendor="" \
+    # org.label-schema.version=$VERSION \
+    org.label-schema.schema-version="1.0"
 
 # Utilities
 RUN apt-get update &&\
