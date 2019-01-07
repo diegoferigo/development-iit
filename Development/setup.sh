@@ -44,7 +44,7 @@ if [[ ${CHOWN_SOURCES} -eq 1 && -d ${IIT_DIR} ]] ; then
 fi
 
 # Configure YARP namespace
-if [ -n "${YARP_NAME_SPACE}" ] ; then
+if [ ! -z "${YARP_NAME_SPACE:+x}" ] ; then
     echo "==> Setting Yarp namespace"
 	su -c 'eval "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE}"' $USERNAME
 fi
