@@ -1,0 +1,51 @@
+version: '2.3'
+
+services:
+  tools:
+    image: "diegoferigo/tools:nvidia"
+    container_name: "tools"
+    command: "bash"
+    init: true
+    environment:
+      - COPY_ATOM_PACKAGES=0
+      - CHOWN_SOURCES=0
+    #  - YARP_NAME_SPACE=dferigo
+    #ports:
+    #  - 8000:8000
+    #  - 8888:8888
+    stdin_open: true
+    tty: true
+    #network_mode: "host"
+    # Temporary fix for using host network_mode and QT:
+    #privileged: true
+    security_opt:
+      - apparmor:unconfined
+  #other:
+
+devenv:
+  version: '1.0'
+  tools:
+    user: "dferigo"
+    # project_dir: "/home/dferigo/git"
+    #resources:
+    #  directories:
+    #    - "$HOME/.dockerdot/atom:$HOME/.atom"
+    #    - "$HOME/.dockerdot/config/atom:$HOME/.config/Atom"
+    #    - "$HOME/.dockerdot/ccache:$HOME/.ccache"
+    #    - "$HOME/.dockerdot/gitkraken:$HOME/.gitkraken"
+    #    - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
+    #  files:
+    #    - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
+    gpu: "intel"
+    x11: "xauth"
+    matlab:
+      folder: "/usr/local/MATLAB/R2018a"
+      mac: "wlp2s0"
+      dotdir: "$HOME/.dockerdot/matlab:$HOME/.matlab"
+    #init: "systemd"
+    #gdb: true
+    git:
+      username: "Diego Ferigo"
+      email: "diego.ferigo@iit.it"
+      ##gpg:
+      ##  - key: XXXX
