@@ -103,7 +103,7 @@ fi
 compiler.set clang${CLANG_VER%.*} >/dev/null
 
 # Enable matlab
-if [[ -x /usr/local/MATLAB/bin/matlab ]] ; then
+if [[ -x $(which matlab) ]] ; then
 	# Setup the bindings
 	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab
 fi
