@@ -122,7 +122,7 @@ RUN cd /tmp &&\
     rm /tmp/gitkraken-amd64.deb
 
 # Updated CMake for QtCreator
-ARG CMAKE_VER=3.13.1
+ARG CMAKE_VER=3.13.2
 RUN cd /tmp &&\
     wget https://cmake.org/files/v${CMAKE_VER%.*}/cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
     chmod +x cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
