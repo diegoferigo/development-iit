@@ -49,6 +49,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         lldb-${CLANG_VER} \
         libclang-${CLANG_VER}-dev \
         clang-format-${CLANG_VER} \
+        clang-tidy-${CLANG_VER} \
         libclang-common-${CLANG_VER}-dev \
         llvm-${CLANG_VER}-dev \
         libllvm${CLANG_VER} \
