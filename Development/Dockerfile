@@ -103,9 +103,8 @@ ENV IIT_DIR=/iit
 ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
-ENV IIT_PATH=${IIT_PATH:+${IIT_PATH}:}${IIT_BIN}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}${IIT_INSTALL}/lib/
-ENV PATH=${IIT_PATH}:${PATH}
+ENV PATH=${IIT_BIN}:${PATH}
 
 # Download all sources with git
 # -----------------------------
