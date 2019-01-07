@@ -112,7 +112,7 @@ ENV PATH=${IIT_BIN}:${PATH}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20180802"
+ARG IIT_DOCKER_SOURCES="20190107"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
