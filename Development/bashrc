@@ -112,7 +112,7 @@ fi
 # =======
 
 NANO_DEFAULT_FLAGS="-w -S -i -m -$"
-CMAKE_DEFAULT_FLAGS="--warn-uninitialized -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+CMAKE_DEFAULT_FLAGS="--warn-uninitialized"
 alias nano='nano $NANO_DEFAULT_FLAGS'
 alias nanos='nano $NANO_DEFAULT_FLAGS -Y sh'
 alias cmake='cmake $CMAKE_DEFAULT_FLAGS'
