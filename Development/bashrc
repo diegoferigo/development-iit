@@ -92,9 +92,6 @@ if [[ -f /usr/share/gazebo/setup.sh ]] ; then
     source /usr/share/gazebo/setup.sh
 fi
 
-# Docker configures the path of the root user. Set here the PATH also for the runtime user
-export PATH=${IIT_PATH:+${IIT_PATH}:}${PATH}:/opt/qtcreator/bin
-
 # Enable ccache for the user created during runtime
 if [[ -x $(which ccache) ]] ; then
 	mkdir -p /home/${USERNAME}/.ccachebin
@@ -107,11 +104,7 @@ compiler.set clang${CLANG_VER%.*} >/dev/null
 
 # Enable matlab
 if [[ -x /usr/local/MATLAB/bin/matlab ]] ; then
-	export PATH=${PATH}:/usr/local/MATLAB/bin
-	export MATLABPATH=${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/mex:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WBToolbox:${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/share/WBToolbox/images
-	# https://github.com/robotology/wb-toolbox#problems-finding-libraries-and-libstdc
-	alias matlab="LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab"
-	# Set the bindings up
+	# Setup the bindings
 	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab
 fi
 
