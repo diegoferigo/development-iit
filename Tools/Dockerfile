@@ -80,7 +80,10 @@ RUN apt-get update &&\
         colour-valgrind \
         Pygments \
         mkdocs \
-        mkdocs-material
+        mkdocs-material \
+        &&\
+    # https://github.com/spyder-ide/spyder/issues/6627
+    pip3 uninstall -y tornado
 
 # Setup HW Acceleration for Intel graphic cards
 RUN apt-get update &&\
