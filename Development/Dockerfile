@@ -112,7 +112,7 @@ ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${IIT_INSTALL}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20190107"
+ARG IIT_DOCKER_SOURCES="20190131"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
@@ -128,8 +128,7 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
     git clone https://github.com/robotology/robotology-superbuild.git &&\
     git clone https://github.com/robotology-playground/xsens-mvn.git &&\
-    git clone https://github.com/robotology/human-dynamics-estimation.git &&\
-    git clone https://github.com/bulletphysics/bullet3.git
+    git clone https://github.com/robotology/human-dynamics-estimation.git
 
 # Env variables for configuring the sources
 # -----------------------------------------
