@@ -352,6 +352,7 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
 # ROBOTOLOGY-SUPERBUILD
 # The bashrc-dev will source the variables exported by this repo
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
+    sed -i "s/ProjectsTagsMaster/ProjectsTags$(python -c "print '$SOURCES_GIT_BRANCH'.capitalize()")/g" CMakeLists.txt &&\
     mkdir -p build && cd build &&\
     cmake \
           -G $CMAKE_GENERATOR \
@@ -362,11 +363,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
           -DYCM_USE_DEPRECATED:BOOL=OFF \
-          -DYCM_EP_EXPERT_MODE:BOOL=OFF \
           -DYCM_EP_MAINTAINER_MODE:BOOL=OFF \
-          # Tags for handled repositories
-          -Dcodyco-modules_TAG=${SOURCES_GIT_BRANCH} \
-          -Dicub-tests_TAG=${SOURCES_GIT_BRANCH} \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS
     
