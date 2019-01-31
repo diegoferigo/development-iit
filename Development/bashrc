@@ -68,18 +68,21 @@ fi
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Enable Ninja colored output
-export CXXFLAGS="$CXXFLAGS -fdiagnostics-color=always"
+export CXXFLAGS="${CXXFLAGS:+${CXXFLAGS} }-fdiagnostics-color=always"
 
 # Set the default editor
 if [[ -x $(which nano) ]] ; then
 	export EDITOR="nano"
-	echo "include /usr/share/nano/*" > ~/.nanorc
+	echo "include /usr/share/nano/*" > ${HOME}/.nanorc
 fi
 
 # Load the robotogy-superbuild environment
-if [[ -f ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh && -z $SUPERBUILD_SOURCED ]] ; then
+if [[ -f ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh ]] ; then
     source ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh
-    export SUPERBUILD_SOURCED=1
+    # Remove the lib path from the LD_LIBRARY_PATH. This breaks python bindings but I do not currently need them.
+    # Refer to https://github.com/robotology/robotology-superbuild/issues/97.
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/":${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib"/}
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/"${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib:"/}
 fi
 
 # Load the ROS environment
@@ -93,10 +96,9 @@ if [[ -f /usr/share/gazebo/setup.sh ]] ; then
 fi
 
 # Enable ccache for the user created during runtime
-if [[ -x $(which ccache) ]] ; then
-	mkdir -p /home/${USERNAME}/.ccachebin
-	chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.ccachebin
-	export PATH=/home/${USERNAME}/.ccachebin:/usr/lib/ccache:${PATH}
+if [[ $(id -u) -ne 0 && -x $(which ccache) ]] ; then
+	mkdir -p ${HOME}/.ccachebin
+	export PATH=${HOME}/.ccachebin:/usr/lib/ccache:${PATH}
 fi
 
 # Set clang as default compiler
