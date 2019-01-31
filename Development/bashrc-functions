@@ -95,7 +95,7 @@ function cmm_template() {
 	cm_template "$@"
 	cd build || return 1
 	# Build the sources
-	cmake --build . -- -j $(grep -c ^processor /proc/cpuinfo)
+	cmake --build . -- -j$(grep -c ^processor /proc/cpuinfo)
 	cd ..
 }
 
@@ -141,11 +141,11 @@ function ccmiit() {
 function setupCCacheForNonSupportedCompiler() {
     COMPILER_NAME="$1"
     COMPILER_VERSION="$2"
-    if [[ $(which ${CC}) = /usr/bin/${COMPILER_NAME}-${COMPILER_VERSION} ]] ; then
-        ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/${COMPILER_NAME}-${COMPILER_VERSION}
+    if [[ $(id -u) -ne 0 && $(which ${CC}) = /usr/bin/${COMPILER_NAME}-${COMPILER_VERSION} ]] ; then
+        ln -s /usr/bin/ccache ${HOME}/.ccachebin/${COMPILER_NAME}-${COMPILER_VERSION}
     fi
-    if [[ $(which ${CXX}) = /usr/bin/${COMPILER_NAME}++-${COMPILER_VERSION} ]] ; then
-        ln -s /usr/bin/ccache /home/${USERNAME}/.ccachebin/${COMPILER_NAME}++-${COMPILER_VERSION}
+    if [[ $(id -u) -ne 0 && $(which ${CXX}) = /usr/bin/${COMPILER_NAME}++-${COMPILER_VERSION} ]] ; then
+        ln -s /usr/bin/ccache ${HOME}/.ccachebin/${COMPILER_NAME}++-${COMPILER_VERSION}
     fi
 }
 
