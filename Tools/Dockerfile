@@ -228,7 +228,7 @@ RUN \
     cd /tmp &&\
     REL=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') &&\
     bash -c "wget https://github.com/sharkdp/bat/releases/download/$REL/bat_${REL#v}_amd64.deb" &&\
-    dpkg -i bat_${REL#v}_amd64.deb && rm bat_${REL#v}_amd64.deb &&\
+    dpkg -i bat_*_amd64.deb && rm bat_*_amd64.deb &&\
     # https://github.com/jonas/tig
     git clone --depth 1 https://github.com/jonas/tig &&\
     cd tig && make install prefix=/usr/local && cd .. && rm -r tig &&\
