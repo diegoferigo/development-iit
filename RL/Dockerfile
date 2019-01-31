@@ -102,6 +102,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     hg clone https://bitbucket.org/ignitionrobotics/ign-rendering -b gz11 &&\
     hg clone https://bitbucket.org/ignitionrobotics/ign-gui -b gz11 &&\
     hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo &&\
+    hg clone https://bitbucket.org/ignitionrobotics/ign-sensors &&\
     git clone https://github.com/bulletphysics/bullet3.git &&\
     git clone git://github.com/dartsim/dart.git
 
@@ -252,6 +253,17 @@ RUN cd ${RL_SOURCES}/ign-rendering &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
+        .. &&\
+    make ${CMAKE_EXTRA_OPTIONS} install
+
+# ign-sensors
+RUN cd ${RL_SOURCES}/ign-sensors &&\
+    mkdir -p build && cd build &&\
+    cmake \
+        -G "$CMAKE_GENERATOR" \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DDRI_TESTS:BOOL=FALSE \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install
 
