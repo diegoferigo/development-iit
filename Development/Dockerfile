@@ -366,7 +366,8 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DYCM_EP_MAINTAINER_MODE:BOOL=OFF \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS
-    
+ENV BLOCKFACTORY_PLUGIN_PATH=${IIT_SOURCES}/robotology-superbuild/build/install/lib/blockfactory
+
 # xsens-mvn
 RUN cd ${IIT_SOURCES}/xsens-mvn &&\
     mkdir -p build && cd build &&\
