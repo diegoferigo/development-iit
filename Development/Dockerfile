@@ -201,11 +201,10 @@ RUN \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
     ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
-          /etc/bash_completion.d/yarp_completion
-ENV YARP_DIR=${IIT_INSTALL}
+          /etc/bash_completion.d/yarp_completion &&\
+    ${IIT_BIN}/yarp check
 ENV YARP_DATA_DIRS=${IIT_INSTALL}/share/yarp
 ENV YARP_COLORED_OUTPUT=1
-RUN yarp check
 EXPOSE 10000/tcp
 
 # ICUB-MAIN
