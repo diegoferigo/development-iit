@@ -104,6 +104,7 @@ ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
 ENV DEVENV_PATH=${IIT_BIN}:${DEVENV_PATH}
+ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${IIT_INSTALL}
 
 # Download all sources with git
 # -----------------------------
