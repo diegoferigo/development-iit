@@ -81,13 +81,13 @@ push-development-latest: development-latest
 	docker push diegoferigo/development:latest
 
 push-development-intel-master: development-intel-master
-	docker push diegoferigo/development/intel-master
+	docker push diegoferigo/development:intel-master
 
 push-development-intel-devel: development-intel-devel
 	docker push diegoferigo/development:intel-devel
 
 push-development-nvidia-master: development-nvidia-master
-	docker push diegoferigo/development/nvidia-master
+	docker push diegoferigo/development:nvidia-master
 
 push-development-nvidia-devel: development-nvidia-devel
 	docker push diegoferigo/development:nvidia-devel
