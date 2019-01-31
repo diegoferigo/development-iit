@@ -8,13 +8,13 @@ tools-latest: tools-intel
 	docker tag diegoferigo/tools:intel diegoferigo/tools:latest
 
 tools-intel:
-	docker build --rm --pull \
+	docker build --rm \
 		--build-arg from=diegoferigo/devenv:intel \
 		--tag diegoferigo/tools:intel \
 		Tools/
 
 tools-nvidia:
-	docker build --rm --pull \
+	docker build --rm \
 	--build-arg from=diegoferigo/devenv:nvidia \
 	--tag diegoferigo/tools:nvidia \
 	Tools/
