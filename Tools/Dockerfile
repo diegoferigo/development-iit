@@ -149,7 +149,7 @@ RUN cd /tmp &&\
     mkdir /opt/cmake &&\
     sh cmake-${CMAKE_VER}-Linux-x86_64.sh --prefix=/opt/cmake --skip-license &&\
     rm /tmp/cmake-${CMAKE_VER}-Linux-x86_64.sh
-ENV PATH=/opt/cmake/bin:$PATH
+ENV DEVENV_PATH=${DEVENV_PATH:+$DEVENVPATH:}/opt/cmake/bin
 
 # rr
 RUN apt-get update &&\
