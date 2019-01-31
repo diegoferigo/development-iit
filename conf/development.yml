@@ -2,14 +2,14 @@ version: '2.3'
 
 services:
   development:
-    image: "diegoferigo/development:nvidia-master"
+    image: "diegoferigo/development:master"
     container_name: "development"
     command: "bash"
     init: true
     environment:
       - COPY_ATOM_PACKAGES=1
       - CHOWN_SOURCES=1
-      - YARP_NAME_SPACE=dferigo
+      - YARP_NAME_SPACE=/dferigo
     ports:
       - 8000:8000
       - 8888:8888
