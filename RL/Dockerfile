@@ -142,7 +142,6 @@ RUN apt-get update &&\
     mkdir -p build && cd build &&\
     cmake \
         -GNinja \
-        -DBUILD_CORE_ONLY=ON \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
