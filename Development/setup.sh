@@ -35,8 +35,7 @@ fi
 [ -d /home/${USERNAME}/.config ] && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
 # Fix permissions of the IIT directory
-CHOWN_SOURCES=${CHOWN_SOURCES:-0}
-if [[ ${CHOWN_SOURCES} -eq 1 && -d ${IIT_DIR} ]] ; then
+if [[ ${CHOWN_SOURCES:-0} -eq 1 && -d ${IIT_DIR} ]] ; then
     # Do this in background since it might be a slow operation if the folder is big
 	chown $USERNAME:$USERNAME ${IIT_DIR}
 	chown -R $USERNAME:$USERNAME ${IIT_DIR}/sources &
@@ -44,7 +43,5 @@ if [[ ${CHOWN_SOURCES} -eq 1 && -d ${IIT_DIR} ]] ; then
 fi
 
 # Configure YARP namespace
-if [ ! -z "${YARP_NAME_SPACE:+x}" ] ; then
-    echo "==> Setting Yarp namespace"
-	su -c 'eval "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE}"' $USERNAME
-fi
+echo "==> Setting YARP namespace"
+su -c "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE:-/$USERNAME}" $USERNAME
