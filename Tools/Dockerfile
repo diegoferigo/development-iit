@@ -90,12 +90,12 @@ RUN apt-get update &&\
         spyder3 \
         python3-dev \
         python3-wheel \
+        python3-pygments \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     pip3 install \
         python-language-server[all] \
         colour-valgrind \
-        Pygments \
         mkdocs \
         mkdocs-material \
         &&\
