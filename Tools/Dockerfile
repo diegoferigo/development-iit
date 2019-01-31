@@ -35,6 +35,7 @@ RUN apt-get update &&\
         locales \
         trash-cli \
         xterm \
+        curl \
         &&\
     rm -rf /var/lib/apt/lists/*
 
