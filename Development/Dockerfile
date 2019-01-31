@@ -141,7 +141,7 @@ ENV SOURCES_BUILD_TYPE=Debug
 ENV CMAKE_GENERATOR=Ninja
 ENV CMAKE_EXTRA_OPTIONS=
 # ENV CMAKE_GENERATOR="Unix Makefiles"
-# ENV CMAKE_EXTRA_OPTIONS="-j 6"
+# ENV CMAKE_EXTRA_OPTIONS="-j6"
 
 # Select the main development robot (model loading)
 ENV ROBOT_NAME="iCubGazeboV2_5"
@@ -246,6 +246,7 @@ ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICU
 ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
 
 # YARP-MATLAB-BINDINGS
+# Check https://github.com/robotology/yarp/pull/1756
 RUN \
     # cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
     # git checkout ${SOURCES_GIT_BRANCH} &&\
@@ -350,7 +351,6 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS
 
 # ROBOTOLOGY-SUPERBUILD
-# The bashrc-dev will source the variables exported by this repo
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     sed -i "s/ProjectsTagsMaster/ProjectsTags$(python -c "print '$SOURCES_GIT_BRANCH'.capitalize()")/g" CMakeLists.txt &&\
     mkdir -p build && cd build &&\
