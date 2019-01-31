@@ -32,12 +32,6 @@ ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${RL_INSTALL}
 # Remove gazebo9 if present
 RUN apt-get remove -y '.*sdformat.*' '.*ignition-.*' || true
 
-# Ignition needs g++ 8
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        g++-8 \
-        &&\
-    rm -rf /var/lib/apt/lists/*
 ENV CC="gcc-8"
 ENV CXX="g++-8"
 

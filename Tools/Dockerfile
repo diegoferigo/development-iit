@@ -60,6 +60,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         cmake \
         cmake-curses-gui \
         ninja-build \
+        g++-8 \
         llvm-${CLANG_VER} \
         clang-${CLANG_VER} \
         lldb-${CLANG_VER} \
