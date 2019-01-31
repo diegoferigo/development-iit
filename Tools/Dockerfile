@@ -212,6 +212,29 @@ RUN apt-get update &&\
     /opt/cmake/bin/cmake --build . --target install &&\
     rm -r /tmp/include-what-you-use
 
+# Extra tools
+RUN \
+    # https://github.com/rupa/z
+    mkdir /opt/extra && cd /opt/extra &&\
+    wget https://raw.githubusercontent.com/rupa/z/master/z.sh &&\
+    echo ". /opt/extra/z.sh" >> /etc/bash.bashrc &&\
+    # https://github.com/junegunn/fzf
+    git clone --depth 1 https://github.com/junegunn/fzf &&\
+    yes | ./fzf/install --no-update-rc &&\
+    mv ~/.fzf.bash /opt/extra/fzf.bash &&\
+    echo "[ -f /opt/extra/fzf.bash ] && source /opt/extra/fzf.bash" >> /etc/bash.bashrc &&\
+    # https://github.com/sharkdp/bat
+    cd /tmp &&\
+    REL=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') &&\
+    bash -c "wget https://github.com/sharkdp/bat/releases/download/$REL/bat_${REL#v}_amd64.deb" &&\
+    dpkg -i bat_${REL#v}_amd64.deb && rm bat_${REL#v}_amd64.deb &&\
+    # https://github.com/jonas/tig
+    git clone --depth 1 https://github.com/jonas/tig &&\
+    cd tig && make install prefix=/usr/local && cd .. && rm -r tig &&\
+    # https://github.com/nvbn/thefuck
+    pip3 install thefuck &&\
+    echo '[ -x /usr/local/bin/thefuck ] && eval $(thefuck --alias)' >> /etc/bash.bashrc
+
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1
 
