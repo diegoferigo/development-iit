@@ -12,13 +12,13 @@ stages:
 
 script:
   - cd $TRAVIS_BUILD_DIR
-  - make ${DOCKER_IMAGE_NAME}-${DOCKER_IMAGE_TAG}
+  - make $TARGET
 
 after_success:
   - if ! [[ "$TRAVIS_REPO_SLUG" = "diegoferigo/development-iit" && "$TRAVIS_BRANCH" = "master" && "$TRAVIS_PULL_REQUEST" = "false" && "$PUSH_TO_DOCKERHUB" = "true" ]] ; then travis_terminate 0 ; fi
   - docker login --username=$DOCKERHUB_USERNAME --password=$DOCKERHUB_PASSWORD
-  - make push-${DOCKER_IMAGE_NAME}-${DOCKER_IMAGE_TAG}
-  - if [ "$IS_LATEST" = "true" ] ; then make push-${DOCKER_IMAGE_NAME}-latest ; fi
+  - make push-$TARGET
+  - if [ "$IS_LATEST" = "true" ] ; then make push-${IMAGE_FOLDER,,}-latest ; fi
 
 jobs:
   include:
@@ -28,79 +28,34 @@ jobs:
     - &tools_template
       stage: tools
       env:
-        - DOCKER_BASE_IMAGE="diegoferigo/devenv:intel"
-        - IMAGE_FOLDER="Tools"
-        - IS_LATEST=true
-        - PUSH_TO_DOCKERHUB=true
-        # diegoferigo/tools:intel
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="tools"
-        - DOCKER_IMAGE_TAG="intel"
-    - <<: *tools_template
-      env:
-        - DOCKER_BASE_IMAGE="diegoferigo/devenv:nvidia"
         - IMAGE_FOLDER="Tools"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
-        # diegoferigo/tools:nvidia
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="tools"
-        - DOCKER_IMAGE_TAG="nvidia"
+        - TARGET="tools"
     # ===========
     # DEVELOPMENT
     # ===========
     - &development_template
       stage: development
       env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:intel"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=true
         - PUSH_TO_DOCKERHUB=true
-        # diegoferigo/development:intel-master
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="development"
-        - DOCKER_IMAGE_TAG="intel-master"
+        - TARGET="development-master"
     - <<: *development_template
       env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:intel"
-        - IMAGE_FOLDER="Development"
-        - IS_LATEST=false
-        - PUSH_TO_DOCKERHUB=false
-        # diegoferigo/development:intel-devel
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="development"
-        - DOCKER_IMAGE_TAG="intel-devel"
-    - <<: *development_template
-      env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:nvidia"
         - IMAGE_FOLDER="Development"
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
-        # diegoferigo/development:nvidia-master
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="development"
-        - DOCKER_IMAGE_TAG="nvidia-master"
+        - TARGET="development-devel"
     - <<: *development_template
-      env:
-        - DOCKER_BASE_IMAGE="diegoferigo/tools:nvidia"
-        - IMAGE_FOLDER="Development"
-        - IS_LATEST=false
-        - PUSH_TO_DOCKERHUB=false
-        # diegoferigo/development:nvidia-devel
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="development"
-        - DOCKER_IMAGE_TAG="nvidia-devel"
     # ======================
     # REINFORCEMENT LEARNING
     # ======================
     - &rl_template
       stage: rl
       env:
-        - DOCKER_BASE_IMAGE="diegoferigo/development:nvidia-master"
         - IMAGE_FOLDER="RL"
         - IS_LATEST=true
-        - PUSH_TO_DOCKERHUB=false
-        # diegoferigo/rl:nvidia-master
-        - DOCKER_IMAGE_OWNER="diegoferigo"
-        - DOCKER_IMAGE_NAME="rl"
-        - DOCKER_IMAGE_TAG="nvidia-master"
+        - PUSH_TO_DOCKERHUB=true
+        - TARGET="rl-master"

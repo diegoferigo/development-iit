@@ -4,53 +4,30 @@ default: latest intel nvidia
 # TOOLS
 # =====
 
-tools-latest: tools-intel
-	docker tag diegoferigo/tools:intel diegoferigo/tools:latest
-
-tools-intel:
-	docker build --rm \
-		--build-arg from=diegoferigo/devenv:intel \
-		--tag diegoferigo/tools:intel \
-		Tools/
-
-tools-nvidia:
+tools:
 	docker build --rm \
 	--build-arg from=diegoferigo/devenv:nvidia \
-	--tag diegoferigo/tools:nvidia \
+	--tag diegoferigo/tools \
 	Tools/
 
 # ===========
 # DEVELOPMENT
 # ===========
 
-development-latest: development-intel-master
-	docker tag diegoferigo/development:intel-master diegoferigo/development:latest
+development-latest: development-master
+	docker tag diegoferigo/development:master diegoferigo/development:latest
 
-development-intel-master:
+development-master:
 	docker build --rm \
-		--build-arg from=diegoferigo/tools:intel \
-		--tag diegoferigo/development:intel-master \
+		--build-arg from=diegoferigo/tools \
+		--tag diegoferigo/development:master \
 		--build-arg SOURCES_GIT_BRANCH=master \
 		Development/
 
-development-nvidia-master:
+development-devel:
 	docker build --rm \
-		--build-arg from=diegoferigo/tools:nvidia \
-		--tag diegoferigo/development:nvidia-master \
-		--build-arg SOURCES_GIT_BRANCH=master \
-		Development/
-
-development-intel-devel:
-	docker build --rm \
-		--build-arg from=diegoferigo/tools:intel \
-		--tag diegoferigo/development:intel-devel \
-		--build-arg SOURCES_GIT_BRANCH=devel \
-		Development/
-
-development-nvidia-devel:
-	docker build --rm \
-		--build-arg from=diegoferigo/tools:nvidia \
-		--tag diegoferigo/development:nvidia-devel \
+		--build-arg from=diegoferigo/tools \
+		--tag diegoferigo/development:devel \
 		--build-arg SOURCES_GIT_BRANCH=devel \
 		Development/
 
@@ -58,36 +35,33 @@ development-nvidia-devel:
 # REINFORCEMENT LEARNING
 # ======================
 
-rl-nvidia-master:
+rl-latest: rl-master
+	docker tag diegoferigo/rl:master diegoferigo/rl:latest
+
+rl-master:
 	docker build --rm \
-		--build-arg from=diegoferigo/development:nvidia-master \
-		--tag diegoferigo/rl:nvidia-master \
+		--build-arg from=diegoferigo/development:master \
+		--tag diegoferigo/rl:master \
 		RL/
 
 # ======
 # DEPLOY
 # ======
 
-push-tools-latest: tools-latest
-	docker push diegoferigo/tools:latest
-
-push-tools-intel: tools-intel
-	docker push diegoferigo/tools:intel
-
-push-tools-nvidia: tools-nvidia
-	docker push diegoferigo/tools:nvidia
+push-tools: tools
+	docker push diegoferigo/tools
 
 push-development-latest: development-latest
 	docker push diegoferigo/development:latest
 
-push-development-intel-master: development-intel-master
-	docker push diegoferigo/development:intel-master
+push-development-master: development-master
+	docker push diegoferigo/development:master
 
-push-development-intel-devel: development-intel-devel
-	docker push diegoferigo/development:intel-devel
+push-development-devel: development-devel
+	docker push diegoferigo/development:devel
 
-push-development-nvidia-master: development-nvidia-master
-	docker push diegoferigo/development:nvidia-master
+push-rl-latest: rl-latest
+	docker push diegoferigo/rl:latest
 
-push-development-nvidia-devel: development-nvidia-devel
-	docker push diegoferigo/development:nvidia-devel
+push-rl-master: rl-master
+	docker push diegoferigo/rl:master
