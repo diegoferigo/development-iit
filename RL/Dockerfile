@@ -300,10 +300,12 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         ipython3 \
         jupyter \
+        jupyter-notebook \
+        jupyter-nbconvert \
         python3-docker \
         python3-yaml \
-        python3-spyder \
         python3-matplotlib \
+        python3-tk \
         &&\
     rm -rf /var/lib/apt/lists/*
 
