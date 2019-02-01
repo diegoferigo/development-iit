@@ -364,6 +364,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
           -DYCM_USE_DEPRECATED:BOOL=OFF \
           -DYCM_EP_MAINTAINER_MODE:BOOL=OFF \
+          -DWBToolbox_TAG=devel \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS
 ENV BLOCKFACTORY_PLUGIN_PATH=${IIT_SOURCES}/robotology-superbuild/build/install/lib/blockfactory
