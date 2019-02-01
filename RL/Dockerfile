@@ -8,7 +8,7 @@ FROM ${from}
 LABEL \
     maintainer="Diego Ferigo <dgferigo@gmail.com>" \
     # org.label-schema.build-date=$BUILD_DATE \
-    org.label-schema.name="development-cpp" \
+    org.label-schema.name="rl" \
     org.label-schema.description="" \
     org.label-schema.url="https://github.com/diegoferigo/development-iit" \
     # org.label-schema.vcs-ref=$VCS_REF \
