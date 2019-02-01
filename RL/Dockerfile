@@ -95,7 +95,7 @@ RUN apt-get update &&\
     rm -rf /var/lib/apt/lists/*
 
 # Download all the sources
-ARG RL_SOURCES="20190107"
+ARG RL_SOURCES="20190201"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
