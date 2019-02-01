@@ -44,7 +44,10 @@ RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && \
     locale-gen &&\
     update-locale LANG="en_US.UTF-8" &&\
     rm -rf /etc/localtime &&\
-    ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime
+    ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime &&\
+    apt-get update &&\
+    apt-get install -y --no-install-recommends tzdata &&\
+    rm -rf /var/lib/apt/lists/*
 
 # Updated clang ppa
 ARG clang_version=7
