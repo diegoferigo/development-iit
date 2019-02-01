@@ -331,12 +331,12 @@ RUN cd /tmp &&\
     tar xvf /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
     rm /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
     mv julia-${JULIA_VER} julia &&\
-    julia --version
+    /opt/julia/bin/julia --version
 
 # TODO: these packages are not available to the user.
 # Follow: https://discourse.julialang.org/t/how-does-one-set-up-a-centralized-julia-installation/13922/21
 RUN \
-    julia -e 'import Pkg; Pkg.add([\
+    /opt/julia/bin/julia -e 'import Pkg; Pkg.add([\
         "IJulia",\
         "Plots",\
         "PyPlot",\
