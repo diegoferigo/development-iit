@@ -229,8 +229,7 @@ RUN \
     echo "[ -f /opt/extra/fzf.bash ] && source /opt/extra/fzf.bash" >> /etc/bash.bashrc &&\
     # https://github.com/sharkdp/bat
     cd /tmp &&\
-    REL=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') &&\
-    bash -c "wget https://github.com/sharkdp/bat/releases/download/$REL/bat_${REL#v}_amd64.deb" &&\
+    wget https://github.com/sharkdp/bat/releases/download/v0.9.0/bat_0.9.0_amd64.deb &&\
     dpkg -i bat_*_amd64.deb && rm bat_*_amd64.deb &&\
     # https://github.com/jonas/tig
     git clone --depth 1 https://github.com/jonas/tig &&\
