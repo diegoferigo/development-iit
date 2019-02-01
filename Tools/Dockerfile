@@ -40,11 +40,15 @@ RUN apt-get update &&\
     rm -rf /var/lib/apt/lists/*
 
 # Setup locales and tzdata
-RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && \
+RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen &&\
     locale-gen &&\
     update-locale LANG="en_US.UTF-8" &&\
+    export DEBIAN_FRONTEND=noninteractive &&\
+    export DEBCONF_NONINTERACTIVE_SEEN=true &&\
     rm -rf /etc/localtime &&\
-    ln -s /usr/share/zoneinfo/Europe/Rome /etc/localtime &&\
+    rm -rf /etc/timezone &&\
+    echo 'tzdata tzdata/Areas select Europe' | debconf-set-selections &&\
+    echo 'tzdata tzdata/Zones/Europe select Rome' | debconf-set-selections &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends tzdata &&\
     rm -rf /var/lib/apt/lists/*
