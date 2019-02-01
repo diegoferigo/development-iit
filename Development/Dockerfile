@@ -73,6 +73,7 @@ RUN apt-get update &&\
         qtdeclarative5-dev \
         libqt5opengl5-dev \
         qttools5-dev \
+        libace-dev \
         # GAZEBO-YARP-PLUGINS
         libatlas-base-dev \
         # IDYNTREE
@@ -112,7 +113,7 @@ ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${IIT_INSTALL}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20190131"
+ARG IIT_DOCKER_SOURCES="20190201"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
@@ -192,7 +193,7 @@ RUN \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DCREATE_GUIS=ON \
           -DCREATE_LIB_MATH=ON \
-          -DSKIP_ACE=ON \
+          # -DSKIP_ACE=ON \
           -DYARP_COMPILE_RTF_ADDONS=ON \
           -DCREATE_OPTIONAL_CARRIERS:BOOL=ON \
           -DENABLE_yarpcar_rossrv:BOOL=ON \
