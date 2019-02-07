@@ -110,6 +110,11 @@ if [[ -x $(which matlab) ]] ; then
 	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab
 fi
 
+# Load z
+if [ -f /opt/extra/z.sh ] ; then
+	. /opt/extra/z.sh
+fi
+
 # Aliases
 # =======
 
