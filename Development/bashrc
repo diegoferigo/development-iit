@@ -78,21 +78,21 @@ fi
 
 # Load the robotogy-superbuild environment
 if [[ -f ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh ]] ; then
-    source ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh
-    # Remove the lib path from the LD_LIBRARY_PATH. This breaks python bindings but I do not currently need them.
-    # Refer to https://github.com/robotology/robotology-superbuild/issues/97.
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/":${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib"/}
-    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/"${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib:"/}
+	source ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh
+	# Remove the lib path from the LD_LIBRARY_PATH. This breaks python bindings but I do not currently need them.
+	# Refer to https://github.com/robotology/robotology-superbuild/issues/97.
+	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/":${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib"/}
+	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/"${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib:"/}
 fi
 
 # Load the ROS environment
 if [[ -f /opt/ros/$ROS_DISTRO/setup.bash ]] ; then
-    source /opt/ros/$ROS_DISTRO/setup.bash
+	source /opt/ros/$ROS_DISTRO/setup.bash
 fi
 
 # Load the gazebo environment
 if [[ -f /usr/share/gazebo/setup.sh ]] ; then
-    source /usr/share/gazebo/setup.sh
+	source /usr/share/gazebo/setup.sh
 fi
 
 # Enable ccache for the user created during runtime

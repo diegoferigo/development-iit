@@ -139,14 +139,14 @@ function ccmiit() {
 }
 
 function setupCCacheForNonSupportedCompiler() {
-    COMPILER_NAME="$1"
-    COMPILER_VERSION="$2"
-    if [[ $(id -u) -ne 0 && $(which ${CC}) = /usr/bin/${COMPILER_NAME}-${COMPILER_VERSION} ]] ; then
-        ln -s /usr/bin/ccache ${HOME}/.ccachebin/${COMPILER_NAME}-${COMPILER_VERSION}
-    fi
-    if [[ $(id -u) -ne 0 && $(which ${CXX}) = /usr/bin/${COMPILER_NAME}++-${COMPILER_VERSION} ]] ; then
-        ln -s /usr/bin/ccache ${HOME}/.ccachebin/${COMPILER_NAME}++-${COMPILER_VERSION}
-    fi
+	COMPILER_NAME="$1"
+	COMPILER_VERSION="$2"
+	if [[ $(id -u) -ne 0 && $(which ${CC}) = /usr/bin/${COMPILER_NAME}-${COMPILER_VERSION} ]] ; then
+		ln -s /usr/bin/ccache ${HOME}/.ccachebin/${COMPILER_NAME}-${COMPILER_VERSION}
+	fi
+	if [[ $(id -u) -ne 0 && $(which ${CXX}) = /usr/bin/${COMPILER_NAME}++-${COMPILER_VERSION} ]] ; then
+		ln -s /usr/bin/ccache ${HOME}/.ccachebin/${COMPILER_NAME}++-${COMPILER_VERSION}
+	fi
 }
 
 # Function to switch gcc/clang compiler
@@ -164,7 +164,7 @@ function compiler.set() {
 			gcc8|3)
 				msg "Setting gcc8"
 				export CC="gcc-8"  && export CXX="g++-8"
-            ;;
+			;;
 			*) err "$1: only gcc and clang${CLANG_VER%.*} are supported compilers" ; return 1
 			;;
 		esac

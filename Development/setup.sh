@@ -37,9 +37,9 @@ fi
 # Fix permissions of the IIT directory
 if [[ ${CHOWN_SOURCES:-0} -eq 1 && -d ${IIT_DIR} ]] ; then
     # Do this in background since it might be a slow operation if the folder is big
-	chown $USERNAME:$USERNAME ${IIT_DIR}
-	chown -R $USERNAME:$USERNAME ${IIT_DIR}/sources &
-	chown -R $USERNAME:$USERNAME ${IIT_DIR}/local &
+    chown $USERNAME:$USERNAME ${IIT_DIR}
+    chown -R $USERNAME:$USERNAME ${IIT_DIR}/sources &
+    chown -R $USERNAME:$USERNAME ${IIT_DIR}/local &
 fi
 
 # Configure YARP namespace
