@@ -195,7 +195,7 @@ RUN \
           -DCREATE_LIB_MATH=ON \
           # -DSKIP_ACE=ON \
           -DYARP_COMPILE_RTF_ADDONS=ON \
-          -DCREATE_OPTIONAL_CARRIERS:BOOL=ON \
+          -DYARP_COMPILE_CARRIER_PLUGINS:BOOL=ON \
           -DENABLE_yarpcar_rossrv:BOOL=ON \
           -DENABLE_yarpcar_tcpros:BOOL=ON \
           -DENABLE_yarpcar_xmlrpc:BOOL=ON \
