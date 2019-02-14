@@ -95,24 +95,28 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/*
 
+RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr/local/bin/git-remote-hg &&\
+    chmod +x /usr/local/bin/git-remote-hg
+
 # Download all the sources
-ARG RL_SOURCES="20190201"
+ARG RL_SOURCES="20190214"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-cmake -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-math -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-common -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-tools &&\
-    hg clone https://bitbucket.org/osrf/sdformat -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-msgs -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-transport -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-plugin &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-physics &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-rendering -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-gui -b gz11 &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-gazebo &&\
-    hg clone https://bitbucket.org/ignitionrobotics/ign-sensors &&\
+    git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-cmake -b branches/gz11 && cd ign-cmake && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/gz11 && cd ign-math && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/gz11 && cd ign-common && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools && cd ign-tools && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/gz11 && cd sdformat && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/gz11 && cd ign-msgs && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/gz11 && cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin && cd ign-plugin && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics && cd ign-physics && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/gz11 && cd ign-rendering && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/gz11 && cd ign-gui && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo && cd ign-gazebo && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors && cd ign-sensors && git gc --aggressive && cd - &&\
     git clone https://github.com/bulletphysics/bullet3.git &&\
     git clone git://github.com/dartsim/dart.git
 
