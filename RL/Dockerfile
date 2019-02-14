@@ -170,12 +170,13 @@ RUN apt-get update &&\
         libxmu-dev \
         freeglut3-dev \
         libode-dev \
+        liburdfdom-dev \
         # Boost
         libboost-regex-dev \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd ${RL_SOURCES}/dart &&\
-    git checkout release-6.7 &&\
+    git checkout v6.7.2 &&\
     mkdir -p build && cd build &&\
     cmake \
         -GNinja \
