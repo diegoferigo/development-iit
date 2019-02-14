@@ -323,7 +323,7 @@ RUN apt-get update &&\
 # Install Julia
 # =============
 
-ARG JULIA_VER=1.0.3
+ARG JULIA_VER=1.1.0
 ENV DEVENV_PATH=$DEVENV_PATH:/opt/julia/bin
 
 RUN cd /tmp &&\
