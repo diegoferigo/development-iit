@@ -44,6 +44,12 @@ rl-master:
 		--tag diegoferigo/rl:master \
 		RL/
 
+rl-ubuntu:
+	docker build --rm \
+		--build-arg from=ubuntu:bionic \
+		--tag diegoferigo/rl:ubuntu \
+		RL/
+
 # ======
 # DEPLOY
 # ======
@@ -65,3 +71,6 @@ push-rl-latest: rl-latest
 
 push-rl-master: rl-master
 	docker push diegoferigo/rl:master
+
+push-rl-ubuntu: rl-ubuntu
+	docker push diegoferigo/rl:ubuntu

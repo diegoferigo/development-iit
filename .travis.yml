@@ -59,3 +59,9 @@ jobs:
         - IS_LATEST=true
         - PUSH_TO_DOCKERHUB=true
         - TARGET="rl-master"
+    - <<: *rl_template
+      env:
+        - IMAGE_FOLDER="RL"
+        - IS_LATEST=true
+        - PUSH_TO_DOCKERHUB=true
+        - TARGET="rl-ubuntu"
