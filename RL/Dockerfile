@@ -71,6 +71,11 @@ RUN apt-get update &&\
         python \
         libboost-system-dev \
         libxml2-utils \
+        # ign-fuel-tools
+        libjsoncpp-dev \
+        libzip-dev \
+        libyaml-dev \
+        libcurl4-openssl-dev \
         # ign-msgs
         libprotoc-dev \
         libprotobuf-dev \
@@ -124,6 +129,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/gz11 && cd ign-math && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/gz11 && cd ign-common && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools && cd ign-tools && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools && cd ign-fuel-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/osrf/sdformat -b branches/gz11 && cd sdformat && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/gz11 && cd ign-msgs && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/gz11 && cd ign-transport && git gc --aggressive && cd - &&\
@@ -219,6 +225,16 @@ RUN cd ${RL_SOURCES}/ign-tools &&\
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install
 
+# ign-fuel-tools
+RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
+    mkdir -p build && cd build &&\
+    cmake \
+        -G "$CMAKE_GENERATOR" \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        .. &&\
+    make ${CMAKE_EXTRA_OPTIONS} install
+
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
     mkdir -p build && cd build &&\
@@ -226,6 +242,7 @@ RUN cd ${RL_SOURCES}/sdformat &&\
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        # TODO: build tests OFF?
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install
     # TODO: with clang here it does not find "limits.h"
