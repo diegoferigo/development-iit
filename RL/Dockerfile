@@ -22,6 +22,7 @@ ENV RL_INSTALL=${RL_DIR}/local
 ENV RL_SOURCES=${RL_DIR}/sources
 ENV DEVENV_PATH=${RL_INSTALL}/bin:${DEVENV_PATH}
 ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${RL_INSTALL}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${RL_INSTALL}/lib
 
 # =======================================
 # Install ignition libraries from sources
