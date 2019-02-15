@@ -209,7 +209,7 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp &&\
-    git clone --depth 1 https://github.com/include-what-you-use/include-what-you-use.git &&\
+    git clone https://github.com/include-what-you-use/include-what-you-use.git &&\
     cd include-what-you-use &&\
     git checkout clang_${CLANG_VER} || git checkout clang_${CLANG_VER}.0 &&\
     mkdir build && cd build &&\
