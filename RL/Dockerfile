@@ -146,6 +146,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
 #       Also bullet has problems during the install.
 ENV CMAKE_GENERATOR="Unix Makefiles"
 ENV CMAKE_EXTRA_OPTIONS="-j8"
+ENV SOURCES_BUILD_TYPE="Debug"
 
 # Bullet
 RUN cd ${RL_SOURCES}/bullet3 &&\
