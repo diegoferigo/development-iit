@@ -402,3 +402,18 @@ RUN apt-get update &&\
     make -j2 &&\
     make install &&\
     rm -r /tmp/swig
+
+# ====================
+# Image initialization
+# ====================
+
+COPY setup.sh /usr/sbin/setup_rl.sh
+COPY entrypoint.sh /usr/sbin/entrypoint_rl.sh
+RUN chmod 755 /usr/sbin/setup_rl.sh
+RUN chmod 755 /usr/sbin/entrypoint_rl.sh
+ENTRYPOINT ["/usr/sbin/entrypoint_rl.sh"]
+CMD ["bash"]
+
+# TODO:
+# IGN_GAZEBO_SYSTEM_PLUGIN_PATH
+# IGN_GAZEBO_RESOURCE_PATH (?) for the worlds
