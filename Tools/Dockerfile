@@ -176,7 +176,7 @@ RUN apt-get update &&\
         libcapnp-dev &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp &&\
-    git clone https://github.com/mozilla/rr.git &&\
+    git clone --depth 1 https://github.com/mozilla/rr.git &&\
     cd rr && mkdir build && cd build &&\
     CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} cmake -G Ninja .. &&\
     cmake --build . &&\
@@ -193,7 +193,7 @@ RUN apt-get update &&\
         libpcre3-dev &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp/ &&\
-    git clone -b matlab https://github.com/robotology-dependencies/swig.git &&\
+    git clone --depth 1 -b matlab https://github.com/robotology-dependencies/swig.git &&\
     cd swig &&\
     sh autogen.sh &&\
     CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} ./configure &&\
@@ -209,7 +209,7 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp &&\
-    git clone https://github.com/include-what-you-use/include-what-you-use.git &&\
+    git clone --depth 1 https://github.com/include-what-you-use/include-what-you-use.git &&\
     cd include-what-you-use &&\
     git checkout clang_${CLANG_VER} || git checkout clang_${CLANG_VER}.0 &&\
     mkdir build && cd build &&\
