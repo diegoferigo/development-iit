@@ -381,3 +381,24 @@ RUN \
         "PyPlot",\
         "LaTeXStrings",\
         ]);'
+
+# ============
+# Install swig
+# ============
+
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        autotools-dev \
+        automake \
+        bison \
+        libpcre3-dev &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /tmp/ &&\
+    git clone --depth 1 https://github.com/swig/swig.git &&\
+    cd swig &&\
+    sh autogen.sh &&\
+    ./configure &&\
+    make uninstall &&\
+    make -j2 &&\
+    make install &&\
+    rm -r /tmp/swig
