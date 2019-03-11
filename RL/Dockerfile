@@ -363,6 +363,7 @@ RUN apt-get update &&\
         python3-yaml \
         python3-matplotlib \
         python3-tk \
+        python3-pytest \
         &&\
     rm -rf /var/lib/apt/lists/*
 
