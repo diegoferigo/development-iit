@@ -139,6 +139,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui && cd ign-gui && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo1 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors && cd ign-sensors && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugins && cd ign-plugins && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
     git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git
 
@@ -328,6 +329,17 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
 
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
+    mkdir -p build && cd build &&\
+    cmake \
+        -G "$CMAKE_GENERATOR" \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DBUILD_TESTING:BOOL=OFF \
+        .. &&\
+    make ${CMAKE_EXTRA_OPTIONS} install
+
+# ign-plugins
+RUN cd ${RL_SOURCES}/ign-plugins &&\
     mkdir -p build && cd build &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
