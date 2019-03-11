@@ -120,27 +120,27 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
     chmod +x /usr/local/bin/git-remote-hg
 
 # Download all the sources
-ARG RL_SOURCES="20190214"
+ARG RL_SOURCES="20190308"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
     git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-cmake -b branches/gz11 && cd ign-cmake && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/gz11 && cd ign-math && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-math && cd ign-math && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/gz11 && cd ign-common && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools && cd ign-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools && cd ign-fuel-tools && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/gz11 && cd sdformat && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/gz11 && cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/gz11 && cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf8 && cd sdformat && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs3 && cd ign-msgs && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport && cd ign-transport && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin && cd ign-plugin && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics && cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/gz11 && cd ign-rendering && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/gz11 && cd ign-gui && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo && cd ign-gazebo && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering && cd ign-rendering && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui && cd ign-gui && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo1 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors && cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone https://github.com/bulletphysics/bullet3.git &&\
-    git clone git://github.com/dartsim/dart.git
+    git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
+    git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git
 
 # TODO: There are problems with ignition and ninja.
 #       Also bullet has problems during the install.
@@ -177,7 +177,6 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd ${RL_SOURCES}/dart &&\
-    git checkout v6.7.2 &&\
     mkdir -p build && cd build &&\
     cmake \
         -GNinja \
@@ -318,7 +317,6 @@ RUN cd ${RL_SOURCES}/ign-sensors &&\
 
 # ign-gui
 RUN cd ${RL_SOURCES}/ign-gui &&\
-    sed -i 's/LoadLibrary/LoadLib/' src/Application.cc &&\
     mkdir -p build && cd build &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
@@ -330,8 +328,6 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
 
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
-    sed -i 's/LoadLibrary/LoadLib/' src/SystemLoader.cc &&\
-    sed -i 's/LoadLibrary/LoadLib/' src/systems/physics/Physics.cc &&\
     mkdir -p build && cd build &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
@@ -418,3 +414,5 @@ CMD ["bash"]
 # TODO:
 # IGN_GAZEBO_SYSTEM_PLUGIN_PATH
 # IGN_GAZEBO_RESOURCE_PATH (?) for the worlds
+
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH="/rl/local/lib/ign-gazebo-1/plugins"
