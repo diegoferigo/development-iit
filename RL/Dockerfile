@@ -347,8 +347,8 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+        .. #&&\
+    #make ${CMAKE_EXTRA_OPTIONS} install
 
 # ign-plugins
 RUN cd ${RL_SOURCES}/ign-plugins &&\
@@ -358,8 +358,8 @@ RUN cd ${RL_SOURCES}/ign-plugins &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+        .. #&&\
+    #make ${CMAKE_EXTRA_OPTIONS} install
 
 # =======================
 # Install Python packages
