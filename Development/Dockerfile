@@ -169,7 +169,9 @@ RUN cd ${IIT_SOURCES}/ycm &&\
           -G $CMAKE_GENERATOR \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # RTF
 RUN cd ${IIT_SOURCES}/robot-testing &&\
@@ -180,7 +182,9 @@ RUN cd ${IIT_SOURCES}/robot-testing &&\
           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${IIT_INSTALL}/lib/rtf
 
 # YARP
@@ -204,7 +208,9 @@ RUN \
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
     ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
           /etc/bash_completion.d/yarp_completion &&\
-    ${IIT_BIN}/yarp check
+    ${IIT_BIN}/yarp check &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV YARP_DATA_DIRS=${IIT_INSTALL}/share/yarp
 ENV YARP_COLORED_OUTPUT=1
 EXPOSE 10000/tcp
@@ -221,7 +227,9 @@ RUN cd ${IIT_SOURCES}/icub-main &&\
           -DENABLE_icubmod_cartesiancontrollerclient=ON \
           -DENABLE_icubmod_gazecontrollerclient=ON \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
 
 # ICUB-CONTRIB-COMMON
@@ -231,7 +239,9 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
           -G $CMAKE_GENERATOR \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
 # GAZEBO-YARP-PLUGINS
@@ -243,7 +253,9 @@ RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
 
@@ -271,7 +283,9 @@ RUN \
           -DYARP_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
           -DYCM_USE_DEPRECATED:BOOL=OFF \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # IDYNTREE
 RUN cd ${IIT_SOURCES}/idyntree &&\
@@ -289,7 +303,9 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
           -DIDYNTREE_USES_KDL:BOOL=OFF \
           -DYCM_USE_DEPRECATED=OFF \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ICUB-GAZEBO-WHOLEBODY
 RUN cd ${IIT_SOURCES} &&\
@@ -302,7 +318,9 @@ RUN cd ${IIT_SOURCES} &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DROBOT_NAME=${ROBOT_NAME} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/models/
 ENV GAZEBO_RESOURCE_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/worlds
 
@@ -315,7 +333,9 @@ RUN cd ${IIT_SOURCES} &&\
           -G $CMAKE_GENERATOR \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub/robots:${IIT_INSTALL}/share
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
@@ -337,7 +357,9 @@ RUN \
     python setup.py install &&\
     # Project
     cd ${IIT_SOURCES}/simmechanics-to-urdf &&\
-    python setup.py install
+    python setup.py install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ICUB-MODEL-GENERATOR
 RUN cd ${IIT_SOURCES}/icub-model-generator &&\
@@ -350,7 +372,9 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
           -DICUB_MODEL_GENERATE_SIMMECHANICS:BOOL=ON \
           -DICUB_MODELS_SOURCE_DIR=${IIT_SOURCES}/icub-models \
           .. &&\
-    cmake --build . -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ROBOTOLOGY-SUPERBUILD
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
@@ -368,7 +392,9 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DYCM_EP_MAINTAINER_MODE:BOOL=OFF \
           -DWBToolbox_TAG=devel \
           .. &&\
-    cmake --build . -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV BLOCKFACTORY_PLUGIN_PATH=${IIT_SOURCES}/robotology-superbuild/build/install/lib/blockfactory
 
 # xsens-mvn
@@ -381,7 +407,9 @@ RUN cd ${IIT_SOURCES}/xsens-mvn &&\
           -DENABLE_mvnx_parser:BOOL=NO \
           -DENABLE_xsens_mnv_remote:BOOL=ON \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # human-dynamics-estimation
 RUN cd ${IIT_SOURCES}/human-dynamics-estimation &&\
@@ -391,13 +419,15 @@ RUN cd ${IIT_SOURCES}/human-dynamics-estimation &&\
           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Misc setup of the image
 # =======================
 
-# Fix permissions of the IIT_DIR
-RUN chgrp -R runtimeusers ${IIT_DIR} && chmod -R g+rw ${IIT_DIR}
+# Fix permissions of the directories inside IIT_DIR
+RUN find ${IIT_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev

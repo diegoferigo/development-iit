@@ -163,7 +163,9 @@ RUN cd ${RL_SOURCES}/bullet3 &&\
     -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
     -DBUILD_SHARED_LIBS=ON \
     .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Dart core
 # Following https://github.com/dartsim/dart/wiki/DART-5.1-Installation-for-Ubuntu#install-dart-from-source
@@ -188,7 +190,10 @@ RUN apt-get update &&\
         -GNinja \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    
 
 # ign-cmake
 RUN cd ${RL_SOURCES}/ign-cmake &&\
@@ -198,7 +203,9 @@ RUN cd ${RL_SOURCES}/ign-cmake &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS
+    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ing-math
 RUN cd ${RL_SOURCES}/ign-math &&\
@@ -209,7 +216,9 @@ RUN cd ${RL_SOURCES}/ign-math &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-common
 RUN cd ${RL_SOURCES}/ign-common &&\
@@ -220,7 +229,9 @@ RUN cd ${RL_SOURCES}/ign-common &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-tools
 RUN cd ${RL_SOURCES}/ign-tools &&\
@@ -230,7 +241,9 @@ RUN cd ${RL_SOURCES}/ign-tools &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-fuel-tools
 RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
@@ -240,7 +253,9 @@ RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
@@ -251,7 +266,9 @@ RUN cd ${RL_SOURCES}/sdformat &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         # TODO: build tests OFF?
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
     # TODO: with clang here it does not find "limits.h"
 
 # ign-msgs
@@ -263,7 +280,9 @@ RUN cd ${RL_SOURCES}/ign-msgs &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-transport
 RUN cd ${RL_SOURCES}/ign-transport &&\
@@ -274,7 +293,9 @@ RUN cd ${RL_SOURCES}/ign-transport &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-plugin
 RUN cd ${RL_SOURCES}/ign-plugin &&\
@@ -285,7 +306,9 @@ RUN cd ${RL_SOURCES}/ign-plugin &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-physics
 RUN cd ${RL_SOURCES}/ign-physics &&\
@@ -296,7 +319,9 @@ RUN cd ${RL_SOURCES}/ign-physics &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-rendering
 # TODO: nvidia optix support
@@ -308,7 +333,9 @@ RUN cd ${RL_SOURCES}/ign-rendering &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-sensors
 RUN cd ${RL_SOURCES}/ign-sensors &&\
@@ -319,7 +346,9 @@ RUN cd ${RL_SOURCES}/ign-sensors &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DDRI_TESTS:BOOL=FALSE \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-gui
 RUN cd ${RL_SOURCES}/ign-gui &&\
@@ -330,7 +359,9 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
@@ -341,7 +372,9 @@ RUN cd ${RL_SOURCES}/ign-gazebo &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-launch
 RUN cd ${RL_SOURCES}/ign-launch &&\
@@ -351,8 +384,10 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
-        .. # &&
-    #make ${CMAKE_EXTRA_OPTIONS} install
+        .. &&\
+    #make ${CMAKE_EXTRA_OPTIONS} install &&
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-plugins
 # RUN cd ${RL_SOURCES}/ign-plugins &&\
@@ -367,8 +402,8 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
 
 ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH="/rl/local/lib/ign-gazebo-1/plugins"
 
-# Fix permissions of the RL_DIR
-RUN chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
+# Fix permissions of the directories inside RL_DIR
+RUN find ${RL_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # =======================
 # Install Python packages
