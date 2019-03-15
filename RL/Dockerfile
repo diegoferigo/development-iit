@@ -361,6 +361,8 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
 #        .. &&\
 #    make ${CMAKE_EXTRA_OPTIONS} install
 
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH="/rl/local/lib/ign-gazebo-1/plugins"
+
 # =======================
 # Install Python packages
 # =======================
@@ -435,9 +437,3 @@ RUN chmod 755 /usr/sbin/setup_rl.sh
 RUN chmod 755 /usr/sbin/entrypoint_rl.sh
 ENTRYPOINT ["/usr/sbin/entrypoint_rl.sh"]
 CMD ["bash"]
-
-# TODO:
-# IGN_GAZEBO_SYSTEM_PLUGIN_PATH
-# IGN_GAZEBO_RESOURCE_PATH (?) for the worlds
-
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH="/rl/local/lib/ign-gazebo-1/plugins"
