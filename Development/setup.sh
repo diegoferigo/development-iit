@@ -34,14 +34,6 @@ fi
 [ -d /home/${USERNAME}/.local ] && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.local
 [ -d /home/${USERNAME}/.config ] && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
-# Fix permissions of the IIT directory
-if [[ ${CHOWN_SOURCES:-0} -eq 1 && -d ${IIT_DIR} ]] ; then
-    # Do this in background since it might be a slow operation if the folder is big
-    chown $USERNAME:$USERNAME ${IIT_DIR}
-    chown -R $USERNAME:$USERNAME ${IIT_DIR}/sources &
-    chown -R $USERNAME:$USERNAME ${IIT_DIR}/local &
-fi
-
 # Configure YARP namespace
 echo "==> Setting YARP namespace"
 su -c "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE:-/$USERNAME}" $USERNAME

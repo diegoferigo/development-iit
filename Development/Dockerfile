@@ -129,7 +129,8 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
     git clone https://github.com/robotology/robotology-superbuild.git &&\
     git clone https://github.com/robotology-playground/xsens-mvn.git &&\
-    git clone https://github.com/robotology/human-dynamics-estimation.git
+    git clone https://github.com/robotology/human-dynamics-estimation.git &&\
+    chgrp -R runtimeusers ${IIT_DIR} && chmod -R g+rw ${IIT_DIR}
 
 # Env variables for configuring the sources
 # -----------------------------------------
@@ -394,6 +395,9 @@ RUN cd ${IIT_SOURCES}/human-dynamics-estimation &&\
 
 # Misc setup of the image
 # =======================
+
+# Fix permissions of the IIT_DIR
+RUN chgrp -R runtimeusers ${IIT_DIR} && chmod -R g+rw ${IIT_DIR}
 
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev
