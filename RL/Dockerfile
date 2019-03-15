@@ -120,7 +120,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
     chmod +x /usr/local/bin/git-remote-hg
 
 # Download all the sources
-ARG RL_SOURCES="20190308"
+ARG RL_SOURCES="20190315"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
@@ -139,8 +139,8 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui && cd ign-gui && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo1 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors && cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b ign-launch0 && cd ign-launch && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugins && cd ign-plugins && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch && cd ign-launch && git gc --aggressive && cd - &&\
+    # git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugins && cd ign-plugins && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
     git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git
 
@@ -347,19 +347,19 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
-        .. #&&\
-    #make ${CMAKE_EXTRA_OPTIONS} install
+        .. &&\
+    make ${CMAKE_EXTRA_OPTIONS} install
 
 # ign-plugins
-RUN cd ${RL_SOURCES}/ign-plugins &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. #&&\
-    #make ${CMAKE_EXTRA_OPTIONS} install
+# RUN cd ${RL_SOURCES}/ign-plugins &&\
+#    mkdir -p build && cd build &&\
+#    cmake \
+#        -G "$CMAKE_GENERATOR" \
+#        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+#        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+#        -DBUILD_TESTING:BOOL=OFF \
+#        .. &&\
+#    make ${CMAKE_EXTRA_OPTIONS} install
 
 # =======================
 # Install Python packages
