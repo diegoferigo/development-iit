@@ -410,7 +410,8 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
 #        .. &&\
 #    make ${CMAKE_EXTRA_OPTIONS} install
 
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH="/rl/local/lib/ign-gazebo-1/plugins"
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-1/plugins
+
 
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
