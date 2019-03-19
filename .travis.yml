@@ -48,7 +48,6 @@ jobs:
         - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
         - TARGET="development-devel"
-    - <<: *development_template
     # ======================
     # REINFORCEMENT LEARNING
     # ======================
