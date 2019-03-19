@@ -439,7 +439,7 @@ RUN apt-get update &&\
 # =============
 
 ARG JULIA_VER=1.1.0
-ENV DEVENV_PATH=$DEVENV_PATH:/opt/julia/bin
+ENV DEVENV_PATH=${DEVENV_PATH}:/opt/julia/bin
 
 RUN cd /tmp &&\
     wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_VER%.*}/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
