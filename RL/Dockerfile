@@ -432,7 +432,8 @@ RUN apt-get update &&\
         python3-tk \
         python3-pytest \
         &&\
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* &&\
+    pip3 install gym
 
 # =============
 # Install Julia
