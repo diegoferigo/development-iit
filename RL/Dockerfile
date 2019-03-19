@@ -481,6 +481,17 @@ RUN apt-get update &&\
     make install &&\
     rm -r /tmp/swig
 
+# =======================
+# Install projects for RL
+# =======================
+
+# Configure gympp
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${IGN_GAZEBO_SYSTEM_PLUGIN_PATH}:${RL_INSTALL}/lib/gympp
+ENV IGN_GAZEBO_RESOURCE_PATH=${RL_INSTALL}/share/gympp/gazebo/worlds
+ENV IGN_FILE_PATH=/iit/local/share:${RL_SOURCES}/icub-gazebo
+ENV SDF_PATH=${RL_INSTALL}/share/gympp/gazebo/models
+ENV PYTHONPATH=${PYTHONPATH}:${RL_INSTALL}/lib/gympp/bindings
+
 # ====================
 # Image initialization
 # ====================
