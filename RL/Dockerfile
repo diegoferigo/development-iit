@@ -132,7 +132,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190315"
+ARG RL_SOURCES="20190318"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
@@ -155,6 +155,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     # git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugins && cd ign-plugins && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
     git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git &&\
+    git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
 # TODO: There are problems with ignition and ninja.
