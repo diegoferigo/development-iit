@@ -20,7 +20,22 @@ after_success:
   - make push-$TARGET
   - if [ "$IS_LATEST" = "true" ] ; then make push-${IMAGE_FOLDER,,}-latest ; fi
 
+matrix:
+  fast_finish: false
+  
+env:
 jobs:
+  allow_failures:
+    - env:
+      - IMAGE_FOLDER="Development"
+      - IS_LATEST=true
+      - PUSH_TO_DOCKERHUB=true
+      - TARGET="development-master"
+    - env:
+      - IMAGE_FOLDER="RL"
+      - IS_LATEST=true
+      - PUSH_TO_DOCKERHUB=true
+      - TARGET="rl-ubuntu"      
   include:
     # =====
     # TOOLS
@@ -58,9 +73,9 @@ jobs:
         - IS_LATEST=true
         - PUSH_TO_DOCKERHUB=true
         - TARGET="rl-master"
-    #- <<: *rl_template
-    #  env:
-    #    - IMAGE_FOLDER="RL"
-    #    - IS_LATEST=true
-    #    - PUSH_TO_DOCKERHUB=true
-    #    - TARGET="rl-ubuntu"
+    - <<: *rl_template
+      env:
+        - IMAGE_FOLDER="RL"
+        - IS_LATEST=true
+        - PUSH_TO_DOCKERHUB=true
+        - TARGET="rl-ubuntu"
