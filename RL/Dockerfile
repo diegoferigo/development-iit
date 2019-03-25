@@ -49,6 +49,7 @@ RUN apt-get update &&\
         ca-certificates \
         apt-utils \
         locales \
+        lsb-release \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -118,7 +119,7 @@ RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen &&\
 
 # Add gazebo ppa and install other deps
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list &&\
-    wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add - &&\
+    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         libogre-2.1-dev \
