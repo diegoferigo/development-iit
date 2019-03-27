@@ -32,6 +32,7 @@ devenv:
         - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
         - "$HOME/.dockerdot/PyCharmCE2018.3/:$HOME/.PyCharmCE2018.3"
       files:
+        - "$HOME/.dockerdot/z:$HOME/.z"
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
     gpu: "intel"
     x11: "xauth"
