@@ -134,7 +134,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190318"
+ARG RL_SOURCES="20190327"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
@@ -148,7 +148,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs3 && cd ign-msgs && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport && cd ign-transport && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin && cd ign-plugin && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics && cd ign-physics && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics1 && cd ign-physics && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/ign-rendering1 && cd ign-rendering && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors1 && cd ign-sensors && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui && cd ign-gui && git gc --aggressive && cd - &&\
