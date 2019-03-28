@@ -446,7 +446,14 @@ RUN apt-get update &&\
         python3-pytest \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
-    pip3 install gym
+    pip3 install virtualenv gym numpy tensorflow==2.0.0-alpha0
+
+# Create global virtualenv. This is the only way to share with the runtime user system packages.
+# For unknown reasons it doesn't work if virtualenv is installed with apt.
+ENV VIRTUAL_ENV=/rl/ve
+ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
+RUN virtualenv --system-site-packages ${VIRTUAL_ENV} &&\
+    chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV}
 
 # =============
 # Install Julia
