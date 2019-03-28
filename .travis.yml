@@ -28,9 +28,9 @@ jobs:
   allow_failures:
     - env:
       - IMAGE_FOLDER="Development"
-      - IS_LATEST=true
+      - IS_LATEST=false
       - PUSH_TO_DOCKERHUB=true
-      - TARGET="development-master"
+      - TARGET="development-devel"
     - env:
       - IMAGE_FOLDER="RL"
       - IS_LATEST=true
