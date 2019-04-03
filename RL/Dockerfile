@@ -432,31 +432,31 @@ RUN cd /opt && mkdir pycharm && cd pycharm &&\
     /usr/bin/python3 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
-# =======================
-# Install Python packages
-# =======================
+# ===========================
+# Setup the python virtualenv
+# ===========================
 
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        ipython3 \
-        jupyter \
-        jupyter-notebook \
-        jupyter-nbconvert \
-        python3-docker \
-        python3-yaml \
-        python3-matplotlib \
-        python3-tk \
-        python3-pytest \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    pip3 install virtualenv gym numpy tensorflow==2.0.0-alpha0
-
-# Create global virtualenv. This is the only way to share with the runtime user system packages.
-# For unknown reasons it doesn't work if virtualenv is installed with apt.
 ENV VIRTUAL_ENV=/rl/ve
 ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
-RUN virtualenv --system-site-packages ${VIRTUAL_ENV} &&\
-    chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV}
+RUN pip3 install virtualenv &&\
+    virtualenv ${VIRTUAL_ENV} &&\
+    chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV} &&\
+    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install \
+        jupyter \
+        docker \
+        PyYAML \
+        matplotlib \
+        pytest \
+        gym \
+        numpy \
+        tensorflow==2.0.0-alpha0 \
+        &&\
+    chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV} &&\
+    apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        python3-tk \
+        &&\
+    rm -rf /var/lib/apt/lists/*
 
 # =============
 # Install Julia
