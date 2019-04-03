@@ -240,7 +240,11 @@ RUN \
     cd tig && make install prefix=/usr/local && cd .. && rm -r tig &&\
     # https://github.com/nvbn/thefuck
     pip3 install thefuck &&\
-    echo '[ -x /usr/local/bin/thefuck ] && eval $(thefuck --alias)' >> /etc/bash.bashrc
+    echo '[ -x /usr/local/bin/thefuck ] && eval $(thefuck --alias)' >> /etc/bash.bashrc &&\
+    # Enable bash completion
+    LINESTART=$(grep -nr "if ! shopt -oq posix; then" /etc/bash.bashrc | cut -d : -f1) &&\
+    LINEEND=$((LINE+6)) &&\
+    sed "$LINESTART,$LINEEND s/#*//" /etc/bash.bashrc 
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1
