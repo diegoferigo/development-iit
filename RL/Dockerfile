@@ -30,7 +30,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${RL_INSTALL}/lib
 
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
-# Remove gazebo9 if present
+# Remove gazebo10 if present
 RUN apt-get remove -y '.*sdformat.*' '.*ignition-.*' || true &&\
     apt-get autoremove -y
 
@@ -158,7 +158,6 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui && cd ign-gui && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo1 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch && cd ign-launch && git gc --aggressive && cd - &&\
-    # git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugins && cd ign-plugins && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
     git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git &&\
     git clone https://github.com/robotology/icub-gazebo &&\
@@ -404,17 +403,6 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
     #make ${CMAKE_EXTRA_OPTIONS} install &&
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ign-plugins
-# RUN cd ${RL_SOURCES}/ign-plugins &&\
-#    mkdir -p build && cd build &&\
-#    cmake \
-#        -G "$CMAKE_GENERATOR" \
-#        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-#        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-#        -DBUILD_TESTING:BOOL=OFF \
-#        .. &&\
-#    make ${CMAKE_EXTRA_OPTIONS} install
 
 ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-1/plugins
 
