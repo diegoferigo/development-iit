@@ -137,19 +137,19 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190327"
+ARG RL_SOURCES="20190403"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
     git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-cmake -b branches/gz11 && cd ign-cmake && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-math && cd ign-math && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/gz11 && cd ign-common && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-cmake -b branches/ign-cmake2 && cd ign-cmake && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/ign-math6 && cd ign-math && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/ign-common3 && cd ign-common && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools && cd ign-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools && cd ign-fuel-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf8 && cd sdformat && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs3 && cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport && cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport6 && cd ign-transport && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin && cd ign-plugin && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics1 && cd ign-physics && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/ign-rendering1 && cd ign-rendering && git gc --aggressive && cd - &&\
