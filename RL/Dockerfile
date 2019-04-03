@@ -58,7 +58,8 @@ RUN apt-get update &&\
     rm -rf /var/lib/apt/lists/*
 
 # Ignition dependencies
-RUN apt-get update &&\
+RUN add-apt-repository ppa:maarten-fonville/protobuf &&\
+    apt-get update &&\
     apt-get install -y --no-install-recommends \
         ruby-dev \
         ruby \
