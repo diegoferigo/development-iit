@@ -51,6 +51,9 @@ RUN apt-get update &&\
         apt-utils \
         locales \
         lsb-release \
+        gnupg2 \
+        software-properties-common \
+        curl \
         &&\
     rm -rf /var/lib/apt/lists/*
 
