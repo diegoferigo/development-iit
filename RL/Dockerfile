@@ -409,18 +409,6 @@ ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-1/plugins
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
-# ===============
-# Install PyCharm
-# ===============
-
-RUN cd /opt && mkdir pycharm && cd pycharm &&\
-    curl -L https://download.jetbrains.com/python/pycharm-community-2018.3.5.tar.gz -o /opt/pycharm/installer.tgz &&\
-    tar --strip-components=1 -xzf installer.tgz &&\
-    rm installer.tgz &&\
-    /usr/bin/python2 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
-    /usr/bin/python3 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
-    ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
-
 # ===========================
 # Setup the python virtualenv
 # ===========================
@@ -444,8 +432,21 @@ RUN pip3 install virtualenv &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         python3-tk \
+        python3-setuptools \
         &&\
     rm -rf /var/lib/apt/lists/*
+
+# ===============
+# Install PyCharm
+# ===============
+
+RUN cd /opt && mkdir pycharm && cd pycharm &&\
+    curl -L https://download.jetbrains.com/python/pycharm-community-2018.3.5.tar.gz -o /opt/pycharm/installer.tgz &&\
+    tar --strip-components=1 -xzf installer.tgz &&\
+    rm installer.tgz &&\
+    /usr/bin/python2 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    /usr/bin/python3 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
 # =============
 # Install Julia
