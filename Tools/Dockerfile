@@ -147,7 +147,19 @@ RUN cd /tmp &&\
     ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
 
 # Gitkraken
-RUN cd /tmp &&\
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        gconf2 \
+        libgtk2.0-0 \
+        gvfs-bin \
+        libnotify4 \
+        libnss3 \
+        libxtst6 \ 
+        libxkbfile1 \
+        xdg-utils \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /tmp &&\
     wget https://release.gitkraken.com/linux/gitkraken-amd64.deb &&\
     apt install /tmp/gitkraken-amd64.deb &&\
     rm /tmp/gitkraken-amd64.deb
