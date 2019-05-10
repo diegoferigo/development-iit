@@ -82,6 +82,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         gdb \
         valgrind \
         valkyrie \
+        kcachegrind \
         ccache \
         doxygen \
         graphviz \
