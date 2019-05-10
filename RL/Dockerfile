@@ -138,25 +138,25 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190408"
+ARG RL_SOURCES="20190508"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
     git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-cmake -b branches/ign-cmake2 && cd ign-cmake && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin -b branches/ign-plugin1 && cd ign-plugin && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/ign-math6 && cd ign-math && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/ign-common3 && cd ign-common && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/default && cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/default && cd ign-msgs && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools && cd ign-tools && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools && cd ign-fuel-tools && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools3 && cd ign-fuel-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf8 && cd sdformat && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs3 && cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport6 && cd ign-transport && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin && cd ign-plugin && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics1 && cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/ign-rendering1 && cd ign-rendering && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors1 && cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui1 && cd ign-gui && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo1 && cd ign-gazebo && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/default && cd ign-rendering && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/default && cd ign-sensors && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/default && cd ign-gui && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/default && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch && cd ign-launch && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
     git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git &&\
@@ -208,7 +208,6 @@ RUN apt-get update &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-    
 
 # ign-cmake
 RUN cd ${RL_SOURCES}/ign-cmake &&\
@@ -219,6 +218,19 @@ RUN cd ${RL_SOURCES}/ign-cmake &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+
+# ign-plugin
+RUN cd ${RL_SOURCES}/ign-plugin &&\
+    mkdir -p build && cd build &&\
+    cmake \
+        -G "$CMAKE_GENERATOR" \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DBUILD_TESTING:BOOL=OFF \
+        .. &&\
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
@@ -312,19 +324,6 @@ RUN cd ${RL_SOURCES}/ign-transport &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
-# ign-plugin
-RUN cd ${RL_SOURCES}/ign-plugin &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
 # ign-physics
 RUN cd ${RL_SOURCES}/ign-physics &&\
     mkdir -p build && cd build &&\
@@ -404,7 +403,7 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-1/plugins
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins
 
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
