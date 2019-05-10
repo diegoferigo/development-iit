@@ -484,7 +484,7 @@ RUN apt-get update &&\
         libpcre3-dev &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp/ &&\
-    git clone --depth 1 https://github.com/swig/swig.git &&\
+    git clone --depth 1 -b rel-4.0.0 https://github.com/swig/swig.git &&\
     cd swig &&\
     sh autogen.sh &&\
     ./configure &&\
