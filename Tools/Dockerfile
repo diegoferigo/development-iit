@@ -120,19 +120,6 @@ RUN apt-get update &&\
         libgl1-mesa-dri &&\
     rm -rf /var/lib/apt/lists/*
 
-# Atom Editor
-# In the future, check if libxss1 will become an atom package dependency
-RUN add-apt-repository -y ppa:webupd8team/atom &&\
-    apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        libxss1 \
-        atom &&\
-    rm -rf /var/lib/apt/lists/*
-
-# Atom packages
-COPY atom_packages.txt /usr/local/etc
-RUN apm install --packages-file /usr/local/etc/atom_packages.txt
-
 # Packages with no ppa
 # ====================
 
