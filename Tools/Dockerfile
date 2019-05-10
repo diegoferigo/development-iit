@@ -60,6 +60,8 @@ ENV CLANG_VER=${clang_version}
 # Build and development tools
 RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
     apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-${CLANG_VER} main" &&\
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - && \
+    apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -149,16 +151,6 @@ RUN cd /tmp &&\
     apt install /tmp/gitkraken-amd64.deb &&\
     rm /tmp/gitkraken-amd64.deb
 
-# Updated CMake for QtCreator
-ARG CMAKE_VER=3.13.2
-RUN cd /tmp &&\
-    wget https://cmake.org/files/v${CMAKE_VER%.*}/cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
-    chmod +x cmake-${CMAKE_VER}-Linux-x86_64.sh &&\
-    mkdir /opt/cmake &&\
-    sh cmake-${CMAKE_VER}-Linux-x86_64.sh --prefix=/opt/cmake --skip-license &&\
-    rm /tmp/cmake-${CMAKE_VER}-Linux-x86_64.sh
-ENV DEVENV_PATH=${DEVENV_PATH:+$DEVENVPATH:}/opt/cmake/bin
-
 # rr
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
@@ -217,7 +209,7 @@ RUN apt-get update &&\
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-${CLANG_VER} &&\
-    /opt/cmake/bin/cmake --build . --target install &&\
+    cmake --build . --target install &&\
     rm -r /tmp/include-what-you-use
 
 # Extra tools
