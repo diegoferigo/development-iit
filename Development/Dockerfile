@@ -113,7 +113,7 @@ ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${IIT_INSTALL}
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20190201"
+ARG IIT_DOCKER_SOURCES="20190430"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
@@ -396,32 +396,6 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 ENV BLOCKFACTORY_PLUGIN_PATH=${IIT_SOURCES}/robotology-superbuild/build/install/lib/blockfactory
-
-# xsens-mvn
-RUN cd ${IIT_SOURCES}/xsens-mvn &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DENABLE_mvnx_parser:BOOL=NO \
-          -DENABLE_xsens_mnv_remote:BOOL=ON \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# human-dynamics-estimation
-RUN cd ${IIT_SOURCES}/human-dynamics-estimation &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Misc setup of the image
 # =======================
