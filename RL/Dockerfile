@@ -57,6 +57,7 @@ RUN apt-get update &&\
         software-properties-common \
         curl \
         python3-pip \
+        xvfb \
         &&\
     rm -rf /var/lib/apt/lists/*
 
