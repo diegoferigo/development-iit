@@ -43,6 +43,8 @@ RUN apt-get update &&\
         git \
         cmake \
         cmake-curses-gui \
+        build-essential \
+        gcc-8 \
         g++-8 \
         wget \
         ninja-build \
@@ -58,9 +60,26 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/*
 
+# Install protobuf
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        libtool \
+        autoconf \
+        automake \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /tmp &&\
+    git clone --depth 1 -b v3.7.0 https://github.com/google/protobuf &&\
+    cd protobuf &&\
+    git submodule update --init --recursive &&\
+    ./autogen.sh &&\
+    ./configure &&\
+    make -j8 &&\
+    make install &&\
+    rm -r /tmp/protobuf
+
 # Ignition dependencies
-RUN add-apt-repository ppa:maarten-fonville/protobuf &&\
-    apt-get update &&\
+RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         ruby-dev \
         ruby \
@@ -83,10 +102,6 @@ RUN add-apt-repository ppa:maarten-fonville/protobuf &&\
         libzip-dev \
         libyaml-dev \
         libcurl4-openssl-dev \
-        # ign-msgs
-        libprotoc-dev \
-        libprotobuf-dev \
-        protobuf-compiler \
         # ign-transport
         libzmqpp-dev \
         uuid-dev \
@@ -139,7 +154,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190508"
+ARG RL_SOURCES="20190514"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
