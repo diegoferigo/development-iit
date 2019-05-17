@@ -54,6 +54,7 @@ RUN apt-get update &&\
         gnupg2 \
         software-properties-common \
         curl \
+        python3-pip \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -431,7 +432,6 @@ RUN pip3 install virtualenv &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         python3-tk \
-        python3-setuptools \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -439,12 +439,20 @@ RUN pip3 install virtualenv &&\
 # Install PyCharm
 # ===============
 
-RUN cd /opt && mkdir pycharm && cd pycharm &&\
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        python-setuptools \
+        python3-setuptools \
+        libpython-dev \
+        libpython3-dev \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /opt && mkdir pycharm && cd pycharm &&\
     curl -L https://download.jetbrains.com/python/pycharm-community-2018.3.5.tar.gz -o /opt/pycharm/installer.tgz &&\
     tar --strip-components=1 -xzf installer.tgz &&\
     rm installer.tgz &&\
-    /usr/bin/python2 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
-    /usr/bin/python3 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    python2 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    python3 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
 # =============
