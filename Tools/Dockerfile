@@ -98,7 +98,6 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python3-pip \
         python3-setuptools \
-        spyder3 \
         python3-dev \
         python3-wheel \
         python3-pygments \
@@ -108,10 +107,7 @@ RUN apt-get update &&\
         python-language-server[all] \
         colour-valgrind \
         mkdocs \
-        mkdocs-material \
-        &&\
-    # https://github.com/spyder-ide/spyder/issues/6627
-    pip3 uninstall -y tornado
+        mkdocs-material
 
 # Setup HW Acceleration for Intel graphic cards
 RUN apt-get update &&\
