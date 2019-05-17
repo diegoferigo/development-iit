@@ -442,8 +442,10 @@ RUN pip3 install virtualenv &&\
         pytest \
         gym \
         numpy \
-        tensorflow==2.0.0-alpha0 \
+        tf-nightly-gpu tfp-nightly tf-agents-nightly \
+        PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         &&\
+    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install --upgrade --force-reinstall tb-nightly &&\
     chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV} &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
