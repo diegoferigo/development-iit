@@ -155,7 +155,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190514"
+ARG RL_SOURCES="20190611"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
@@ -165,18 +165,18 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/ign-math6 && cd ign-math && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/ign-common3 && cd ign-common && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/default && cd ign-transport && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/default && cd ign-msgs && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs4 && cd ign-msgs && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools && cd ign-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools3 && cd ign-fuel-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf8 && cd sdformat && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics1 && cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/default && cd ign-rendering && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/default && cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/default && cd ign-gui && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/default && cd ign-gazebo && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/ign-rendering2 && cd ign-rendering && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors2 && cd ign-sensors && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui2 && cd ign-gui && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo2 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch && cd ign-launch && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
-    git clone --depth 1 -b v6.7.2 https://github.com/dartsim/dart.git &&\
+    git clone --depth 1 -b v6.9.0 https://github.com/dartsim/dart.git &&\
     git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
@@ -420,7 +420,7 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins:${RL_INSTALL}/lib/ign-gazebo-2/plugins/gui
 
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
