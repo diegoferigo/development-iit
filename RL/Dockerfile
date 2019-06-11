@@ -477,26 +477,26 @@ RUN apt-get update &&\
 # Install Julia
 # =============
 
-ARG JULIA_VER=1.1.0
-ENV DEVENV_PATH=${DEVENV_PATH}:/opt/julia/bin
+#ARG JULIA_VER=1.1.0
+#ENV DEVENV_PATH=${DEVENV_PATH}:/opt/julia/bin
 
-RUN cd /tmp &&\
-    wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_VER%.*}/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
-    cd /opt &&\
-    tar xvf /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
-    rm /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
-    mv julia-${JULIA_VER} julia &&\
-    /opt/julia/bin/julia --version
+#RUN cd /tmp &&\
+#    wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_VER%.*}/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
+#    cd /opt &&\
+#    tar xvf /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
+#    rm /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
+#    mv julia-${JULIA_VER} julia &&\
+#    /opt/julia/bin/julia --version
 
 # TODO: these packages are not available to the user.
 # Follow: https://discourse.julialang.org/t/how-does-one-set-up-a-centralized-julia-installation/13922/21
-RUN \
-    /opt/julia/bin/julia -e 'import Pkg; Pkg.add([\
-        "IJulia",\
-        "Plots",\
-        "PyPlot",\
-        "LaTeXStrings",\
-        ]);'
+#RUN \
+#    /opt/julia/bin/julia -e 'import Pkg; Pkg.add([\
+#        "IJulia",\
+#        "Plots",\
+#        "PyPlot",\
+#        "LaTeXStrings",\
+#        ]);'
 
 # ============
 # Install swig
