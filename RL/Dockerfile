@@ -515,7 +515,7 @@ RUN apt-get update &&\
     sh autogen.sh &&\
     ./configure &&\
     make uninstall &&\
-    make -j2 &&\
+    make ${CMAKE_EXTRA_OPTIONS} &&\
     make install &&\
     rm -r /tmp/swig
 
