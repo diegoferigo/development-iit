@@ -37,8 +37,27 @@ RUN apt-get remove -y '.*sdformat.*' '.*ignition-.*' || true &&\
 ENV CC="gcc-8"
 ENV CXX="g++-8"
 
-# Common tools and libraries
+# Common tools
 RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        apt-transport-https \
+        ca-certificates \
+        gnupg \
+        gnupg2 \
+        apt-utils \
+        ca-certificates \
+        locales \
+        curl \
+        lsb-release \
+        software-properties-common \
+        wget \
+        &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Development tools
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - &&\
+    apt-add-repository "deb https://apt.kitware.com/ubuntu/ `lsb_release -cs` main" &&\
+    apt-get update &&\
     apt-get install -y --no-install-recommends \
         git \
         cmake \
@@ -46,16 +65,8 @@ RUN apt-get update &&\
         build-essential \
         gcc-8 \
         g++-8 \
-        wget \
         ninja-build \
         mercurial \
-        ca-certificates \
-        apt-utils \
-        locales \
-        lsb-release \
-        gnupg2 \
-        software-properties-common \
-        curl \
         python3-pip \
         xvfb \
         &&\
