@@ -120,7 +120,7 @@ RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/yarp.git &&\
     git clone https://github.com/robotology/icub-main.git &&\
     git clone https://github.com/robotology/icub-contrib-common.git &&\
-    git clone https://github.com/robotology/robot-testing.git &&\
+    git clone https://github.com/robotology/robot-testing-framework.git &&\
     git clone https://github.com/robotology/gazebo-yarp-plugins.git &&\
     git clone https://github.com/robotology-playground/yarp-matlab-bindings.git &&\
     git clone https://github.com/robotology/idyntree.git &&\
@@ -174,7 +174,7 @@ RUN cd ${IIT_SOURCES}/ycm &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # RTF
-RUN cd ${IIT_SOURCES}/robot-testing &&\
+RUN cd ${IIT_SOURCES}/robot-testing-framework &&\
     git checkout ${SOURCES_GIT_BRANCH} &&\
     mkdir -p build && cd build &&\
     cmake \
