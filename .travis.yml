@@ -76,6 +76,6 @@ jobs:
     - <<: *rl_template
       env:
         - IMAGE_FOLDER="RL"
-        - IS_LATEST=true
+        - IS_LATEST=false
         - PUSH_TO_DOCKERHUB=true
         - TARGET="rl-ubuntu"
