@@ -89,7 +89,7 @@ fi
 if [[ -f /opt/ros/$ROS_DISTRO/setup.bash ]] ; then
     old_path=$ROS_PACKAGE_PATH
 	source /opt/ros/$ROS_DISTRO/setup.bash
-	ROS_PACKAGE_PATH=ROS_PACKAGE_PATH:$old_path
+	ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$old_path
 	unset $old_path
 fi
 
