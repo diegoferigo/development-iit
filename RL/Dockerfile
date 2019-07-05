@@ -166,7 +166,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190611"
+ARG RL_SOURCES="20190702"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
@@ -539,8 +539,15 @@ RUN cd ${RL_SOURCES}/ign-gazebo/build &&\
     git remote add diegoferigo https://github.com/diegoferigo/ign-gazebo &&\
     git fetch diegoferigo &&\
     git checkout feature/jointcontroller &&\
+    rm CMakeCache.txt &&\
+    cmake \
+      -G "$CMAKE_GENERATOR" \
+      -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+      -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+      -DBUILD_TESTING:BOOL=OFF \
+      .. &&\
+    chgrp -R runtimeusers $(pwd)/.. && chmod -R g+rw $(pwd)/.. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Install gym-ignition
