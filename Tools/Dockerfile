@@ -137,7 +137,7 @@ RUN apt-get update &&\
         gvfs-bin \
         libnotify4 \
         libnss3 \
-        libxtst6 \ 
+        libxtst6 \
         libxkbfile1 \
         xdg-utils \
         &&\
@@ -232,7 +232,7 @@ RUN \
     # Enable bash completion
     LINESTART=$(grep -nr "if ! shopt -oq posix; then" /etc/bash.bashrc | cut -d : -f1) &&\
     LINEEND=$((LINE+6)) &&\
-    sed "$LINESTART,$LINEEND s/#*//" /etc/bash.bashrc 
+    sed "$LINESTART,$LINEEND s/#*//" /etc/bash.bashrc
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1

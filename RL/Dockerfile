@@ -158,7 +158,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
         libogre-2.1-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
-        
+
 RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr/local/bin/git-remote-hg &&\
     chmod +x /usr/local/bin/git-remote-hg
 
@@ -210,7 +210,7 @@ RUN cd ${RL_SOURCES}/bullet3 &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
-# Dart core
+# DART
 # Following https://github.com/dartsim/dart/wiki/DART-5.1-Installation-for-Ubuntu#install-dart-from-source
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
@@ -557,7 +557,7 @@ RUN cd ${RL_SOURCES} &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" && chgrp runtimeusers "$(dirname $FILE)" && chmod g+rw "$(dirname $FILE)"; done &&\
     cd .. &&\
-    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install -e .        
+    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install -e .
 
 # Configure gympp
 ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${IGN_GAZEBO_SYSTEM_PLUGIN_PATH}:${RL_INSTALL}/lib/gympp/plugins
