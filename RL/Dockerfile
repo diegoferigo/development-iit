@@ -81,7 +81,7 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp &&\
-    git clone --depth 1 -b v3.7.0 https://github.com/google/protobuf &&\
+    git clone --depth 1 -b v3.8.0 https://github.com/google/protobuf &&\
     cd protobuf &&\
     git submodule update --init --recursive &&\
     ./autogen.sh &&\
