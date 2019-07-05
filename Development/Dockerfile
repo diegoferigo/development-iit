@@ -196,10 +196,10 @@ RUN \
           -G $CMAKE_GENERATOR \
           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DCREATE_GUIS=ON \
-          -DCREATE_LIB_MATH=ON \
-          # -DSKIP_ACE=ON \
-          -DYARP_COMPILE_RTF_ADDONS=ON \
+          -DYARP_COMPILE_GUIS:BOOL=ON \
+          -DYARP_COMPILE_libYARP_math:BOOL=ON \
+          -DSKIP_ACE=ON \
+          -DYARP_COMPILE_RobotTestingFramework_ADDONS:BOOL=ON \
           -DYARP_COMPILE_CARRIER_PLUGINS:BOOL=ON \
           -DENABLE_yarpcar_rossrv:BOOL=ON \
           -DENABLE_yarpcar_tcpros:BOOL=ON \
@@ -380,6 +380,7 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     sed -i "s/ProjectsTagsMaster/ProjectsTags$(python -c "print '$SOURCES_GIT_BRANCH'.capitalize()")/g" CMakeLists.txt &&\
     mkdir -p build && cd build &&\
+    YARP_ROBOT_NAME= \
     cmake \
           -G $CMAKE_GENERATOR \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
@@ -388,7 +389,6 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DROBOTOLOGY_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
-          -DYCM_USE_DEPRECATED:BOOL=OFF \
           -DYCM_EP_MAINTAINER_MODE:BOOL=OFF \
           -DWBToolbox_TAG=devel \
           .. &&\
