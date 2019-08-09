@@ -62,6 +62,8 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
     apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-${CLANG_VER} main" &&\
     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - && \
     apt-add-repository "deb https://apt.kitware.com/ubuntu/ `lsb_release -cs` main" &&\
+    apt-get install -y kitware-archive-keyring &&\
+    apt-key --keyring /etc/apt/trusted.gpg del C1F34CDD40CD72DA &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         build-essential \
