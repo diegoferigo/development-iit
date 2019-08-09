@@ -78,6 +78,7 @@ RUN apt-get update &&\
         libatlas-base-dev \
         # IDYNTREE
         coinor-libipopt-dev \
+        libxml2-dev \
         # BINDINGS
         liboctave-dev \
         # SIMMECHANICS-TO-URDF
