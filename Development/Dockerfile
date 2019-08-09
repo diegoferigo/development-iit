@@ -71,6 +71,10 @@ RUN apt-get update &&\
         libqcustomplot-dev \
         qtmultimedia5-dev \
         qtdeclarative5-dev \
+        qml-module-qtmultimedia \
+        qml-module-qtquick-window2 \
+        qml-module-qtquick-dialogs \
+        qml-module-qtquick-controls \
         libqt5opengl5-dev \
         qttools5-dev \
         libace-dev \
