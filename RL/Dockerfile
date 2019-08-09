@@ -459,6 +459,7 @@ RUN pip3 install virtualenv &&\
         &&\
     PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install git+https://github.com/tensorflow/agents &&\
     PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install --upgrade --force-reinstall tb-nightly &&\
+    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install ${RL_SOURCES}/bullet3 &&\
     chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV} &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
