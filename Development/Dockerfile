@@ -204,7 +204,7 @@ RUN \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DYARP_COMPILE_GUIS:BOOL=ON \
           -DYARP_COMPILE_libYARP_math:BOOL=ON \
-          -DSKIP_ACE=ON \
+          -DSKIP_ACE:BOOL=ON \
           -DYARP_COMPILE_RobotTestingFramework_ADDONS:BOOL=ON \
           -DYARP_COMPILE_CARRIER_PLUGINS:BOOL=ON \
           -DENABLE_yarpcar_rossrv:BOOL=ON \
