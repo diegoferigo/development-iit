@@ -23,6 +23,7 @@ RUN apt-get update &&\
         sudo \
         software-properties-common \
         apt-transport-https \
+        apt-utils \
         wget \
         nano \
         dbus-x11 \

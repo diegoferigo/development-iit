@@ -42,6 +42,7 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         apt-transport-https \
         ca-certificates \
+        apt-utils \
         gnupg \
         gnupg2 \
         apt-utils \
