@@ -123,7 +123,7 @@ RUN apt-get update &&\
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.9.2
+ARG QTCREATOR_VERSION=4.10.0
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 RUN cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
