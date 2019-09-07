@@ -213,17 +213,13 @@ RUN apt-get update &&\
 
 # Extra tools
 RUN \
-    # https://github.com/rupa/z
     mkdir /opt/extra && cd /opt/extra &&\
-    wget https://raw.githubusercontent.com/rupa/z/master/z.sh &&\
-    echo ". /opt/extra/z.sh" >> /etc/bash.bashrc &&\
     # https://github.com/junegunn/fzf
     git clone --depth 1 https://github.com/junegunn/fzf &&\
     yes | ./fzf/install --no-update-rc &&\
     mv ~/.fzf.bash /opt/extra/fzf.bash &&\
     echo "[ -f /opt/extra/fzf.bash ] && source /opt/extra/fzf.bash" >> /etc/bash.bashrc &&\
     # https://github.com/sharkdp/bat
-    cd /tmp &&\
     wget https://github.com/sharkdp/bat/releases/download/v0.9.0/bat_0.9.0_amd64.deb &&\
     dpkg -i bat_*_amd64.deb && rm bat_*_amd64.deb &&\
     # https://github.com/jonas/tig
@@ -234,8 +230,21 @@ RUN \
     echo '[ -x /usr/local/bin/thefuck ] && eval $(thefuck --alias)' >> /etc/bash.bashrc &&\
     # Enable bash completion
     LINESTART=$(grep -nr "if ! shopt -oq posix; then" /etc/bash.bashrc | cut -d : -f1) &&\
-    LINEEND=$((LINE+6)) &&\
-    sed "$LINESTART,$LINEEND s/#*//" /etc/bash.bashrc
+    LINEEND=$((LINESTART+6)) &&\
+    sed -i "$LINESTART,$LINEEND s/#*//" /etc/bash.bashrc &&\
+    # https://github.com/starship/starship
+    apt-get update &&\
+    apt-get install -y --no-install-recommends fonts-powerline &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    wget https://github.com/starship/starship/releases/download/v0.15.0/starship-v0.15.0-x86_64-unknown-linux-gnu.tar.gz &&\
+    tar -xvf starship-*-x86_64-unknown-linux-gnu.tar.gz &&\
+    mv x86_64-unknown-linux-gnu/starship . &&\
+    rm -r x86_64-unknown-linux-gnu starship-*-x86_64-unknown-linux-gnu.tar.gz &&\
+    echo '[ -x /opt/extra/starship ] && eval "$(/opt/extra/starship init bash)"' >> /etc/bash.bashrc &&\
+    # https://github.com/rupa/z
+    # Always keep this entry as last one
+    wget https://raw.githubusercontent.com/rupa/z/master/z.sh &&\
+    echo "[ -f /opt/extra/z.sh ] && . /opt/extra/z.sh" >> /etc/bash.bashrc
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1
