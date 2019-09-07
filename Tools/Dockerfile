@@ -54,7 +54,7 @@ RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen &&\
     rm -rf /var/lib/apt/lists/*
 
 # Updated clang ppa
-ARG clang_version=7
+ARG clang_version=8
 ENV CLANG_VER=${clang_version}
 
 # Build and development tools
@@ -201,7 +201,7 @@ RUN apt-get update &&\
     cd /tmp &&\
     git clone https://github.com/include-what-you-use/include-what-you-use.git &&\
     cd include-what-you-use &&\
-    git checkout clang_${CLANG_VER} || git checkout clang_${CLANG_VER}.0 &&\
+    git checkout clang_${CLANG_VER}.0 &&\
     mkdir build && cd build &&\
     cmake .. \
           -G Ninja \
