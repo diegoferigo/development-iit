@@ -167,7 +167,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20190702"
+ARG RL_SOURCES="20190907"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
@@ -188,7 +188,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo2 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch && cd ign-launch && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
-    git clone --depth 1 -b v6.9.0 https://github.com/dartsim/dart.git &&\
+    git clone --depth 1 https://github.com/dartsim/dart.git &&\
     git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
