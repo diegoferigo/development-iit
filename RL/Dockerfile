@@ -472,6 +472,7 @@ RUN pip3 install virtualenv &&\
 # Install PyCharm
 # ===============
 
+ARG PYCHARM_VER=2019.2.1
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python-setuptools \
@@ -481,7 +482,7 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /opt && mkdir pycharm && cd pycharm &&\
-    curl -L https://download.jetbrains.com/python/pycharm-community-2018.3.5.tar.gz -o /opt/pycharm/installer.tgz &&\
+    curl -L https://download.jetbrains.com/python/pycharm-community-${PYCHARM_VER}.tar.gz -o /opt/pycharm/installer.tgz &&\
     tar --strip-components=1 -xzf installer.tgz &&\
     rm installer.tgz &&\
     python2 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
