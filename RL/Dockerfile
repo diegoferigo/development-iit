@@ -157,6 +157,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         libogre-2.1-dev \
+        libdart6-all-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -188,7 +189,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo2 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch && cd ign-launch && git gc --aggressive && cd - &&\
     git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
-    git clone --depth 1 https://github.com/dartsim/dart.git &&\
+    # git clone --depth 1 https://github.com/dartsim/dart.git &&\
     git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
@@ -213,30 +214,30 @@ RUN cd ${RL_SOURCES}/bullet3 &&\
 
 # DART
 # Following https://github.com/dartsim/dart/wiki/DART-5.1-Installation-for-Ubuntu#install-dart-from-source
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        libeigen3-dev \
-        libassimp-dev \
-        libccd-dev \
-        libfcl-dev \
-        libxi-dev \
-        libxmu-dev \
-        freeglut3-dev \
-        libode-dev \
-        liburdfdom-dev \
-        # Boost
-        libboost-regex-dev \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd ${RL_SOURCES}/dart &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -GNinja \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+#RUN apt-get update &&\
+#    apt-get install -y --no-install-recommends \
+#        libeigen3-dev \
+#        libassimp-dev \
+#        libccd-dev \
+#        libfcl-dev \
+#        libxi-dev \
+#        libxmu-dev \
+#        freeglut3-dev \
+#        libode-dev \
+#        liburdfdom-dev \
+#        # Boost
+#        libboost-regex-dev \
+#        &&\
+#    rm -rf /var/lib/apt/lists/* &&\
+#    cd ${RL_SOURCES}/dart &&\
+#    mkdir -p build && cd build &&\
+#    cmake \
+#        -GNinja \
+#        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+#        .. &&\
+#    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
+#    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
+#    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-cmake
 RUN cd ${RL_SOURCES}/ign-cmake &&\
