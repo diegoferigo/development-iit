@@ -41,7 +41,7 @@ shopt -s no_empty_cmd_completion
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 shopt -s histappend
-PROMPT_COMMAND='history -a'
+PROMPT_COMMAND='history -a ; history -c ; history -n ; $PROMPT_COMMAND'
 
 # Mappings for Ctrl-left-arrow and Ctrl-right-arrow for words navigation
 bind '"\e[1;5C": forward-word'
