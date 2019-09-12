@@ -15,8 +15,8 @@
 </p>
 
 <p align="center">
-    <a href="https://travis-ci.com/diegoferigo/development-iit">
-    <img src="https://img.shields.io/travis/com/diegoferigo/development-iit/master.svg?logo=travis&label=master" alt="Build Status (master)" />
+    <a href="https://github.com/diegoferigo/development-iit/actions">
+    <img src="https://github.com/diegoferigo/development-iit/workflows/.github/workflows/ci.yml/badge.svg" alt="Build Status (master)" />
     </a>
 </p>
 
