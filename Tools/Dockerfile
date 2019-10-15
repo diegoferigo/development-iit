@@ -213,6 +213,8 @@ RUN apt-get update &&\
     rm -r /tmp/include-what-you-use
 
 # Extra tools
+ARG BAT_VERSION=0.12.1
+ARG STARSHIP_VERSION=0.25.0
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
     # https://github.com/junegunn/fzf
@@ -221,7 +223,7 @@ RUN \
     mv ~/.fzf.bash /opt/extra/fzf.bash &&\
     echo "[ -f /opt/extra/fzf.bash ] && source /opt/extra/fzf.bash" >> /etc/bash.bashrc &&\
     # https://github.com/sharkdp/bat
-    wget https://github.com/sharkdp/bat/releases/download/v0.9.0/bat_0.9.0_amd64.deb &&\
+    wget https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat_${BAT_VERSION}_amd64.deb &&\
     dpkg -i bat_*_amd64.deb && rm bat_*_amd64.deb &&\
     # https://github.com/jonas/tig
     git clone --depth 1 https://github.com/jonas/tig &&\
@@ -237,10 +239,9 @@ RUN \
     apt-get update &&\
     apt-get install -y --no-install-recommends fonts-powerline &&\
     rm -rf /var/lib/apt/lists/* &&\
-    wget https://github.com/starship/starship/releases/download/v0.15.0/starship-v0.15.0-x86_64-unknown-linux-gnu.tar.gz &&\
-    tar -xvf starship-*-x86_64-unknown-linux-gnu.tar.gz &&\
-    mv x86_64-unknown-linux-gnu/starship . &&\
-    rm -r x86_64-unknown-linux-gnu starship-*-x86_64-unknown-linux-gnu.tar.gz &&\
+    wget https://github.com/starship/starship/releases/download/v${STARSHIP_VERSION}/starship-x86_64-unknown-linux-gnu.tar.gz &&\
+    tar -xvf starship-x86_64-unknown-linux-gnu.tar.gz &&\
+    rm -r starship-x86_64-unknown-linux-gnu.tar.gz &&\
     echo '[ -x /opt/extra/starship ] && eval "$(/opt/extra/starship init bash)"' >> /etc/bash.bashrc &&\
     # https://github.com/rupa/z
     # Always keep this entry as last one
