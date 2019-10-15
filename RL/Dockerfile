@@ -431,7 +431,7 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    #make ${CMAKE_EXTRA_OPTIONS} install &&
+    make ${CMAKE_EXTRA_OPTIONS} install &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
