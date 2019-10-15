@@ -120,6 +120,8 @@ RUN apt-get update &&\
         uuid-dev \
         # ign-rendering
         libogre-1.9-dev \
+        # ign-tools
+        libwebsockets-dev \
         #ign-gui
         qtquickcontrols2-5-dev \
         # ign-gazebo compile deps
