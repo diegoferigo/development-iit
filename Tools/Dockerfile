@@ -37,6 +37,7 @@ RUN apt-get update &&\
         trash-cli \
         xterm \
         curl \
+        unzip \
         &&\
     rm -rf /var/lib/apt/lists/*
 
