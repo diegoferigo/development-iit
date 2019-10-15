@@ -517,27 +517,6 @@ RUN apt-get update &&\
 #        "LaTeXStrings",\
 #        ]);'
 
-# ============
-# Install swig
-# ============
-
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        autotools-dev \
-        automake \
-        bison \
-        libpcre3-dev &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd /tmp/ &&\
-    git clone --depth 1 -b rel-4.0.0 https://github.com/swig/swig.git &&\
-    cd swig &&\
-    sh autogen.sh &&\
-    ./configure &&\
-    make uninstall &&\
-    make ${CMAKE_EXTRA_OPTIONS} &&\
-    make install &&\
-    rm -r /tmp/swig
-
 # =======================
 # Install projects for RL
 # =======================
@@ -559,8 +538,11 @@ RUN cd ${RL_SOURCES}/ign-gazebo/build &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Install gym-ignition
-RUN cd ${RL_SOURCES} &&\
-    git clone https://github.com/robotology/gym-ignition &&\
+RUN apt-get update &&\
+    apt install -y --no-install-recommends swig &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd ${RL_SOURCES} &&\
+    git clone -b devel https://github.com/robotology/gym-ignition &&\
     mkdir gym-ignition/build &&\
     cd gym-ignition/build &&\
     cmake \
