@@ -455,9 +455,9 @@ RUN pip3 install virtualenv &&\
         PyYAML \
         matplotlib \
         pytest \
-        gym==0.12.0 \
+        gym \
         numpy \
-        cloudpickle==1.1.1 \
+        cloudpickle \
         tf-nightly-gpu tfp-nightly \
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         &&\
