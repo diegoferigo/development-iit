@@ -597,11 +597,12 @@ RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-mode
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
     chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" && chgrp runtimeusers "$(dirname $FILE)" && chmod g+rw "$(dirname $FILE)"; done &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+ &&\
     cd .. &&\
-    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install -e .
+    ${VIRTUAL_ENV}/bin/pip3 install -e . &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+
 
-# Configure gympp
+# Configure gym-ignition
 ENV IGN_FILE_PATH=/iit/local/share:${RL_SOURCES}/icub-gazebo:${RL_INSTALL}/share/gympp/gazebo/models/Minitaur
 ENV SDF_PATH=${RL_INSTALL}/share/gympp/gazebo/models
 ENV PYTHONPATH=${PYTHONPATH}:${RL_INSTALL}/lib/python3.6/site-packages
@@ -629,8 +630,14 @@ RUN cd ${RL_SOURCES} &&\
           -DYCM_USE_DEPRECATED=OFF \
           .. &&\
     cmake --build . --target install &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" && chgrp runtimeusers "$(dirname $FILE)" && chmod g+rw "$(dirname $FILE)"; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+
 ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
+
+# =============
+# FIX OWNERSHIP
+# =============
+
+RUN find $VIRTUAL_ENV -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+
 
 # ====================
 # Image initialization
