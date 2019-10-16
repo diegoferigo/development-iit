@@ -564,6 +564,31 @@ ENV SDF_PATH=${RL_INSTALL}/share/gympp/gazebo/models
 ENV PYTHONPATH=${PYTHONPATH}:${RL_INSTALL}/lib/gympp/bindings
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${RL_INSTALL}/share/gympp/gazebo
 
+# ========
+# iDynTree
+# ========
+
+# Use python bindings from fork
+RUN cd ${RL_SOURCES} &&\
+    git clone -b feature/numpy-and-ik https://github.com/diegoferigo/idyntree &&\
+    mkdir -p idyntree/build &&\
+    cd idyntree/build &&\
+    cmake \
+          -GNinja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
+          -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+          -DIDYNTREE_USES_PYTHON:BOOL=ON \
+          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
+          -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
+          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/numpy/core/include \
+          -DIDYNTREE_USES_KDL:BOOL=OFF \
+          -DYCM_USE_DEPRECATED=OFF \
+          .. &&\
+    cmake --build . --target install &&\
+    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" && chgrp runtimeusers "$(dirname $FILE)" && chmod g+rw "$(dirname $FILE)"; done
+ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
+
 # ====================
 # Image initialization
 # ====================
