@@ -30,7 +30,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        run: echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+        run: docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
 
       - name: Push
         if: |
@@ -67,7 +67,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        run: echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+        run: docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
 
 
       - name: 'Push [development:${{ matrix.target }}]'
@@ -121,7 +121,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        run: echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+        run: docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
 
       - name: 'Push [rl:${{ matrix.target }}]'
         if: |
