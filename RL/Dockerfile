@@ -582,7 +582,8 @@ RUN cd ${RL_SOURCES}/ign-gazebo/build &&\
     cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # Install gym-ignition
-RUN apt-get update &&\
+RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-model-pybullet.git &&\
+    apt-get update &&\
     apt install -y --no-install-recommends swig &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd ${RL_SOURCES} &&\
