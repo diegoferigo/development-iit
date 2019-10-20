@@ -52,6 +52,7 @@ RUN apt-get update &&\
         lsb-release \
         software-properties-common \
         wget \
+        libxml2-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
