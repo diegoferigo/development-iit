@@ -16,7 +16,7 @@
 
 <p align="center">
     <a href="https://github.com/diegoferigo/development-iit/actions">
-    <img src="https://github.com/diegoferigo/development-iit/workflows/.github/workflows/ci.yml/badge.svg" alt="Build Status (master)" />
+    <img src="https://github.com/diegoferigo/development-iit/workflows/Docker%20Images/badge.svg" alt="Build Status (master)" />
     </a>
 </p>
 
