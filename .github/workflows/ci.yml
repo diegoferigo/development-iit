@@ -128,7 +128,7 @@ jobs:
           github.repository == 'diegoferigo/development-iit' &&
           github.event_name != 'pull_request' &&
           github.ref == 'refs/heads/master'
-        run: "docker push rl/development:${{ matrix.target }}"
+        run: "docker push diegoferigo/rl:${{ matrix.target }}"
 
       - name: 'Tag [rl:latest]'
         if: |
