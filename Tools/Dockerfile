@@ -217,7 +217,7 @@ RUN apt-get update &&\
 
 # Extra tools
 ARG BAT_VERSION=0.12.1
-ARG STARSHIP_VERSION=0.25.0
+ARG STARSHIP_VERSION=0.26.4
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
     # https://github.com/junegunn/fzf
