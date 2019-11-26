@@ -176,8 +176,8 @@ RUN cd ${IIT_SOURCES}/ycm &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/ycm -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # RTF
 RUN cd ${IIT_SOURCES}/robot-testing-framework &&\
@@ -189,8 +189,8 @@ RUN cd ${IIT_SOURCES}/robot-testing-framework &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/robot-testing-framework -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${IIT_INSTALL}/lib/rtf
 
 # YARP
@@ -215,8 +215,8 @@ RUN \
     ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
           /etc/bash_completion.d/yarp_completion &&\
     ${IIT_BIN}/yarp check &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/yarp -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV YARP_DATA_DIRS=${IIT_INSTALL}/share/yarp
 ENV YARP_COLORED_OUTPUT=1
 EXPOSE 10000/tcp
@@ -234,8 +234,8 @@ RUN cd ${IIT_SOURCES}/icub-main &&\
           -DENABLE_icubmod_gazecontrollerclient=ON \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/icub-main -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
 
 # ICUB-CONTRIB-COMMON
@@ -246,8 +246,8 @@ RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/icub-contrib-common -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 
 # GAZEBO-YARP-PLUGINS
@@ -260,8 +260,8 @@ RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/gazebo-yarp-plugins -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
 ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
 
@@ -290,8 +290,8 @@ RUN \
           -DYCM_USE_DEPRECATED:BOOL=OFF \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/yarp-matlab-bindings -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # IDYNTREE
 RUN cd ${IIT_SOURCES}/idyntree &&\
@@ -312,8 +312,8 @@ RUN cd ${IIT_SOURCES}/idyntree &&\
           -DYCM_USE_DEPRECATED=OFF \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/idyntree -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ICUB-GAZEBO-WHOLEBODY
 RUN cd ${IIT_SOURCES} &&\
@@ -327,8 +327,8 @@ RUN cd ${IIT_SOURCES} &&\
           -DROBOT_NAME=${ROBOT_NAME} \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/icub-gazebo-wholebody -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/models/
 ENV GAZEBO_RESOURCE_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/worlds
 
@@ -342,8 +342,8 @@ RUN cd ${IIT_SOURCES} &&\
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/icub-models -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
 ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub/robots:${IIT_INSTALL}/share
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
@@ -366,8 +366,9 @@ RUN \
     # Project
     cd ${IIT_SOURCES}/simmechanics-to-urdf &&\
     python setup.py install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/urdf_parser_py -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_SOURCES}/simmechanics-to-urdf -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ICUB-MODEL-GENERATOR
 RUN cd ${IIT_SOURCES}/icub-model-generator &&\
@@ -381,8 +382,8 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
           -DICUB_MODELS_SOURCE_DIR=${IIT_SOURCES}/icub-models \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/icub-model-generator -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ROBOTOLOGY-SUPERBUILD
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
@@ -401,15 +402,14 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DWBToolbox_TAG=devel \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV BLOCKFACTORY_PLUGIN_PATH=${IIT_SOURCES}/robotology-superbuild/build/install/lib/blockfactory
 
 # Misc setup of the image
 # =======================
 
 # Fix permissions of the directories inside IIT_DIR
-RUN find ${IIT_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+RUN find ${IIT_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev

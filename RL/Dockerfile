@@ -212,8 +212,7 @@ RUN cd ${RL_SOURCES}/bullet3 &&\
     -DBUILD_SHARED_LIBS=ON \
     .. &&\
     cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # DART
 # Following https://github.com/dartsim/dart/wiki/DART-5.1-Installation-for-Ubuntu#install-dart-from-source
@@ -327,8 +326,7 @@ RUN cd ${RL_SOURCES}/sdformat &&\
         # TODO: build tests OFF?
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
     # TODO: with clang here it does not find "limits.h"
 
 # ign-msgs
@@ -341,8 +339,7 @@ RUN cd ${RL_SOURCES}/ign-msgs &&\
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-transport
 RUN cd ${RL_SOURCES}/ign-transport &&\
@@ -354,8 +351,7 @@ RUN cd ${RL_SOURCES}/ign-transport &&\
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-physics
 RUN cd ${RL_SOURCES}/ign-physics &&\
@@ -367,8 +363,7 @@ RUN cd ${RL_SOURCES}/ign-physics &&\
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-rendering
 # TODO: nvidia optix support
@@ -394,8 +389,7 @@ RUN cd ${RL_SOURCES}/ign-sensors &&\
         -DDRI_TESTS:BOOL=FALSE \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-gui
 RUN cd ${RL_SOURCES}/ign-gui &&\
@@ -407,8 +401,7 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
@@ -420,8 +413,7 @@ RUN cd ${RL_SOURCES}/ign-gazebo &&\
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-launch
 RUN cd ${RL_SOURCES}/ign-launch &&\
@@ -433,13 +425,12 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins:${RL_INSTALL}/lib/ign-gazebo-2/plugins/gui
 
 # Fix permissions of the directories inside RL_DIR
-RUN find ${RL_DIR} \( -type d \) -print | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
+RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ===========================
 # Setup the python virtualenv
@@ -449,7 +440,6 @@ ENV VIRTUAL_ENV=/rl/ve
 ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
 RUN pip3 install virtualenv &&\
     virtualenv ${VIRTUAL_ENV} &&\
-    chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV} &&\
     PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install \
         jupyter \
         docker \
@@ -470,7 +460,8 @@ RUN pip3 install virtualenv &&\
     apt-get install -y --no-install-recommends \
         python3-tk \
         &&\
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ===============
 # Install PyCharm
@@ -550,7 +541,7 @@ RUN apt-get update && \
     echo "julia-client" >> ${ATOM_PKG_TMP} &&\
     apm install --packages-file ${ATOM_PKG_TMP} &&\
     cp -r /root/.atom /opt/dotatom &&\
-    chgrp -R runtimeusers /opt/dotatom && chmod -R g+rw /opt/dotatom
+    find /opt/dotatom -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # TODO: these packages are not available to the user.
 # Follow: https://discourse.julialang.org/t/how-does-one-set-up-a-centralized-julia-installation/13922/21
@@ -597,11 +588,11 @@ RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-mode
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+ &&\
     cd .. &&\
     ${VIRTUAL_ENV}/bin/pip3 install -e . &&\
-    find ${VIRTUAL_ENV} -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+
+    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # Configure gym-ignition
 ENV IGN_FILE_PATH=/iit/local/share:${RL_SOURCES}/icub-gazebo:${RL_INSTALL}/share/gympp/gazebo/models/Minitaur
@@ -631,14 +622,17 @@ RUN cd ${RL_SOURCES} &&\
           -DYCM_USE_DEPRECATED=OFF \
           .. &&\
     cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+
+    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
 
 # =============
 # FIX OWNERSHIP
 # =============
 
-RUN find $VIRTUAL_ENV -not -group runtimeusers -exec sudo chgrp runtimeusers {} \; -exec sudo chmod g+rw {} \+
+RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ====================
 # Image initialization
