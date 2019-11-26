@@ -56,7 +56,7 @@ RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen &&\
     rm -rf /var/lib/apt/lists/*
 
 # Updated clang ppa
-ARG clang_version=8
+ARG clang_version=9
 ENV CLANG_VER=${clang_version}
 
 # Build and development tools
