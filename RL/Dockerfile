@@ -49,6 +49,7 @@ RUN apt-get update &&\
         software-properties-common \
         wget \
         libxml2-dev \
+        python3-tk \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -150,13 +151,24 @@ RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen &&\
     apt-get install -y --no-install-recommends tzdata &&\
     rm -rf /var/lib/apt/lists/*
 
-# Add gazebo ppa and install other deps
+# Add gazebo ppa and install other deps.
+# We want to install from source ign-gazebo, ign-physics, sdformat, and all the components that depend on protobuf.
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         libogre-2.1-dev \
         libdart6-all-dev \
+        # Install from ppa base components
+        libignition-cmake2-dev \
+        libignition-common3-dev \
+        libignition-math6-dev \
+        libignition-math6-eigen3-dev \
+        libignition-plugin-dev \
+        libignition-rendering2 \
+        libignition-rendering2-dev \
+        libignition-tools-dev \
+        libignition-fuel-tools3-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -167,28 +179,19 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20191015"
+ARG RL_SOURCES="20191125"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
     git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-cmake -b branches/ign-cmake2 && cd ign-cmake && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-plugin -b branches/ign-plugin1 && cd ign-plugin && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-math -b branches/ign-math6 && cd ign-math && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-common -b branches/ign-common3 && cd ign-common && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/default && cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport7 && cd ign-transport && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs4 && cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-tools -b branches/ign-tools0 && cd ign-tools && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools3 && cd ign-fuel-tools && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf8 && cd sdformat && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics1 && cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-rendering -b branches/ign-rendering2 && cd ign-rendering && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors2 && cd ign-sensors && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui2 && cd ign-gui && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo2 && cd ign-gazebo && git gc --aggressive && cd - &&\
     git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b branches/ign-launch1 && cd ign-launch && git gc --aggressive && cd - &&\
-    git clone --depth 1 https://github.com/bulletphysics/bullet3.git &&\
-    # git clone --depth 1 https://github.com/dartsim/dart.git &&\
     git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
@@ -197,120 +200,6 @@ RUN mkdir -p ${RL_SOURCES} &&\
 ENV CMAKE_GENERATOR="Unix Makefiles"
 ENV CMAKE_EXTRA_OPTIONS="-j8"
 ENV SOURCES_BUILD_TYPE="Release"
-
-# Bullet
-RUN cd ${RL_SOURCES}/bullet3 &&\
-    mkdir -p build && cd build &&\
-    cmake \
-    -G"$CMAKE_GENERATOR" \
-    -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-    -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-    -DBUILD_SHARED_LIBS=ON \
-    .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# DART
-# Following https://github.com/dartsim/dart/wiki/DART-5.1-Installation-for-Ubuntu#install-dart-from-source
-#RUN apt-get update &&\
-#    apt-get install -y --no-install-recommends \
-#        libeigen3-dev \
-#        libassimp-dev \
-#        libccd-dev \
-#        libfcl-dev \
-#        libxi-dev \
-#        libxmu-dev \
-#        freeglut3-dev \
-#        libode-dev \
-#        liburdfdom-dev \
-#        # Boost
-#        libboost-regex-dev \
-#        &&\
-#    rm -rf /var/lib/apt/lists/* &&\
-#    cd ${RL_SOURCES}/dart &&\
-#    mkdir -p build && cd build &&\
-#    cmake \
-#        -GNinja \
-#        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-#        .. &&\
-#    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-#    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-#    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ign-cmake
-RUN cd ${RL_SOURCES}/ign-cmake &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ign-plugin
-RUN cd ${RL_SOURCES}/ign-plugin &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ing-math
-RUN cd ${RL_SOURCES}/ign-math &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ign-common
-RUN cd ${RL_SOURCES}/ign-common &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ign-tools
-RUN cd ${RL_SOURCES}/ign-tools &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
-# ign-fuel-tools
-RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
@@ -360,20 +249,6 @@ RUN cd ${RL_SOURCES}/ign-physics &&\
         .. &&\
     make ${CMAKE_EXTRA_OPTIONS} install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-rendering
-# TODO: nvidia optix support
-RUN cd ${RL_SOURCES}/ign-rendering &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    chgrp -R runtimeusers $(pwd) && chmod -R g+rw $(pwd) &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
 
 # ign-sensors
 RUN cd ${RL_SOURCES}/ign-sensors &&\
@@ -452,7 +327,7 @@ RUN pip3 install virtualenv &&\
         &&\
     #${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\#
     #${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\#
-    ${VIRTUAL_ENV}/bin/pip3 install ${RL_SOURCES}/bullet3 &&\
+    ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/bulletphysics/bullet3.git &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ===============
