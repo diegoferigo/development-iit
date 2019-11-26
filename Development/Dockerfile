@@ -143,7 +143,7 @@ RUN cd ${IIT_SOURCES} &&\
 
 # Build Variables
 ARG SOURCES_GIT_BRANCH=master
-ENV SOURCES_BUILD_TYPE=Debug
+ENV SOURCES_BUILD_TYPE=RelWithDebInfo
 
 # CMake Generator
 ENV CMAKE_GENERATOR=Ninja

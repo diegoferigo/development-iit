@@ -199,7 +199,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
 #       Also bullet has problems during the install.
 ENV CMAKE_GENERATOR="Unix Makefiles"
 ENV CMAKE_EXTRA_OPTIONS="-j8"
-ENV SOURCES_BUILD_TYPE="Release"
+ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
 
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
@@ -462,7 +462,7 @@ RUN cd ${RL_SOURCES} &&\
     cd idyntree/build &&\
     cmake \
           -GNinja \
-          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
           -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
           -DIDYNTREE_USES_PYTHON:BOOL=ON \
