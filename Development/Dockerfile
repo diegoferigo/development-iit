@@ -119,7 +119,7 @@ ENV PYTHONPATH=${PYTHONPATH}:${IIT_INSTALL}/lib/python3.6/site-packages
 RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20191015"
+ARG IIT_DOCKER_SOURCES="20191125"
 
 RUN cd ${IIT_SOURCES} &&\
     git clone https://github.com/robotology/ycm.git &&\
