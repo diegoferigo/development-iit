@@ -30,10 +30,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${RL_INSTALL}/lib
 
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
-# Remove gazebo10 if present
-RUN apt-get remove -y '.*sdformat.*' '.*ignition-.*' || true &&\
-    apt-get autoremove -y
-
 ENV CC="gcc-8"
 ENV CXX="g++-8"
 
