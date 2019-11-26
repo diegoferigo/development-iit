@@ -201,27 +201,6 @@ function compiler.switch() {
 	esac
 }
 
-# Since the codyco-superbuild is not installed, it could be useful having the possibility
-# of storing a second tree of sources somewhere else and configure the environment to find it
-# instead of the original one
-function setlocalcodyco () {
-	if [[ ! -n "$1" || ! -e "$1" ]] ; then
-		err "Folder not found $1"
-		if [[ -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
-			msg2 "The current CODYCO_SUPERBUILD_ROOT is $CODYCO_SUPERBUILD_ROOT"
-		fi
-		return 1
-	elif [[ ! -n "$CODYCO_SUPERBUILD_ROOT" ]] ; then
-		err "The variable CODYCO_SUPERBUILD_ROOT is not set"
-		return 1
-	else
-		readarray CODYCO_ENV_VARS < <(env | grep ${CODYCO_SUPERBUILD_ROOT} | sed "s|${CODYCO_SUPERBUILD_ROOT}|${1%/}|g")
-		for ENV_VAR in ${CODYCO_ENV_VARS[*]} ; do
-			export $ENV_VAR
-		done
-	fi
-}
-
 # Matlab support is still rough. Some software compiled while creating the image may have
 # components that depend on Matlab. Considering that there is no easy way to share a local
 # copy of Matlab during for creating the image, those components are explicitly disabled.
