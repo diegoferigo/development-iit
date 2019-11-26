@@ -549,22 +549,6 @@ RUN apt-get update && \
 # Install projects for RL
 # =======================
 
-# Install my fork of ign-gazebo
-RUN cd ${RL_SOURCES}/ign-gazebo/build &&\
-    git remote add diegoferigo https://github.com/diegoferigo/ign-gazebo &&\
-    git fetch diegoferigo &&\
-    git checkout feature/jointcontroller &&\
-    rm CMakeCache.txt &&\
-    cmake \
-      -G "$CMAKE_GENERATOR" \
-      -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-      -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-      -DBUILD_TESTING:BOOL=OFF \
-      .. &&\
-    chgrp -R runtimeusers $(pwd)/.. && chmod -R g+rw $(pwd)/.. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
-    cat install_manifest.txt | while read FILE ; do chgrp runtimeusers "$FILE" && chmod g+rw "$FILE" ; done
-
 # Install gym-ignition
 RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-model-pybullet.git &&\
     apt-get update &&\
