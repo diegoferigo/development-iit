@@ -66,6 +66,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
     apt-add-repository "deb https://apt.kitware.com/ubuntu/ `lsb_release -cs` main" &&\
     apt-get install -y kitware-archive-keyring &&\
     apt-key --keyring /etc/apt/trusted.gpg del C1F34CDD40CD72DA &&\
+    add-apt-repository ppa:ubuntu-toolchain-r/test &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -73,7 +74,8 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         cmake \
         cmake-curses-gui \
         ninja-build \
-        g++-8 \
+        gcc-9 \
+        g++-9 \
         llvm-${CLANG_VER} \
         clang-${CLANG_VER} \
         lldb-${CLANG_VER} \
