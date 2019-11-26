@@ -436,7 +436,7 @@ ENV VIRTUAL_ENV=/rl/ve
 ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
 RUN pip3 install virtualenv &&\
     virtualenv ${VIRTUAL_ENV} &&\
-    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install \
+    ${VIRTUAL_ENV}/bin/pip3 install \
         jupyter \
         docker \
         PyYAML \
@@ -444,19 +444,15 @@ RUN pip3 install virtualenv &&\
         pytest \
         gym \
         numpy \
+        ninja \
+        setuptools_scm \
         cloudpickle \
-        tf-nightly-gpu tfp-nightly \
+        # tf-nightly-gpu tfp-nightly \#
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         &&\
-    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install git+https://github.com/tensorflow/agents &&\
-    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install --upgrade --force-reinstall tb-nightly &&\
-    PATH=${VIRTUAL_ENV}/bin:$PATH pip3 install ${RL_SOURCES}/bullet3 &&\
-    chgrp -R runtimeusers ${VIRTUAL_ENV} && chmod -R g+rw ${VIRTUAL_ENV} &&\
-    apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        python3-tk \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
+    #${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\#
+    #${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\#
+    ${VIRTUAL_ENV}/bin/pip3 install ${RL_SOURCES}/bullet3 &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ===============
