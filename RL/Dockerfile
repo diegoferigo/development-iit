@@ -197,8 +197,9 @@ RUN mkdir -p ${RL_SOURCES} &&\
 
 # TODO: There are problems with ignition and ninja.
 #       Also bullet has problems during the install.
-ENV CMAKE_GENERATOR="Unix Makefiles"
-ENV CMAKE_EXTRA_OPTIONS="-j8"
+#ENV CMAKE_GENERATOR="Unix Makefiles"
+ENV CMAKE_GENERATOR="Ninja"
+# ENV CMAKE_EXTRA_OPTIONS="-j8"
 ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
 
 # sdformat
@@ -210,7 +211,7 @@ RUN cd ${RL_SOURCES}/sdformat &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         # TODO: build tests OFF?
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
     # TODO: with clang here it does not find "limits.h"
 
@@ -223,7 +224,7 @@ RUN cd ${RL_SOURCES}/ign-msgs &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-transport
@@ -235,7 +236,7 @@ RUN cd ${RL_SOURCES}/ign-transport &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-physics
@@ -247,7 +248,7 @@ RUN cd ${RL_SOURCES}/ign-physics &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-sensors
@@ -259,7 +260,7 @@ RUN cd ${RL_SOURCES}/ign-sensors &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DDRI_TESTS:BOOL=FALSE \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-gui
@@ -271,7 +272,7 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-gazebo
@@ -283,7 +284,7 @@ RUN cd ${RL_SOURCES}/ign-gazebo &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ign-launch
@@ -295,7 +296,7 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins:${RL_INSTALL}/lib/ign-gazebo-2/plugins/gui
@@ -438,7 +439,7 @@ RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-mode
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         .. &&\
-    make ${CMAKE_EXTRA_OPTIONS} install &&\
+    cmake --build . --target install &&\
     cd .. &&\
     ${VIRTUAL_ENV}/bin/pip3 install -e . &&\
     find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
