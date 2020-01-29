@@ -171,19 +171,9 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # SIMMECHANICS-TO-URDF
-# ENV ROS_DISTRO melodic
-# RUN apt-key adv --keyserver ha.pool.sks-keyservers.net \
-#                 --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 &&\
-#     echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
-#         > /etc/apt/sources.list.d/ros-latest.list &&\
-#     apt-get update &&\
-#     apt-get install --no-install-recommends -y \
-#         python-catkin-pkg \
-#         &&\
-#     rm -rf /var/lib/apt/lists/*
-RUN \
-    # Dependencies
-    cd ${IIT_SOURCES}/urdf_parser_py &&\
+RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
+    # https://github.com/robotology/icub-model-generator/blob/master/.travis.yml#L56
+    git checkout 31474b9baaf7c3845b40e5a9aa87d5900a2282c3 &&\
     python setup.py install &&\
     # Project
     cd ${IIT_SOURCES}/simmechanics-to-urdf &&\
