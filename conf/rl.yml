@@ -7,7 +7,6 @@ services:
     command: "bash"
     init: true
     environment:
-      - COPY_ATOM_PACKAGES=0
       - YARP_NAME_SPACE=/dferigo
     ports:
       - 8000:8000
