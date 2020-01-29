@@ -50,6 +50,7 @@ RUN apt-get update &&\
         wget \
         libxml2-dev \
         python3-tk \
+        ssh \
         &&\
     rm -rf /var/lib/apt/lists/*
 
