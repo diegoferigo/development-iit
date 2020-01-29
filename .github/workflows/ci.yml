@@ -51,7 +51,6 @@ jobs:
       matrix:
         target:
           - master
-          # - devel
 
     steps:
       - uses: actions/checkout@master

@@ -47,11 +47,9 @@ make <target>
 | `tools`              |
 | `development-latest` |
 | `development-master` |
-| `development-devel`  |
 | `rl-latest`          |
 | `rl-master`          |
 
-The `-master` and `-devel` targets clone repositories with the respective git branches.
 All the images are based on top of `diegoferigo/devenv:nvidia` which optionally support the `nvidia` runtime if specified in the config file.
 
 ## Download the images

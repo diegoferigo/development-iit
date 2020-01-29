@@ -24,13 +24,6 @@ development-master:
 		--build-arg SOURCES_GIT_BRANCH=master \
 		Development/
 
-development-devel:
-	docker build --rm \
-		--build-arg from=diegoferigo/tools \
-		--tag diegoferigo/development:devel \
-		--build-arg SOURCES_GIT_BRANCH=devel \
-		Development/
-
 # ======================
 # REINFORCEMENT LEARNING
 # ======================
@@ -62,9 +55,6 @@ push-development-latest: development-latest
 
 push-development-master: development-master
 	docker push diegoferigo/development:master
-
-push-development-devel: development-devel
-	docker push diegoferigo/development:devel
 
 push-rl-latest: rl-latest
 	docker push diegoferigo/rl:latest
