@@ -170,10 +170,9 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
         libignition-math6-dev \
         libignition-math6-eigen3-dev \
         libignition-plugin-dev \
-        libignition-rendering2 \
-        libignition-rendering2-dev \
+        libignition-rendering3 \
+        libignition-rendering3-dev \
         libignition-tools-dev \
-        libignition-fuel-tools3-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -184,19 +183,20 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20191125"
+ARG RL_SOURCES="20200121"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
     git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport7 && cd ign-transport && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs4 && cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf8 && cd sdformat && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics1 && cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors2 && cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui2 && cd ign-gui && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo2 && cd ign-gazebo && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b branches/ign-launch1 && cd ign-launch && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport8 && cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs5 && cd ign-msgs && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf9 && cd sdformat && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics2 && cd ign-physics && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors3 && cd ign-sensors && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui3 && cd ign-gui && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo3 && cd ign-gazebo && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b branches/ign-launch2 && cd ign-launch && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools4 && cd ign-fuel-tools && git gc --aggressive && cd - &&\
     git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
@@ -280,6 +280,18 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
     cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
+# ign-fuel-tools
+RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
+    mkdir -p build && cd build &&\
+    cmake \
+        -G "$CMAKE_GENERATOR" \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DBUILD_TESTING:BOOL=OFF \
+        .. &&\
+    cmake --build . --target install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
     mkdir -p build && cd build &&\
@@ -292,6 +304,9 @@ RUN cd ${RL_SOURCES}/ign-gazebo &&\
     cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
+ENV IGN_CONFIG_PATH=${RL_INSTALL}/share/ignition
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins:${RL_INSTALL}/lib/ign-gazebo-2/plugins/gui
+
 # ign-launch
 RUN cd ${RL_SOURCES}/ign-launch &&\
     mkdir -p build && cd build &&\
@@ -303,8 +318,6 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
         .. &&\
     cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins:${RL_INSTALL}/lib/ign-gazebo-2/plugins/gui
 
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
