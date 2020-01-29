@@ -89,6 +89,10 @@ RUN apt-get update &&\
     make -j8 &&\
     make install &&\
     rm -r /tmp/protobuf
+    
+# Uninstall gazebo classic and protobuf
+RUN apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
+    apt autoremove -y
 
 # Ignition dependencies
 RUN apt-get update &&\
