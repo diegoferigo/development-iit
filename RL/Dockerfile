@@ -200,11 +200,7 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone https://github.com/robotology/icub-gazebo &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
-# TODO: There are problems with ignition and ninja.
-#       Also bullet has problems during the install.
-#ENV CMAKE_GENERATOR="Unix Makefiles"
 ENV CMAKE_GENERATOR="Ninja"
-# ENV CMAKE_EXTRA_OPTIONS="-j8"
 ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
 
 # sdformat
@@ -338,7 +334,6 @@ RUN pip3 install virtualenv &&\
         pytest \
         gym \
         numpy \
-        ninja \
         setuptools_scm \
         cloudpickle \
         # tf-nightly-gpu tfp-nightly \#
