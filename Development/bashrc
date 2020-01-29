@@ -78,15 +78,6 @@ if [[ -x $(which nano) ]] ; then
 	echo "include /usr/share/nano/*" > ${HOME}/.nanorc
 fi
 
-# Load the robotogy-superbuild environment
-if [[ -f ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh ]] ; then
-	source ${IIT_SOURCES}/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh
-	# Remove the lib path from the LD_LIBRARY_PATH. This breaks python bindings but I do not currently need them.
-	# Refer to https://github.com/robotology/robotology-superbuild/issues/97.
-	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/":${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib"/}
-	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH/"${ROBOTOLOGY_SUPERBUILD_INSTALL_PREFIX}/lib:"/}
-fi
-
 # Load the ROS environment
 if [[ -f /opt/ros/$ROS_DISTRO/setup.bash ]] ; then
 	old_path=$ROS_PACKAGE_PATH
@@ -108,12 +99,6 @@ fi
 
 # Set clang as default compiler
 compiler.set clang${CLANG_VER%.*} >/dev/null
-
-# Enable matlab
-if [[ -x $(which matlab) ]] ; then
-	# Setup the bindings
-	export MATLABPATH=${MATLABPATH}:${IIT_INSTALL}/matlab
-fi
 
 # Load z
 if [ -f /opt/extra/z.sh ] ; then

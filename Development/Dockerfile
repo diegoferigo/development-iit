@@ -62,41 +62,44 @@ RUN apt-get update &&\
 
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
-        # MISC
-        qt5-default \
-        # YARP
+        # SUPERBUILD
         libeigen3-dev \
-        libgsl-dev \
+        coinor-libipopt-dev \
+        libboost-system-dev \
+        libboost-filesystem-dev \
+        libboost-thread-dev \
+        libtinyxml-dev \
         libedit-dev \
-        libqcustomplot-dev \
-        qtmultimedia5-dev \
+        libace-dev \
+        libgsl0-dev \
+        libopencv-dev \
+        libode-dev \
+        liblua5.1-dev \
+        lua5.1 \
+        qtbase5-dev \
         qtdeclarative5-dev \
-        qml-module-qtmultimedia \
+        qtmultimedia5-dev \
+        qml-module-qtquick2 \
         qml-module-qtquick-window2 \
+        qml-module-qtmultimedia \
         qml-module-qtquick-dialogs \
         qml-module-qtquick-controls \
-        libqt5opengl5-dev \
-        qttools5-dev \
-        libace-dev \
-        # GAZEBO-YARP-PLUGINS
-        libatlas-base-dev \
-        # IDYNTREE
-        coinor-libipopt-dev \
+        qml-module-qt-labs-folderlistmodel \
+        qml-module-qt-labs-settings \
+        libsdl1.2-dev \
         libxml2-dev \
-        # BINDINGS
-        liboctave-dev \
+        libv4l-dev \
         # SIMMECHANICS-TO-URDF
         python-lxml \
         python-yaml \
         python-numpy \
         python-setuptools \
-        # XSENS-MVN
-        libqt5xmlpatterns5-dev \
         # BLOCKFACTORY
         libmatio-dev \
         # MISC
-        libasio-dev \
-        &&\
+        liboctave-dev \
+        libqt5opengl5-dev \
+        libasio-dev &&\
     rm -rf /var/lib/apt/lists/*
 
 # Install YARP, iCub and friends from sources
@@ -109,50 +112,28 @@ ENV IIT_DIR=/iit
 ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
-ENV DEVENV_PATH=${IIT_BIN}:${DEVENV_PATH}
-ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${IIT_INSTALL}
-ENV PYTHONPATH=${PYTHONPATH}:${IIT_INSTALL}/lib/python3.6/site-packages
 
 # Download all sources with git
 # -----------------------------
 
-RUN mkdir -p ${IIT_SOURCES} ${IIT_BIN}
-
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20191125"
+ARG IIT_DOCKER_SOURCES="20200123"
 
-RUN cd ${IIT_SOURCES} &&\
-    git clone https://github.com/robotology/ycm.git &&\
-    git clone https://github.com/robotology/yarp.git &&\
-    git clone https://github.com/robotology/icub-main.git &&\
-    git clone https://github.com/robotology/icub-contrib-common.git &&\
-    git clone https://github.com/robotology/robot-testing-framework.git &&\
-    git clone https://github.com/robotology/gazebo-yarp-plugins.git &&\
-    git clone https://github.com/robotology-playground/yarp-matlab-bindings.git &&\
-    git clone https://github.com/robotology/idyntree.git &&\
+RUN mkdir -p ${IIT_SOURCES} &&\
+    cd ${IIT_SOURCES} &&\
     git clone https://github.com/ros/urdf_parser_py &&\
     git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
     git clone https://github.com/robotology/robotology-superbuild.git &&\
-    git clone https://github.com/robotology-playground/xsens-mvn.git &&\
-    git clone https://github.com/robotology/human-dynamics-estimation.git &&\
     chgrp -R runtimeusers ${IIT_DIR} && chmod -R g+rw ${IIT_DIR}
 
 # Env variables for configuring the sources
 # -----------------------------------------
 
-# Build Variables
-ARG SOURCES_GIT_BRANCH=master
+ENV CMAKE_GENERATOR=Ninja
 ENV SOURCES_BUILD_TYPE=RelWithDebInfo
 
-# CMake Generator
-ENV CMAKE_GENERATOR=Ninja
-ENV CMAKE_EXTRA_OPTIONS=
-# ENV CMAKE_GENERATOR="Unix Makefiles"
-# ENV CMAKE_EXTRA_OPTIONS="-j6"
-
 # Select the main development robot (model loading)
-ENV ROBOT_NAME="iCubGazeboV2_5"
 ENV YARP_ROBOT_NAME="iCubGazeboV2_5"
 
 # Configure the MEX provider
@@ -160,193 +141,34 @@ ENV YARP_ROBOT_NAME="iCubGazeboV2_5"
 # Refer to https://github.com/diegoferigo/dockerfiles/issues/8
 ENV ROBOTOLOGY_USES_OCTAVE=ON
 ENV ROBOTOLOGY_USES_MATLAB=OFF
-ENV ROBOTOLOGY_GENERATE_MEX=ON
-# The default is "mex" but "matlab" should become the default
-ENV ROBOTOLOGY_MATLAB_MEX_DIR="matlab"
+# ENV ROBOTOLOGY_GENERATE_MEX=ON
 
 # Build all sources
 # -----------------
 
-# YCM
-RUN cd ${IIT_SOURCES}/ycm &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/ycm -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# RTF
-RUN cd ${IIT_SOURCES}/robot-testing-framework &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/robot-testing-framework -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${IIT_INSTALL}/lib/rtf
-
-# YARP
-RUN \
-    cd ${IIT_SOURCES}/yarp &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DYARP_COMPILE_GUIS:BOOL=ON \
-          -DYARP_COMPILE_libYARP_math:BOOL=ON \
-          -DSKIP_ACE:BOOL=ON \
-          -DYARP_COMPILE_RobotTestingFramework_ADDONS:BOOL=ON \
-          -DYARP_COMPILE_CARRIER_PLUGINS:BOOL=ON \
-          -DENABLE_yarpcar_rossrv:BOOL=ON \
-          -DENABLE_yarpcar_tcpros:BOOL=ON \
-          -DENABLE_yarpcar_xmlrpc:BOOL=ON \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    ln -s ${IIT_SOURCES}/yarp/scripts/yarp_completion \
-          /etc/bash_completion.d/yarp_completion &&\
-    ${IIT_BIN}/yarp check &&\
-    find ${IIT_SOURCES}/yarp -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV YARP_DATA_DIRS=${IIT_INSTALL}/share/yarp
-ENV YARP_COLORED_OUTPUT=1
+# ROBOTOLOGY-SUPERBUILD
 EXPOSE 10000/tcp
-
-# ICUB-MAIN
-RUN cd ${IIT_SOURCES}/icub-main &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
+ENV YARP_COLORED_OUTPUT=1
+RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     mkdir -p build && cd build &&\
+    YARP_ROBOT_NAME= \
     cmake \
           -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DENABLE_icubmod_cartesiancontrollerserver=ON \
-          -DENABLE_icubmod_cartesiancontrollerclient=ON \
-          -DENABLE_icubmod_gazecontrollerclient=ON \
+          -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
+          -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
+          -DROBOTOLOGY_ENABLE_ROBOT_TESTING:BOOL=ON \
+          -DROBOTOLOGY_ENABLE_HUMAN_DYNAMICS:BOOL=ON \
+          -DROBOTOLOGY_USES_GAZEBO:BOOL=ON \
+          -DROBOTOLOGY_USES_PYTHON:BOOL=ON \
+          -DROBOTOLOGY_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
+          -DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
+          -DNON_INTERACTIVE_BUILD:BOOL=ON \
           .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/icub-main -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
-
-# ICUB-CONTRIB-COMMON
-RUN cd ${IIT_SOURCES}/icub-contrib-common &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/icub-contrib-common -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
-
-# GAZEBO-YARP-PLUGINS
-RUN cd ${IIT_SOURCES}/gazebo-yarp-plugins &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/gazebo-yarp-plugins -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/ICUBcontrib
-ENV GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH:+${GAZEBO_PLUGIN_PATH}:}${IIT_INSTALL}/lib
-
-# YARP-MATLAB-BINDINGS
-# Check https://github.com/robotology/yarp/pull/1756
-RUN \
-    # cd ${IIT_SOURCES}/yarp-matlab-bindings &&\
-    # git checkout ${SOURCES_GIT_BRANCH} &&\
-    # git checkout devel &&\#
-    cd ${IIT_SOURCES} &&\
-    rm -r yarp-matlab-bindings &&\
-    mkdir /iit/local/share/yarp/bindings/matlab &&\
-    mv /iit/local/share/yarp/bindings/vectors_fromTo_matlab.i /iit/local/share/yarp/bindings/matlab/ &&\
-    git clone -b feature/cleanedCMake https://github.com/diegoferigo/yarp-matlab-bindings &&\
-    cd yarp-matlab-bindings &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DYARP_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
-          -DYARP_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
-          -DYARP_GENERATE_MATLAB:BOOL=${ROBOTOLOGY_GENERATE_MEX} \
-          -DYARP_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
-          -DYARP_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
-          -DYCM_USE_DEPRECATED:BOOL=OFF \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/yarp-matlab-bindings -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# IDYNTREE
-RUN cd ${IIT_SOURCES}/idyntree &&\
-    git checkout ${SOURCES_GIT_BRANCH} &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DIDYNTREE_USES_PYTHON:BOOL=ON \
-          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
-          -DIDYNTREE_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
-          -DIDYNTREE_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
-          -DIDYNTREE_GENERATE_MATLAB:BOOL=${ROBOTOLOGY_GENERATE_MEX} \
-          -DIDYNTREE_INSTALL_MATLAB_LIBDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
-          -DIDYNTREE_INSTALL_MATLAB_MFILESDIR=${ROBOTOLOGY_MATLAB_MEX_DIR} \
-          -DIDYNTREE_USES_KDL:BOOL=OFF \
-          -DYCM_USE_DEPRECATED=OFF \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/idyntree -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ICUB-GAZEBO-WHOLEBODY
-RUN cd ${IIT_SOURCES} &&\
-    git clone https://github.com/robotology-playground/icub-gazebo-wholebody.git &&\
-    cd ${IIT_SOURCES}/icub-gazebo-wholebody &&\
-    git checkout feature/useGeneratedModels &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          -DROBOT_NAME=${ROBOT_NAME} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/icub-gazebo-wholebody -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/models/
-ENV GAZEBO_RESOURCE_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/gazebo/worlds
-
-# ICUB-MODELS
-RUN cd ${IIT_SOURCES} &&\
-    git clone https://github.com/robotology-playground/icub-models &&\
-    cd ${IIT_SOURCES}/icub-models &&\
-    mkdir -p build && cd build &&\
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-          .. &&\
-    cmake --build . --target install -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/icub-models -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV YARP_DATA_DIRS=${YARP_DATA_DIRS:+${YARP_DATA_DIRS}:}${IIT_INSTALL}/share/iCub
-ENV GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH:+${GAZEBO_MODEL_PATH}:}${IIT_INSTALL}/share/iCub/robots:${IIT_INSTALL}/share
-ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH:+${ROS_PACKAGE_PATH}:}${IIT_INSTALL}/share
+    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
+    ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
+    echo "source ${IIT_INSTALL}/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
+    ln -s ${IIT_SOURCES}/robotology-superbuild/robotology/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
+    find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # SIMMECHANICS-TO-URDF
 # ENV ROS_DISTRO melodic
@@ -373,7 +195,7 @@ RUN \
 # ICUB-MODEL-GENERATOR
 RUN cd ${IIT_SOURCES}/icub-model-generator &&\
     mkdir -p build && cd build &&\
-    cmake \
+    CMAKE_PREFIX_PATH=${IIT_INSTALL} cmake \
           -G $CMAKE_GENERATOR \
           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
@@ -385,31 +207,8 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
     find ${IIT_SOURCES}/icub-model-generator -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
-# ROBOTOLOGY-SUPERBUILD
-RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
-    sed -i "s/ProjectsTagsMaster/ProjectsTags$(python -c "print '$SOURCES_GIT_BRANCH'.capitalize()")/g" CMakeLists.txt &&\
-    mkdir -p build && cd build &&\
-    YARP_ROBOT_NAME= \
-    cmake \
-          -G $CMAKE_GENERATOR \
-          -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
-          -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
-          -DROBOTOLOGY_USES_GAZEBO:BOOL=ON \
-          -DROBOTOLOGY_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
-          -DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
-          -DNON_INTERACTIVE_BUILD:BOOL=ON \
-          -DYCM_EP_MAINTAINER_MODE:BOOL=OFF \
-          -DWBToolbox_TAG=devel \
-          .. &&\
-    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
-    find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV BLOCKFACTORY_PLUGIN_PATH=${IIT_SOURCES}/robotology-superbuild/build/install/lib/blockfactory
-
 # Misc setup of the image
 # =======================
-
-# Fix permissions of the directories inside IIT_DIR
-RUN find ${IIT_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # Include a custom bashrc
 COPY bashrc /usr/etc/skel/bashrc-dev
