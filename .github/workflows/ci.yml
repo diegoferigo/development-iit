@@ -90,7 +90,7 @@ jobs:
           github.event_name != 'pull_request' &&
           github.ref == 'refs/heads/master' &&
           matrix.target == 'master'
-        run: "docker push diegoferigo/development:${{ matrix.target }}"
+        run: "docker push diegoferigo/development:latest"
 
   # ======================
   # REINFORCEMENT LEARNING
@@ -143,4 +143,4 @@ jobs:
           github.event_name != 'pull_request' &&
           github.ref == 'refs/heads/master' &&
           matrix.target == 'master'
-        run: "docker push diegoferigo/rl:${{ matrix.target }}"
+        run: "docker push diegoferigo/rl:latest"
