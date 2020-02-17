@@ -117,7 +117,7 @@ ARG IIT_BIN=${IIT_INSTALL}/bin
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20200123"
+ARG IIT_DOCKER_SOURCES="20200217"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
