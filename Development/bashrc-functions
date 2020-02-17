@@ -180,6 +180,10 @@ function compiler.set() {
 				msg "Setting gcc8"
 				export CC="gcc-8"  && export CXX="g++-8"
 			;;
+			gcc9|4)
+				msg "Setting gcc9"
+				export CC="gcc-9"  && export CXX="g++-9"
+			;;
 			*) err "$1: only gcc and clang${CLANG_VER%.*} are supported compilers" ; return 1
 			;;
 		esac
