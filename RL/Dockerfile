@@ -301,7 +301,7 @@ RUN cd ${RL_SOURCES}/ign-gazebo &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 ENV IGN_CONFIG_PATH=${RL_INSTALL}/share/ignition
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-2/plugins:${RL_INSTALL}/lib/ign-gazebo-2/plugins/gui
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-3/plugins:${RL_INSTALL}/lib/ign-gazebo-3/plugins/gui
 
 # ign-launch
 RUN cd ${RL_SOURCES}/ign-launch &&\
