@@ -61,6 +61,21 @@ function yarpinit() {
 	fi
 }
 
+# Deactivate the default virtualenv created in the Dockerfile
+function deactivate_default_virtualenv() {
+	if [ -z $VIRTUAL_ENV ] ; then
+		msg "No virtualenv enabled"
+		return 1
+	fi
+	
+	# Remove from the PATH all the entry containing the virtualenv path.
+	# From: http://www.unixcl.com/2009/05/remove-path-from-path-variable-in-bash.html
+	REMOVE="${VIRTUAL_ENV}*"
+	export PATH=$(IFS=':';p=($PATH);unset IFS;p=(${p[@]%%$REMOVE});IFS=':';echo "${p[*]}";unset IFS)
+	
+	return 0
+}
+
 # Configure a CMake project while performing additional operations on files used by the
 # the development toolchain. This function accepts `cmake` or `ccmake` as input argument.
 function cm_template() {
