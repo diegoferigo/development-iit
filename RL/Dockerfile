@@ -183,7 +183,7 @@ RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr
 RUN groupadd runtimeusers || true
 
 # Download all the sources
-ARG RL_SOURCES="20200121"
+ARG RL_SOURCES="20200217"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
