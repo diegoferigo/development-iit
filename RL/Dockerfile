@@ -336,19 +336,19 @@ RUN pip3 install virtualenv &&\
         numpy \
         setuptools_scm \
         cloudpickle \
+        pybullet \
         # tf-nightly-gpu tfp-nightly \#
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         &&\
     #${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\#
     #${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\#
-    ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/bulletphysics/bullet3.git &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ===============
 # Install PyCharm
 # ===============
 
-ARG PYCHARM_VER=2019.2.1
+ARG PYCHARM_VER=2019.3.3
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python-setuptools \
