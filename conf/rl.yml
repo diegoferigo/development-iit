@@ -31,6 +31,7 @@ devenv:
         - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
         - "$HOME/.dockerdot/PyCharmCE2019.2/:$HOME/.PyCharmCE2019.2"
         - "$HOME/.dockerdot/julia:$HOME/.julia"
+        - "$HOME/.dockerdot/cache:$HOME/.cache"
       files:
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
     gpu: "intel"
