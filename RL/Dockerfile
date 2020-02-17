@@ -461,8 +461,7 @@ RUN cd ${RL_SOURCES} &&\
 ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
 
 # Install gym-ignition
-RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-model-pybullet.git &&\
-    apt-get update &&\
+RUN apt-get update &&\
     apt install -y --no-install-recommends swig &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd ${RL_SOURCES} &&\
