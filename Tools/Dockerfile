@@ -127,14 +127,16 @@ RUN apt-get update &&\
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.11.0
+ARG QTCREATOR_VERSION=4.11.1
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
+COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
 RUN cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
     chmod +x qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
     ./qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run --platform minimal --script QtCreatorSetup.js &&\
     rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js &&\
-    ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
+    ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator &&\
+    rm /root/.local/share/Qt/qtaccount.ini
 
 # Gitkraken
 RUN apt-get update &&\
