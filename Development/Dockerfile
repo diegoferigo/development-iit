@@ -151,7 +151,6 @@ EXPOSE 10000/tcp
 ENV YARP_COLORED_OUTPUT=1
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     mkdir -p build && cd build &&\
-    YARP_ROBOT_NAME= \
     cmake \
           -G $CMAKE_GENERATOR \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
