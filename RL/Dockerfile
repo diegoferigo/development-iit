@@ -487,6 +487,11 @@ ENV SDF_PATH=${RL_INSTALL}/share/gympp/gazebo/models
 ENV PYTHONPATH=${PYTHONPATH}:${RL_INSTALL}/lib/python3.6/site-packages
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${RL_INSTALL}/share/gympp/gazebo
 
+# Configure gym-ignition-models
+ENV SDF_PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/gym_ignition_models:${SDF_PATH}
+ENV IGN_FILE_PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/gym_ignition_models/panda:${IGN_FILE_PATH}
+ENV IGN_FILE_PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/gym_ignition_models/iCubGazeboV2_5:${IGN_FILE_PATH}
+
 # =============
 # FIX OWNERSHIP
 # =============
