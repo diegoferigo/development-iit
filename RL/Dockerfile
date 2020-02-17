@@ -361,8 +361,8 @@ RUN apt-get update &&\
     curl -L https://download.jetbrains.com/python/pycharm-community-${PYCHARM_VER}.tar.gz -o /opt/pycharm/installer.tgz &&\
     tar --strip-components=1 -xzf installer.tgz &&\
     rm installer.tgz &&\
-    python2 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
-    python3 /opt/pycharm/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    python2 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
 # =============

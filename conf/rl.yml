@@ -29,7 +29,7 @@ devenv:
         - "$HOME/.dockerdot/ccache:$HOME/.ccache"
         - "$HOME/.dockerdot/gitkraken:$HOME/.gitkraken"
         - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
-        - "$HOME/.dockerdot/PyCharmCE2019.2/:$HOME/.PyCharmCE2019.2"
+        - "$HOME/.dockerdot/PyCharmCE2019.3/:$HOME/.PyCharmCE2019.3"
         - "$HOME/.dockerdot/julia:$HOME/.julia"
         - "$HOME/.dockerdot/cache:$HOME/.cache"
       files:
