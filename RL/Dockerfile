@@ -438,6 +438,28 @@ RUN apt-get update && \
 # Install projects for RL
 # =======================
 
+# Use python bindings from fork
+RUN cd ${RL_SOURCES} &&\
+    git clone -b feature/numpy-and-ik https://github.com/diegoferigo/idyntree &&\
+    mkdir -p idyntree/build &&\
+    cd idyntree/build &&\
+    cmake \
+          -GNinja \
+          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
+          -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+          -DIDYNTREE_USES_PYTHON:BOOL=ON \
+          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
+          -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
+          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/numpy/core/include \
+          -DIDYNTREE_USES_KDL:BOOL=OFF \
+          -DYCM_USE_DEPRECATED=OFF \
+          .. &&\
+    cmake --build . --target install &&\
+    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
+
 # Install gym-ignition
 RUN ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/diegoferigo/icub-model-pybullet.git &&\
     apt-get update &&\
@@ -464,32 +486,6 @@ ENV IGN_FILE_PATH=/iit/local/share:${RL_SOURCES}/icub-gazebo:${RL_INSTALL}/share
 ENV SDF_PATH=${RL_INSTALL}/share/gympp/gazebo/models
 ENV PYTHONPATH=${PYTHONPATH}:${RL_INSTALL}/lib/python3.6/site-packages
 ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${RL_INSTALL}/share/gympp/gazebo
-
-# ========
-# iDynTree
-# ========
-
-# Use python bindings from fork
-RUN cd ${RL_SOURCES} &&\
-    git clone -b feature/numpy-and-ik https://github.com/diegoferigo/idyntree &&\
-    mkdir -p idyntree/build &&\
-    cd idyntree/build &&\
-    cmake \
-          -GNinja \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
-          -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-          -DIDYNTREE_USES_PYTHON:BOOL=ON \
-          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
-          -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
-          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/numpy/core/include \
-          -DIDYNTREE_USES_KDL:BOOL=OFF \
-          -DYCM_USE_DEPRECATED=OFF \
-          .. &&\
-    cmake --build . --target install &&\
-    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
 
 # =============
 # FIX OWNERSHIP
