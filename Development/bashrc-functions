@@ -72,6 +72,7 @@ function deactivate_default_virtualenv() {
 	# From: http://www.unixcl.com/2009/05/remove-path-from-path-variable-in-bash.html
 	REMOVE="${VIRTUAL_ENV}*"
 	export PATH=$(IFS=':';p=($PATH);unset IFS;p=(${p[@]%%$REMOVE});IFS=':';echo "${p[*]}";unset IFS)
+	unset VIRTUAL_ENV
 	
 	return 0
 }
