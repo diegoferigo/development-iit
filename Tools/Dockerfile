@@ -54,7 +54,7 @@ RUN apt-get update &&\
     dpkg-reconfigure --frontend noninteractive tzdata
 
 # Updated clang ppa
-ARG clang_version=9
+ARG clang_version=10
 ENV CLANG_VER=${clang_version}
 
 # Build and development tools
