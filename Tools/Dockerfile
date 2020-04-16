@@ -216,10 +216,16 @@ RUN apt-get update &&\
     rm -r /tmp/include-what-you-use
 
 # Extra tools
+ARG EXA_VERSION=0.9.0
 ARG BAT_VERSION=0.12.1
 ARG STARSHIP_VERSION=0.33.1
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
+    # https://github.com/ogham/exa
+    apt-get update && apt-get install libhttp-parser2.7.1 && rm -rf /var/lib/apt/lists/* &&\
+    wget https://github.com/ogham/exa/releases/download/v${EXA_VERSION}/exa-linux-x86_64-${EXA_VERSION}.zip &&\
+    unzip exa-linux-x86_64-${EXA_VERSION}.zip &&\
+    mv exa-linux-x86_64 /usr/local/bin/exa &&\
     # https://github.com/junegunn/fzf
     git clone --depth 1 https://github.com/junegunn/fzf &&\
     yes | ./fzf/install --no-update-rc &&\
