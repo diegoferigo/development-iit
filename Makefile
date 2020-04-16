@@ -21,7 +21,6 @@ development-master:
 	docker build --rm \
 		--build-arg from=diegoferigo/tools \
 		--tag diegoferigo/development:master \
-		--build-arg SOURCES_GIT_BRANCH=master \
 		Development/
 
 # ======================
