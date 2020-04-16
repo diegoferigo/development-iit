@@ -190,12 +190,11 @@ RUN apt-get update &&\
     cd /tmp &&\
     git clone https://github.com/include-what-you-use/include-what-you-use.git &&\
     cd include-what-you-use &&\
-    git checkout clang_${CLANG_VER}.0 &&\
+    git checkout clang_${CLANG_VER} &&\
     mkdir build && cd build &&\
     cmake .. \
           -G Ninja \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DIWYU_LLVM_ROOT_PATH=/usr/lib/llvm-${CLANG_VER} &&\
+          -DCMAKE_BUILD_TYPE=Release &&\
     cmake --build . --target install &&\
     rm -r /tmp/include-what-you-use
 
