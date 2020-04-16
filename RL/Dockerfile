@@ -1,24 +1,97 @@
 ARG from=diegoferigo/development:nvidia-master
 FROM ${from}
 
+# Create a new runtimeusers group (it might already exist)
+RUN groupadd runtimeusers || true
 
 ENV RL_DIR=/rl
 ENV RL_INSTALL=${RL_DIR}/local
 ENV RL_SOURCES=${RL_DIR}/sources
 ENV DEVENV_PATH=${RL_INSTALL}/bin:${DEVENV_PATH}
 ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${RL_INSTALL}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${RL_INSTALL}/lib
 
-# =======================================
-# Install ignition libraries from sources
-# =======================================
+RUN mkdir -p ${RL_SOURCES}
 
-# http://gazebosim.org/tutorials?tut=install_dependencies_from_source
+# =================
+# Python VirtualEnv
+# =================
 
-ENV CC="gcc-8"
-ENV CXX="g++-8"
+ENV VIRTUAL_ENV=/rl/ve
+ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
 
+RUN pip3 install virtualenv &&\
+    virtualenv ${VIRTUAL_ENV} &&\
+    ${VIRTUAL_ENV}/bin/pip3 install \
+        jupyter \
+        docker \
+        PyYAML \
+        matplotlib \
+        pytest \
+        gym \
+        numpy \
+        setuptools_scm \
+        cloudpickle \
+        pybullet \
+        ray[rllib] gputil \
+        # tf-nightly-gpu tfp-nightly \#
+        PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
+        &&\
+    rm -r $HOME/.cache &&\
+    ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\
+    ${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+# =======
+# PyCharm
+# =======
+
+ARG PYCHARM_VER=2019.3.4
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        python-setuptools \
+        python3-setuptools \
+        libpython-dev \
+        libpython3-dev \
+        &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /opt && mkdir pycharm && cd pycharm &&\
+    curl -L https://download.jetbrains.com/python/pycharm-community-${PYCHARM_VER}.tar.gz -o /opt/pycharm/installer.tgz &&\
+    tar --strip-components=1 -xzf installer.tgz &&\
+    rm installer.tgz &&\
+    python2 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
+    ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
+
+# ========
+# iDynTree
+# ========
+
+# Use python bindings from fork
+RUN cd ${RL_SOURCES} &&\
+    git clone -b feature/numpy-and-ik --depth=1 https://github.com/diegoferigo/idyntree &&\
+    mkdir -p idyntree/build &&\
+    cd idyntree/build &&\
+    cmake \
+          -GNinja \
+          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
+          -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+          -DIDYNTREE_USES_PYTHON:BOOL=ON \
+          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
+          -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
+          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/numpy/core/include \
+          -DIDYNTREE_USES_KDL:BOOL=OFF \
+          -DYCM_USE_DEPRECATED=OFF \
+          .. &&\
+    cmake --build . --target install &&\
+    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
+
+# ============
 # Common tools
+# ============
+
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         apt-transport-https \
@@ -28,7 +101,6 @@ RUN apt-get update &&\
         gnupg2 \
         apt-utils \
         ca-certificates \
-        locales \
         curl \
         lsb-release \
         software-properties-common \
@@ -39,7 +111,10 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/*
 
+# =================
 # Development tools
+# =================
+
 RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - &&\
     apt-add-repository "deb https://apt.kitware.com/ubuntu/ `lsb_release -cs` main" &&\
     apt-get update &&\
@@ -57,6 +132,17 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
         &&\
     rm -rf /var/lib/apt/lists/*
 
+# =================
+# Ignition Robotics
+# =================
+
+# Uninstall gazebo classic and protobuf
+RUN apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
+    apt autoremove -y
+
+# https://ignitionrobotics.org/docs/citadel/install
+# http://gazebosim.org/tutorials?tut=install_dependencies_from_source
+
 # Install protobuf
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
@@ -65,25 +151,25 @@ RUN apt-get update &&\
         automake \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
-    cd /tmp &&\
+    cd ${RL_SOURCES} &&\
     git clone --depth 1 -b v3.8.0 https://github.com/google/protobuf &&\
     cd protobuf &&\
     git submodule update --init --recursive &&\
     ./autogen.sh &&\
     ./configure &&\
     make -j8 &&\
-    make install &&\
-    rm -r /tmp/protobuf
-    
-# Uninstall gazebo classic and protobuf
-RUN apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
-    apt autoremove -y
+    make install
 
-# Ignition dependencies
+# Ignition Robotics dependencies
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         ruby-dev \
         ruby \
+        ruby-ronn \
+        freeglut3-dev \
+        libglew-dev \
+        libtinyxml-dev \
+        libzmq3-dev \
         # ign-common
         libtinyxml2-dev \
         libswscale-dev \
@@ -108,6 +194,7 @@ RUN apt-get update &&\
         uuid-dev \
         # ign-rendering
         libogre-1.9-dev \
+        #libogre-2.1-dev \
         # ign-tools
         libwebsockets-dev \
         #ign-gui
@@ -117,76 +204,109 @@ RUN apt-get update &&\
         # ign-gazebo runtime deps
         qtbase5-dev \
         qtdeclarative5-dev \
+        libqt5core5a \
         qml-module-qtquick2 \
         qml-module-qtquick-controls \
         qml-module-qtquick-controls2 \
         qml-module-qtquick-dialogs \
         qml-module-qtquick-layouts \
+        qml-module-qtqml-models2 \
         qml-module-qt-labs-folderlistmodel \
         qml-module-qt-labs-settings \
         &&\
     rm -rf /var/lib/apt/lists/*
 
-# Setup locales and tzdata
-RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen &&\
-    locale-gen &&\
-    update-locale LANG="en_US.UTF-8" &&\
-    export DEBIAN_FRONTEND=noninteractive &&\
-    export DEBCONF_NONINTERACTIVE_SEEN=true &&\
-    rm -rf /etc/localtime &&\
-    rm -rf /etc/timezone &&\
-    echo 'tzdata tzdata/Areas select Europe' | debconf-set-selections &&\
-    echo 'tzdata tzdata/Zones/Europe select Rome' | debconf-set-selections &&\
-    apt-get update &&\
-    apt-get install -y --no-install-recommends tzdata &&\
-    rm -rf /var/lib/apt/lists/*
+# Setup locales and timezone
+ENV TZ=Europe/Rome
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends locales locales-all tzdata &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    echo "${TZ}" | tee /etc/timezone &&\
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+# =======
+# CITADEL
+# =======
+
+ARG IGN_CMAKE_VER=2
+ARG IGN_TOOLS_VER=""
+ARG IGN_MATH_VER=6
+ARG IGN_COMMON_VER=3
+ARG IGN_MSG_VER=5
+ARG SDFORMAT_VER=9
+ARG IGN_FUEL_TOOLS_VER=4
+ARG IGN_PLUGIN_VER=""
+ARG IGN_TRANSPORT_VER=8
+ARG IGN_PHYSICS_VER=2
+ARG IGN_RENDERING_VER=3
+ARG IGN_GUI_VER=3
+ARG IGN_SENSORS_VER=3
+ARG IGN_GAZEBO_VER=3
+ARG IGN_LAUNCH_VER=2
 
 # Add gazebo ppa and install other deps.
 # We want to install from source ign-gazebo, ign-physics, sdformat, and all the components that depend on protobuf.
-RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list &&\
+# ARG IGNITION_DEFAULT_CHANNEL="stable"
+ARG IGNITION_DEFAULT_CHANNEL="prerelease"
+RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
+        /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends \
-        libogre-2.1-dev \
         libdart6-all-dev \
         # Install from ppa base components
-        libignition-cmake2-dev \
-        libignition-common3-dev \
-        libignition-math6-dev \
-        libignition-math6-eigen3-dev \
-        libignition-plugin-dev \
-        libignition-rendering3 \
-        libignition-rendering3-dev \
-        libignition-tools-dev \
+        libignition-cmake${IGN_CMAKE_VER}-dev \
+        libignition-tools${IGN_TOOLS_VER}-dev \
+        libignition-math${IGN_MATH_VER}-dev \
+        libignition-math${IGN_MATH_VER}-eigen3-dev \
+        libignition-common${IGN_COMMON_VER}-dev \
+        libignition-plugin${IGN_PLUGIN_VER}-dev \
+        libignition-rendering${IGN_RENDERING_VER} \
+        libignition-rendering${IGN_RENDERING_VER}-ogre1-dev \
+        #libignition-rendering${IGN_RENDERING_VER}-ogre2-dev \#
         &&\
     rm -rf /var/lib/apt/lists/*
 
 RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr/local/bin/git-remote-hg &&\
     chmod +x /usr/local/bin/git-remote-hg
 
-# Create a new runtimeusers group (it might be already present)
-RUN groupadd runtimeusers || true
-
 # Download all the sources
-ARG RL_SOURCES="20200217"
+ARG RL_SOURCES="20200416"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
     git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport8 && cd ign-transport && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs5 && cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf9 && cd sdformat && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics2 && cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors3 && cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui3 && cd ign-gui && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo3 && cd ign-gazebo && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b branches/ign-launch2 && cd ign-launch && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools4 && cd ign-fuel-tools && git gc --aggressive && cd - &&\
-    git clone https://github.com/robotology/icub-gazebo &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport${IGN_TRANSPORT_VER} &&\
+        cd ign-transport && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs${IGN_MSG_VER} &&\
+        cd ign-msgs && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf${SDFORMAT_VER} &&\
+        cd sdformat && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics${IGN_PHYSICS_VER} &&\
+        cd ign-physics && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors${IGN_SENSORS_VER} &&\
+        cd ign-sensors && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui${IGN_GUI_VER} &&\
+        cd ign-gui && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo${IGN_GAZEBO_VER} &&\
+        cd ign-gazebo && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b branches/ign-launch${IGN_LAUNCH_VER}\
+        && cd ign-launch && git gc --aggressive && cd - &&\
+    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools${IGN_FUEL_TOOLS_VER} &&\
+        cd ign-fuel-tools && git gc --aggressive && cd - &&\
+    #git clone https://github.com/robotology/icub-gazebo &&\#
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
 ENV CMAKE_GENERATOR="Ninja"
 ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
+ENV IGN_INSTALL_PREFIX_PATH="/usr"
+
+ENV CC="clang-10"
+ENV CXX="clang++-10"
 
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
@@ -194,12 +314,11 @@ RUN cd ${RL_SOURCES}/sdformat &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         # TODO: build tests OFF?
         .. &&\
     cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-    # TODO: with clang here it does not find "limits.h"
 
 # ign-msgs
 RUN cd ${RL_SOURCES}/ign-msgs &&\
@@ -207,7 +326,7 @@ RUN cd ${RL_SOURCES}/ign-msgs &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
@@ -219,7 +338,7 @@ RUN cd ${RL_SOURCES}/ign-transport &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
@@ -231,7 +350,7 @@ RUN cd ${RL_SOURCES}/ign-physics &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
@@ -243,7 +362,7 @@ RUN cd ${RL_SOURCES}/ign-sensors &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DDRI_TESTS:BOOL=FALSE \
         .. &&\
     cmake --build . --target install &&\
@@ -255,7 +374,7 @@ RUN cd ${RL_SOURCES}/ign-gui &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
@@ -267,7 +386,7 @@ RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
@@ -279,14 +398,11 @@ RUN cd ${RL_SOURCES}/ign-gazebo &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-ENV IGN_CONFIG_PATH=${RL_INSTALL}/share/ignition
-ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=${RL_INSTALL}/lib/ign-gazebo-3/plugins:${RL_INSTALL}/lib/ign-gazebo-3/plugins/gui
 
 # ign-launch
 RUN cd ${RL_SOURCES}/ign-launch &&\
@@ -294,7 +410,7 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         -DBUILD_TESTING:BOOL=OFF \
         .. &&\
     cmake --build . --target install &&\
@@ -302,53 +418,6 @@ RUN cd ${RL_SOURCES}/ign-launch &&\
 
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ===========================
-# Setup the python virtualenv
-# ===========================
-
-ENV VIRTUAL_ENV=/rl/ve
-ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
-RUN pip3 install virtualenv &&\
-    virtualenv ${VIRTUAL_ENV} &&\
-    ${VIRTUAL_ENV}/bin/pip3 install \
-        jupyter \
-        docker \
-        PyYAML \
-        matplotlib \
-        pytest \
-        gym \
-        numpy \
-        setuptools_scm \
-        cloudpickle \
-        pybullet \
-        # tf-nightly-gpu tfp-nightly \#
-        PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
-        &&\
-    #${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\#
-    #${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\#
-    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ===============
-# Install PyCharm
-# ===============
-
-ARG PYCHARM_VER=2019.3.3
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        python-setuptools \
-        python3-setuptools \
-        libpython-dev \
-        libpython3-dev \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd /opt && mkdir pycharm && cd pycharm &&\
-    curl -L https://download.jetbrains.com/python/pycharm-community-${PYCHARM_VER}.tar.gz -o /opt/pycharm/installer.tgz &&\
-    tar --strip-components=1 -xzf installer.tgz &&\
-    rm installer.tgz &&\
-    python2 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
-    python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
-    ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
 # =============
 # Install Julia
@@ -423,58 +492,23 @@ RUN apt-get update && \
 # Install projects for RL
 # =======================
 
-# Use python bindings from fork
-RUN cd ${RL_SOURCES} &&\
-    git clone -b feature/numpy-and-ik https://github.com/diegoferigo/idyntree &&\
-    mkdir -p idyntree/build &&\
-    cd idyntree/build &&\
-    cmake \
-          -GNinja \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
-          -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-          -DIDYNTREE_USES_PYTHON:BOOL=ON \
-          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
-          -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
-          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/numpy/core/include \
-          -DIDYNTREE_USES_KDL:BOOL=OFF \
-          -DYCM_USE_DEPRECATED=OFF \
-          .. &&\
-    cmake --build . --target install &&\
-    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
-
-# Install gym-ignition
+# Install SWIG 4 from sources
+ARG SWIG_REL="rel-4.0.1"
 RUN apt-get update &&\
-    apt install -y --no-install-recommends swig &&\
+    apt-get install -y --no-install-recommends \
+        autotools-dev \
+        automake \
+        bison \
+        libpcre3-dev &&\
     rm -rf /var/lib/apt/lists/* &&\
-    cd ${RL_SOURCES} &&\
-    git clone -b devel https://github.com/robotology/gym-ignition &&\
-    mkdir gym-ignition/build &&\
-    cd gym-ignition/build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=Debug \
-        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        .. &&\
-    cmake --build . --target install &&\
-    cd .. &&\
-    ${VIRTUAL_ENV}/bin/pip3 install -e . &&\
-    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# Configure gym-ignition
-ENV IGN_FILE_PATH=/iit/local/share:${RL_SOURCES}/icub-gazebo:${RL_INSTALL}/share/gympp/gazebo/models/Minitaur
-ENV SDF_PATH=${RL_INSTALL}/share/gympp/gazebo/models
-ENV PYTHONPATH=${PYTHONPATH}:${RL_INSTALL}/lib/python3.6/site-packages
-ENV ROS_PACKAGE_PATH=${ROS_PACKAGE_PATH}:${RL_INSTALL}/share/gympp/gazebo
-
-# Configure gym-ignition-models
-ENV SDF_PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/gym_ignition_models:${SDF_PATH}
-ENV IGN_FILE_PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/gym_ignition_models/panda:${IGN_FILE_PATH}
-ENV IGN_FILE_PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/gym_ignition_models/iCubGazeboV2_5:${IGN_FILE_PATH}
+    cd /tmp/ &&\
+    git clone --depth 1 -b ${SWIG_REL} https://github.com/swig/swig.git &&\
+    cd swig &&\
+    sh autogen.sh &&\
+    ./configure &&\
+    make -j2 &&\
+    make install &&\
+    rm -r /tmp/swig
 
 # =============
 # FIX OWNERSHIP
