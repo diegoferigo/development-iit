@@ -16,7 +16,7 @@ RUN mkdir -p ${RL_SOURCES}
 # Python VirtualEnv
 # =================
 
-ENV VIRTUAL_ENV=/rl/ve
+ENV VIRTUAL_ENV=/rl/venv
 ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
 
 RUN pip3 install virtualenv &&\
