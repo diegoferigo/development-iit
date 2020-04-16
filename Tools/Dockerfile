@@ -37,6 +37,7 @@ RUN apt-get update &&\
         xterm \
         curl \
         unzip \
+        mesa-utils \
         &&\
     rm -rf /var/lib/apt/lists/*
 
