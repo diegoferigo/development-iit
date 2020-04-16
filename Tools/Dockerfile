@@ -201,7 +201,7 @@ RUN apt-get update &&\
 # Extra tools
 ARG EXA_VERSION=0.9.0
 ARG BAT_VERSION=0.12.1
-ARG STARSHIP_VERSION=0.33.1
+ARG STARSHIP_VERSION=0.40.1
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
     # https://github.com/ogham/exa
