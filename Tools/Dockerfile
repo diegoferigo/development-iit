@@ -157,7 +157,7 @@ RUN apt-get update &&\
     cd /tmp &&\
     git clone --depth 1 https://github.com/mozilla/rr.git &&\
     cd rr && mkdir build && cd build &&\
-    CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} cmake -G Ninja .. &&\
+    cmake -G Ninja .. &&\
     cmake --build . &&\
     cmake --build . --target install &&\
     rm -r /tmp/rr
