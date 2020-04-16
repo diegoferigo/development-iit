@@ -297,6 +297,7 @@ ENV CXX="clang++-10"
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
     mkdir -p build && cd build &&\
+    CC=gcc-8 CXX=g++-8 \
     cmake \
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
