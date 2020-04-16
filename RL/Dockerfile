@@ -37,8 +37,8 @@ RUN pip3 install virtualenv &&\
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         &&\
     rm -r $HOME/.cache &&\
-    ${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\
-    ${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\
+    #${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\#
+    #${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\#
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # =======
