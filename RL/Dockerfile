@@ -381,6 +381,9 @@ RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
 
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
+    git remote add diegoferigo https://github.com/diegoferigo/ign-gazebo &&\
+    git fetch diegoferigo &&\
+    git checkout release/gym-ignition-devel &&\
     mkdir -p build && cd build &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
