@@ -271,34 +271,20 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         &&\
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://raw.github.com/mnauw/git-remote-hg/master/git-remote-hg -O /usr/local/bin/git-remote-hg &&\
-    chmod +x /usr/local/bin/git-remote-hg
-
 # Download all the sources
 ARG RL_SOURCES="20200416"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
-    git config --global remote-hg.ignore-name "~|pre|pendulum" &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-transport -b branches/ign-transport${IGN_TRANSPORT_VER} &&\
-        cd ign-transport && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-msgs -b branches/ign-msgs${IGN_MSG_VER} &&\
-        cd ign-msgs && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/osrf/sdformat -b branches/sdf${SDFORMAT_VER} &&\
-        cd sdformat && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-physics -b branches/ign-physics${IGN_PHYSICS_VER} &&\
-        cd ign-physics && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-sensors -b branches/ign-sensors${IGN_SENSORS_VER} &&\
-        cd ign-sensors && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gui -b branches/ign-gui${IGN_GUI_VER} &&\
-        cd ign-gui && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-gazebo -b branches/ign-gazebo${IGN_GAZEBO_VER} &&\
-        cd ign-gazebo && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-launch -b branches/ign-launch${IGN_LAUNCH_VER}\
-        && cd ign-launch && git gc --aggressive && cd - &&\
-    git clone hg::https://bitbucket.org/ignitionrobotics/ign-fuel-tools -b branches/ign-fuel-tools${IGN_FUEL_TOOLS_VER} &&\
-        cd ign-fuel-tools && git gc --aggressive && cd - &&\
-    #git clone https://github.com/robotology/icub-gazebo &&\#
+    git clone https://github.com/ignitionrobotics/ign-transport -b ign-transport${IGN_TRANSPORT_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-msgs -b ign-msgs${IGN_MSG_VER} &&\
+    git clone https://github.com/osrf/sdformat -b sdf${SDFORMAT_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-physics -b ign-physics${IGN_PHYSICS_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-sensors -b ign-sensors${IGN_SENSORS_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-gui -b ign-gui${IGN_GUI_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-gazebo -b ign-gazebo${IGN_GAZEBO_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-launch -b ign-launch${IGN_LAUNCH_VER} &&\
+    git clone https://github.com/ignitionrobotics/ign-fuel-tools -b ign-fuel-tools${IGN_FUEL_TOOLS_VER} &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
 ENV CMAKE_GENERATOR="Ninja"
