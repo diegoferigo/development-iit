@@ -140,28 +140,28 @@ RUN apt-get update &&\
     rm /tmp/gitkraken-amd64.deb
 
 # rr
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        ccache \
-        cmake \
-        make \
-        g++-multilib \
-        gdb \
-        pkg-config \
-        python3-pexpect \
-        manpages-dev \
-        git \
-        ninja-build \
-        capnproto \
-        libcapnp-dev &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd /tmp &&\
-    git clone --depth 1 https://github.com/mozilla/rr.git &&\
-    cd rr && mkdir build && cd build &&\
-    cmake -G Ninja .. &&\
-    cmake --build . &&\
-    cmake --build . --target install &&\
-    rm -r /tmp/rr
+# RUN apt-get update &&\
+#     apt-get install -y --no-install-recommends \
+#         ccache \
+#         cmake \
+#         make \
+#         g++-multilib \
+#         gdb \
+#         pkg-config \
+#         python3-pexpect \
+#         manpages-dev \
+#         git \
+#         ninja-build \
+#         capnproto \
+#         libcapnp-dev &&\
+#     rm -rf /var/lib/apt/lists/* &&\
+#     cd /tmp &&\
+#     git clone --depth 1 https://github.com/mozilla/rr.git &&\
+#     cd rr && mkdir build && cd build &&\
+#     cmake -G Ninja .. &&\
+#     cmake --build . &&\
+#     cmake --build . --target install &&\
+#     rm -r /tmp/rr
 
 # SWIG with Matlab / Octave support
 # ... waiting its upstream merge
