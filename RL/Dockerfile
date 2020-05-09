@@ -12,6 +12,10 @@ ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${RL_INSTALL}
 
 RUN mkdir -p ${RL_SOURCES}
 
+ENV CMAKE_GENERATOR="Ninja"
+ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
+ENV IGN_INSTALL_PREFIX_PATH="/usr"
+
 # =================
 # Python VirtualEnv
 # =================
@@ -286,10 +290,6 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone https://github.com/ignitionrobotics/ign-launch -b ign-launch${IGN_LAUNCH_VER} &&\
     git clone https://github.com/ignitionrobotics/ign-fuel-tools -b ign-fuel-tools${IGN_FUEL_TOOLS_VER} &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
-
-ENV CMAKE_GENERATOR="Ninja"
-ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
-ENV IGN_INSTALL_PREFIX_PATH="/usr"
 
 ENV CC="clang-10"
 ENV CXX="clang++-10"
