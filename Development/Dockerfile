@@ -1,6 +1,7 @@
 ARG from=diegoferigo/tools:latest
 FROM ${from}
 
+# ========================
 # Install ROS Desktop Full
 # ========================
 
@@ -37,10 +38,11 @@ RUN apt-get update &&\
         ros-${ROS_DISTRO}-desktop \
         # ros-${ROS_DISTRO}-desktop-full \
         #ros-${ROS_DISTRO}-fake-localization \
-        #ros-${ROS_DISTRO}-map-server \
+        #ros-${ROS_DISTRO}-map-server \#
         &&\
     rm -rf /var/lib/apt/lists/*
 
+# ===========================
 # Install libraries and tools
 # ===========================
 
@@ -86,6 +88,7 @@ RUN apt-get update &&\
         libasio-dev &&\
     rm -rf /var/lib/apt/lists/*
 
+# ===========================================
 # Install YARP, iCub and friends from sources
 # ===========================================
 

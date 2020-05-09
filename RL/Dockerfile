@@ -302,7 +302,6 @@ RUN cd ${RL_SOURCES}/sdformat &&\
         -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        # TODO: build tests OFF?
         .. &&\
     cmake --build . --target install &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+

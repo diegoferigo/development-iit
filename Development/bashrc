@@ -133,7 +133,7 @@ if [[ -x $(which colordiff) ]] ; then
 	alias diff='colordiff'
 fi
 if [[ -x $(which trash) ]] ; then
-    alias rm='trash'
+	alias rm='trash'
 fi
 if [[ -x $(which octave) ]] ; then
 	OCTAVE_BINDINGS_ROOT="${IIT_INSTALL}/octave"
