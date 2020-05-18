@@ -110,7 +110,7 @@ RUN apt-get update &&\
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.11.2
+ARG QTCREATOR_VERSION=4.12.0
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
 RUN cd /tmp &&\
@@ -201,8 +201,8 @@ RUN apt-get update &&\
 
 # Extra tools
 ARG EXA_VERSION=0.9.0
-ARG BAT_VERSION=0.12.1
-ARG STARSHIP_VERSION=0.40.1
+ARG BAT_VERSION=0.15.1
+ARG STARSHIP_VERSION=0.41.3
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
     # https://github.com/ogham/exa
