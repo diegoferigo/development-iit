@@ -276,7 +276,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
     rm -rf /var/lib/apt/lists/*
 
 # Download all the sources
-ARG RL_SOURCES="20200416"
+ARG RL_SOURCES="20200518"
 RUN mkdir -p ${RL_SOURCES} &&\
     cd ${RL_SOURCES} &&\
     mkdir -p ${RL_SOURCES} &&\
