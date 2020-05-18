@@ -34,22 +34,21 @@ RUN pip3 install virtualenv &&\
         gym \
         numpy \
         setuptools_scm \
-        cloudpickle \
         pybullet \
-        ray[rllib] gputil \
-        # tf-nightly-gpu tfp-nightly \#
+        ray[debug,rllib,tune] gputil \
+        torch torchvision \
+        tensorboard tensorboardX \
+        tensorflow tensorflow-probability \
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         &&\
-    rm -r $HOME/.cache &&\
-    #${VIRTUAL_ENV}/bin/pip3 install git+https://github.com/tensorflow/agents &&\#
-    #${VIRTUAL_ENV}/bin/pip3 install --upgrade --force-reinstall tb-nightly &&\#
+    rm -r $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # =======
 # PyCharm
 # =======
 
-ARG PYCHARM_VER=2019.3.4
+ARG PYCHARM_VER=2019.3.5
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python-setuptools \
