@@ -282,16 +282,20 @@ RUN mkdir -p ${RL_SOURCES} &&\
     git clone https://github.com/ignitionrobotics/ign-transport -b ign-transport${IGN_TRANSPORT_VER} &&\
     git clone https://github.com/ignitionrobotics/ign-msgs -b ign-msgs${IGN_MSG_VER} &&\
     git clone https://github.com/osrf/sdformat -b sdf${SDFORMAT_VER} &&\
-    git clone https://github.com/ignitionrobotics/ign-physics -b ign-physics${IGN_PHYSICS_VER} &&\
+    # git clone https://github.com/ignitionrobotics/ign-physics -b ign-physics${IGN_PHYSICS_VER} &&\#
+    git clone https://github.com/diegoferigo/ign-physics -b feature/extra_contact_data &&\
     git clone https://github.com/ignitionrobotics/ign-sensors -b ign-sensors${IGN_SENSORS_VER} &&\
     git clone https://github.com/ignitionrobotics/ign-gui -b ign-gui${IGN_GUI_VER} &&\
-    git clone https://github.com/ignitionrobotics/ign-gazebo -b ign-gazebo${IGN_GAZEBO_VER} &&\
+    # git clone https://github.com/ignitionrobotics/ign-gazebo -b ign-gazebo${IGN_GAZEBO_VER} &&\#
+    git clone https://github.com/diegoferigo/ign-gazebo -b release/gym-ignition-devel &&\
     git clone https://github.com/ignitionrobotics/ign-launch -b ign-launch${IGN_LAUNCH_VER} &&\
     git clone https://github.com/ignitionrobotics/ign-fuel-tools -b ign-fuel-tools${IGN_FUEL_TOOLS_VER} &&\
     chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
 
 ENV CC="clang-10"
 ENV CXX="clang++-10"
+
+# TODO: use colcol with --from?
 
 # sdformat
 RUN cd ${RL_SOURCES}/sdformat &&\
@@ -379,9 +383,6 @@ RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
 
 # ign-gazebo
 RUN cd ${RL_SOURCES}/ign-gazebo &&\
-    git remote add diegoferigo https://github.com/diegoferigo/ign-gazebo &&\
-    git fetch diegoferigo &&\
-    git checkout release/gym-ignition-devel &&\
     mkdir -p build && cd build &&\
     cmake \
         -G "$CMAKE_GENERATOR" \
