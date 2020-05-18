@@ -412,7 +412,7 @@ RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec
 # Install Julia
 # =============
 
-ARG JULIA_VER=1.2.0
+ARG JULIA_VER=1.4.1
 ENV DEVENV_PATH=${DEVENV_PATH}:/opt/julia/bin
 
 RUN cd /tmp &&\
@@ -423,7 +423,7 @@ RUN cd /tmp &&\
     mv julia-${JULIA_VER} julia &&\
     /opt/julia/bin/julia --version
 
-ARG ATOM_VERSION=v1.40.1
+ARG ATOM_VERSION=v1.46.0
 ARG ATOM_PKG_TMP=/tmp/atom_packages.txt
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
