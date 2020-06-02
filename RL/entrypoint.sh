@@ -12,4 +12,4 @@ setup_rl.sh
 echo "==> RL container ready"
 
 # If a CMD is passed, execute it
-exec "$@"
+gosu $USERNAME "$@"
