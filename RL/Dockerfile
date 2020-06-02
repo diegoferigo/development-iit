@@ -7,7 +7,7 @@ RUN groupadd runtimeusers || true
 ENV RL_DIR=/rl
 ENV RL_INSTALL=${RL_DIR}/local
 ENV RL_SOURCES=${RL_DIR}/sources
-ENV DEVENV_PATH=${RL_INSTALL}/bin:${DEVENV_PATH}
+ENV PATH=${RL_INSTALL}/bin:${PATH}
 ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${RL_INSTALL}
 
 RUN mkdir -p ${RL_SOURCES}
@@ -21,7 +21,7 @@ ENV IGN_INSTALL_PREFIX_PATH="/usr"
 # =================
 
 ENV VIRTUAL_ENV=/rl/venv
-ENV DEVENV_PATH=${VIRTUAL_ENV}/bin:$DEVENV_PATH
+ENV PATH=${VIRTUAL_ENV}/bin:$PATH
 
 RUN pip3 install virtualenv &&\
     virtualenv ${VIRTUAL_ENV} &&\
