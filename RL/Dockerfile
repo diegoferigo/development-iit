@@ -25,7 +25,7 @@ ENV PATH=${VIRTUAL_ENV}/bin:$PATH
 
 RUN pip3 install virtualenv &&\
     virtualenv ${VIRTUAL_ENV} &&\
-    ${VIRTUAL_ENV}/bin/pip3 install \
+    pip3 install \
         jupyter \
         docker \
         PyYAML \
