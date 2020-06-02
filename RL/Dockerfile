@@ -141,10 +141,6 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 # Ignition Robotics
 # =================
 
-# Uninstall gazebo classic and protobuf
-RUN apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
-    apt autoremove -y
-
 # https://ignitionrobotics.org/docs/citadel/install
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
@@ -165,62 +161,6 @@ RUN apt-get update &&\
     make -j8 &&\
     make install
 
-# Ignition Robotics dependencies
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        ruby-dev \
-        ruby \
-        ruby-ronn \
-        freeglut3-dev \
-        libglew-dev \
-        libtinyxml-dev \
-        libzmq3-dev \
-        # ign-common
-        libtinyxml2-dev \
-        libswscale-dev \
-        libavdevice-dev \
-        libavformat-dev \
-        libavcodec-dev \
-        libavutil-dev \
-        libfreeimage-dev \
-        libgts-dev \
-        libsqlite3-dev \
-        # sdformat
-        python \
-        libboost-system-dev \
-        libxml2-utils \
-        # ign-fuel-tools
-        libjsoncpp-dev \
-        libzip-dev \
-        libyaml-dev \
-        libcurl4-openssl-dev \
-        # ign-transport
-        libzmqpp-dev \
-        uuid-dev \
-        # ign-rendering
-        libogre-1.9-dev \
-        #libogre-2.1-dev \
-        # ign-tools
-        libwebsockets-dev \
-        #ign-gui
-        qtquickcontrols2-5-dev \
-        # ign-gazebo compile deps
-        libgflags-dev \
-        # ign-gazebo runtime deps
-        qtbase5-dev \
-        qtdeclarative5-dev \
-        libqt5core5a \
-        qml-module-qtquick2 \
-        qml-module-qtquick-controls \
-        qml-module-qtquick-controls2 \
-        qml-module-qtquick-dialogs \
-        qml-module-qtquick-layouts \
-        qml-module-qtqml-models2 \
-        qml-module-qt-labs-folderlistmodel \
-        qml-module-qt-labs-settings \
-        &&\
-    rm -rf /var/lib/apt/lists/*
-
 # Setup locales and timezone
 ENV TZ=Europe/Rome
 ENV LANG=en_US.UTF-8
@@ -233,179 +173,54 @@ RUN apt-get update &&\
     echo "${TZ}" | tee /etc/timezone &&\
     dpkg-reconfigure --frontend noninteractive tzdata
 
-# =======
-# CITADEL
-# =======
-
-ARG IGN_CMAKE_VER=2
-ARG IGN_TOOLS_VER=""
-ARG IGN_MATH_VER=6
-ARG IGN_COMMON_VER=3
-ARG IGN_MSG_VER=5
-ARG SDFORMAT_VER=9
-ARG IGN_FUEL_TOOLS_VER=4
-ARG IGN_PLUGIN_VER=""
-ARG IGN_TRANSPORT_VER=8
-ARG IGN_PHYSICS_VER=2
-ARG IGN_RENDERING_VER=3
-ARG IGN_GUI_VER=3
-ARG IGN_SENSORS_VER=3
-ARG IGN_GAZEBO_VER=3
-ARG IGN_LAUNCH_VER=2
-
-# Add gazebo ppa and install other deps.
-# We want to install from source ign-gazebo, ign-physics, sdformat, and all the components that depend on protobuf.
-# ARG IGNITION_DEFAULT_CHANNEL="stable"
 ARG IGNITION_DEFAULT_CHANNEL="prerelease"
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
         /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
+    # Remove Gazebo Classic
+    apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
+    apt autoremove -y &&\
+    # Install deps of Ignition Gazebo
     apt-get install -y --no-install-recommends \
-        libdart6-all-dev \
-        # Install from ppa base components
-        libignition-cmake${IGN_CMAKE_VER}-dev \
-        libignition-tools${IGN_TOOLS_VER}-dev \
-        libignition-math${IGN_MATH_VER}-dev \
-        libignition-math${IGN_MATH_VER}-eigen3-dev \
-        libignition-common${IGN_COMMON_VER}-dev \
-        libignition-plugin${IGN_PLUGIN_VER}-dev \
-        libignition-rendering${IGN_RENDERING_VER} \
-        libignition-rendering${IGN_RENDERING_VER}-ogre1-dev \
-        #libignition-rendering${IGN_RENDERING_VER}-ogre2-dev \#
+        cmake freeglut3-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
+        libdart6-collision-ode-dev libdart6-dev libdart6-utils-urdf-dev \
+        libfreeimage-dev libgflags-dev libglew-dev libgts-dev libogre-1.9-dev libogre-2.1-dev \
+        #libprotobuf-dev libprotobuf-dev libprotoc-dev \#
+        libqt5core5a libswscale-dev libtinyxml2-dev libtinyxml-dev pkg-config \
+        protobuf-compiler python qml-module-qt-labs-folderlistmodel \
+        qml-module-qt-labs-settings qml-module-qtquick2 qml-module-qtquick-controls \
+        qml-module-qtquick-controls2 qml-module-qtquick-dialogs qml-module-qtquick-layouts \
+        qml-module-qtqml-models2 qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
+        ruby ruby-ronn uuid-dev libzip-dev libjsoncpp-dev libcurl4-openssl-dev libyaml-dev \
+        libzmq3-dev libsqlite3-dev libwebsockets-dev \
+        #swig \#
+        ruby-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
-# Download all the sources
-ARG RL_SOURCES="20200518"
-RUN mkdir -p ${RL_SOURCES} &&\
-    cd ${RL_SOURCES} &&\
-    mkdir -p ${RL_SOURCES} &&\
-    git clone https://github.com/ignitionrobotics/ign-transport -b ign-transport${IGN_TRANSPORT_VER} &&\
-    git clone https://github.com/ignitionrobotics/ign-msgs -b ign-msgs${IGN_MSG_VER} &&\
-    git clone https://github.com/osrf/sdformat -b sdf${SDFORMAT_VER} &&\
-    # git clone https://github.com/ignitionrobotics/ign-physics -b ign-physics${IGN_PHYSICS_VER} &&\#
-    git clone https://github.com/diegoferigo/ign-physics -b feature/extra_contact_data &&\
-    git clone https://github.com/ignitionrobotics/ign-sensors -b ign-sensors${IGN_SENSORS_VER} &&\
-    git clone https://github.com/ignitionrobotics/ign-gui -b ign-gui${IGN_GUI_VER} &&\
-    # git clone https://github.com/ignitionrobotics/ign-gazebo -b ign-gazebo${IGN_GAZEBO_VER} &&\#
-    git clone https://github.com/diegoferigo/ign-gazebo -b release/gym-ignition-devel &&\
-    git clone https://github.com/ignitionrobotics/ign-launch -b ign-launch${IGN_LAUNCH_VER} &&\
-    git clone https://github.com/ignitionrobotics/ign-fuel-tools -b ign-fuel-tools${IGN_FUEL_TOOLS_VER} &&\
-    chgrp -R runtimeusers ${RL_DIR} && chmod -R g+rw ${RL_DIR}
+RUN pip3 install vcstool colcon-common-extensions &&\
+    rm -r $HOME/.cache/pip
 
-ENV CC="clang-10"
-ENV CXX="clang++-10"
-
-# TODO: use colcol with --from?
-
-# sdformat
-RUN cd ${RL_SOURCES}/sdformat &&\
-    mkdir -p build && cd build &&\
-    CC=gcc-8 CXX=g++-8 \
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-msgs
-RUN cd ${RL_SOURCES}/ign-msgs &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
+ENV CC="gcc-8"
+ENV CXX="g++-8"
+ARG IGN_SOURCES_DATE="20200528"
+RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
+    cd ${RL_SOURCES}/workspace/src &&\
+    wget https://raw.githubusercontent.com/robotology/gym-ignition/devel/.docker/tags.yaml &&\
+    vcs import < tags.yaml &&\
+    cd ${RL_SOURCES}/workspace &&\
+    colcon graph &&\
+    colcon build \
+        --cmake-args \
+        -G"$CMAKE_GENERATOR" \
         -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-transport
-RUN cd ${RL_SOURCES}/ign-transport &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-physics
-RUN cd ${RL_SOURCES}/ign-physics &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-sensors
-RUN cd ${RL_SOURCES}/ign-sensors &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DDRI_TESTS:BOOL=FALSE \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-gui
-RUN cd ${RL_SOURCES}/ign-gui &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-fuel-tools
-RUN cd ${RL_SOURCES}/ign-fuel-tools &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-gazebo
-RUN cd ${RL_SOURCES}/ign-gazebo &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-# ign-launch
-RUN cd ${RL_SOURCES}/ign-launch &&\
-    mkdir -p build && cd build &&\
-    cmake \
-        -G "$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
-        -DBUILD_TESTING:BOOL=OFF \
-        .. &&\
-    cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+        --merge-install \
+        &&\
+    find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+RUN echo "source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
 
 # Fix permissions of the directories inside RL_DIR
 RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
