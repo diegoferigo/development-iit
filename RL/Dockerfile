@@ -40,6 +40,8 @@ RUN pip3 install virtualenv &&\
         tensorboard tensorboardX \
         tensorflow tensorflow-probability \
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
+        sphinx sphinx-rtd-theme sphinx-autodoc-typehints \
+        sphinx_fontawesome sphinx-multiversion breathe \
         &&\
     rm -r $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
