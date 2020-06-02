@@ -6,7 +6,7 @@ if [ -x "$(which setup_development.sh)" ] ; then
     echo "==> Configuring the parent image"
     source $(which setup_development.sh)
     echo "==> Parent development image configured"
-    
+
     # Setup git for the runtime user
     su -c "git config --global remote-hg.ignore-name '~|pre|pendulum'" $USERNAME
 fi
@@ -35,6 +35,6 @@ function setup_atom()
 
 IMAGE_ATOM_DOTFOLDER="/opt/dotatom"
 
-if [-d ${IMAGE_ATOM_DOTFOLDER}] ; then
+if [ -d ${IMAGE_ATOM_DOTFOLDER} ] ; then
     setup_atom
 fi
