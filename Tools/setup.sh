@@ -12,5 +12,7 @@ else
 fi
 
 # Enable colors in nanorc
-echo "include /usr/share/nano/*.nanorc" > /home/$USERNAME/.nanorc
-chown $USERNAME:$USERNAME /home/$USERNAME/.nanorc
+if [ ! -f /home/$USERNAME/.nanorc ] ; then
+    echo "include /usr/share/nano/*.nanorc" > /home/$USERNAME/.nanorc
+    chown $USERNAME:$USERNAME /home/$USERNAME/.nanorc
+fi
