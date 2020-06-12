@@ -153,7 +153,7 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd ${RL_SOURCES} &&\
-    git clone --depth 1 -b v3.7.0 https://github.com/google/protobuf &&\
+    git clone --depth 1 -b v3.8.0 https://github.com/google/protobuf &&\
     cd protobuf &&\
     git submodule update --init --recursive &&\
     ./autogen.sh &&\
@@ -188,7 +188,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         libfreeimage-dev libgflags-dev libglew-dev libgts-dev libogre-1.9-dev libogre-2.1-dev \
         #libprotobuf-dev libprotobuf-dev libprotoc-dev \#
         libqt5core5a libswscale-dev libtinyxml2-dev libtinyxml-dev pkg-config \
-        protobuf-compiler python qml-module-qt-labs-folderlistmodel \
+        #protobuf-compiler \#
+        python qml-module-qt-labs-folderlistmodel \
         qml-module-qt-labs-settings qml-module-qtquick2 qml-module-qtquick-controls \
         qml-module-qtquick-controls2 qml-module-qtquick-dialogs qml-module-qtquick-layouts \
         qml-module-qtqml-models2 qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
