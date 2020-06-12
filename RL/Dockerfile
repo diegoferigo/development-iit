@@ -23,9 +23,11 @@ ENV IGN_INSTALL_PREFIX_PATH="/usr"
 ENV VIRTUAL_ENV=/rl/venv
 ENV PATH=${VIRTUAL_ENV}/bin:$PATH
 
-RUN pip3 install virtualenv &&\
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends virtualenv &&\
+    rm -rf /var/lib/apt/lists/* &&\
     virtualenv ${VIRTUAL_ENV} &&\
-    pip3 install \
+    pip install \
         jupyter \
         docker \
         PyYAML \
@@ -200,7 +202,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         &&\
     rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install vcstool colcon-common-extensions &&\
+RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip
 
 ENV CC="gcc-8"
