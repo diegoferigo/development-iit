@@ -247,7 +247,7 @@ ENV QT_X11_NO_MITSHM=1
 # Setup an additional entrypoint script
 COPY setup.sh /usr/sbin/setup_tools.sh
 COPY entrypoint.sh /usr/sbin/entrypoint_tools.sh
-RUN chmod 755 /usr/sbin/setup_tools.sh
-RUN chmod 755 /usr/sbin/entrypoint_tools.sh
+RUN chmod 755 /usr/sbin/setup_tools.sh &&\
+    chmod 755 /usr/sbin/entrypoint_tools.sh
 ENTRYPOINT ["/usr/sbin/entrypoint_tools.sh"]
 CMD ["bash"]

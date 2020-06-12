@@ -330,7 +330,7 @@ RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec
 
 COPY setup.sh /usr/sbin/setup_rl.sh
 COPY entrypoint.sh /usr/sbin/entrypoint_rl.sh
-RUN chmod 755 /usr/sbin/setup_rl.sh
-RUN chmod 755 /usr/sbin/entrypoint_rl.sh
+RUN chmod 755 /usr/sbin/setup_rl.sh &&\
+    chmod 755 /usr/sbin/entrypoint_rl.sh
 ENTRYPOINT ["/usr/sbin/entrypoint_rl.sh"]
 CMD ["bash"]

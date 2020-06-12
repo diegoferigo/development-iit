@@ -194,7 +194,7 @@ COPY bashrc-functions /usr/etc/skel/bashrc-functions
 # Include an additional entrypoint script
 COPY entrypoint.sh /usr/sbin/entrypoint_development.sh
 COPY setup.sh /usr/sbin/setup_development.sh
-RUN chmod 755 /usr/sbin/entrypoint_development.sh
-RUN chmod 755 /usr/sbin/setup_development.sh
+RUN chmod 755 /usr/sbin/entrypoint_development.sh &&\
+    chmod 755 /usr/sbin/setup_development.sh
 ENTRYPOINT ["/usr/sbin/entrypoint_development.sh"]
 CMD ["bash"]
