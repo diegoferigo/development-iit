@@ -35,7 +35,7 @@ RUN pip3 install virtualenv &&\
         numpy \
         setuptools_scm \
         pybullet \
-        ray[debug,rllib,tune] gputil \
+        ray[debug,rllib,tune,dashboard] gputil \
         torch torchvision \
         tensorboard tensorboardX \
         tensorflow tensorflow-probability \
@@ -50,7 +50,7 @@ RUN pip3 install virtualenv &&\
 # PyCharm
 # =======
 
-ARG PYCHARM_VER=2019.3.5
+ARG PYCHARM_VER=2020.1.2
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python-setuptools \
@@ -204,7 +204,7 @@ RUN pip3 install vcstool colcon-common-extensions &&\
 
 ENV CC="gcc-8"
 ENV CXX="g++-8"
-ARG IGN_SOURCES_DATE="20200528"
+ARG IGN_SOURCES_DATE="20200612"
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
     wget https://raw.githubusercontent.com/robotology/gym-ignition/devel/.docker/tags.yaml &&\
