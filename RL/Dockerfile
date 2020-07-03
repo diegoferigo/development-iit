@@ -26,7 +26,7 @@ ENV PATH=${VIRTUAL_ENV}/bin:$PATH
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends virtualenv &&\
     rm -rf /var/lib/apt/lists/* &&\
-    virtualenv ${VIRTUAL_ENV} &&\
+    virtualenv -p $(which python3) ${VIRTUAL_ENV} &&\
     pip install \
         jupyter \
         docker \
