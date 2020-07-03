@@ -183,6 +183,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
     # Remove Gazebo Classic
     apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
     apt autoremove -y &&\
+    apt-get install libxmu-dev libxi-dev &&\
     # Install deps of Ignition Gazebo
     apt-get install -y --no-install-recommends \
         cmake freeglut3-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
