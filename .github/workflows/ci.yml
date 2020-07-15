@@ -104,7 +104,7 @@ jobs:
       matrix:
         target:
           - master
-          - ubuntu
+          #- ubuntu
 
     steps:
       - uses: actions/checkout@master
