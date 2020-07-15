@@ -183,7 +183,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
     # Remove Gazebo Classic
     apt remove -y gazebo10 libgazebo10-dev libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
     apt autoremove -y &&\
-    apt-get install libxmu-dev libxi-dev &&\
+    apt-get install -y --no-install-recommends libxmu-dev libxi-dev &&\
     # Install deps of Ignition Gazebo
     apt-get install -y --no-install-recommends \
         cmake freeglut3-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
@@ -233,60 +233,61 @@ RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec
 # Install Julia
 # =============
 
-ARG JULIA_VER=1.4.1
-ENV DEVENV_PATH=${DEVENV_PATH}:/opt/julia/bin
-
-RUN cd /tmp &&\
-    wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_VER%.*}/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
-    cd /opt &&\
-    tar xvf /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
-    rm /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
-    mv julia-${JULIA_VER} julia &&\
-    /opt/julia/bin/julia --version
-
-ARG ATOM_VERSION=v1.46.0
-ARG ATOM_PKG_TMP=/tmp/atom_packages.txt
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        fakeroot \
-        gconf2 \
-        gconf-service \
-        git \
-        gvfs-bin \
-        libasound2 \
-        libcap2 \
-        libgconf-2-4 \
-        libgcrypt20 \
-        libgtk2.0-0 \
-        libgtk-3-0 \
-        libnotify4 \
-        libnss3 \
-        libx11-xcb1 \
-        libxkbfile1 \
-        libxss1 \
-        libxtst6 \
-        libgl1-mesa-glx \
-        libgl1-mesa-dri \
-        policykit-1 \
-        python \
-        xdg-utils &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb > /tmp/atom.deb && \
-    dpkg -i /tmp/atom.deb && \
-    rm -f /tmp/atom.deb && \
-    echo "ink" >> ${ATOM_PKG_TMP} &&\ 
-    echo "uber-juno" >> ${ATOM_PKG_TMP} &&\ 
-    echo "tool-bar" >> ${ATOM_PKG_TMP} &&\
-    echo "indent-detective" >> ${ATOM_PKG_TMP} &&\
-    echo "latex-completions" >> ${ATOM_PKG_TMP} &&\
-    echo "hyperclick" >> ${ATOM_PKG_TMP} &&\ 
-    echo "language-julia" >> ${ATOM_PKG_TMP} &&\ 
-    echo "julia-client" >> ${ATOM_PKG_TMP} &&\
-    apm install --packages-file ${ATOM_PKG_TMP} &&\
-    cp -r /root/.atom /opt/dotatom &&\
-    find /opt/dotatom -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+# ARG JULIA_VER=1.4.1
+# # ENV DEVENV_PATH=${DEVENV_PATH}:/opt/julia/bin
+# ENV PATH=${PATH}:/opt/julia/bin
+# 
+# RUN cd /tmp &&\
+#     wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_VER%.*}/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
+#     cd /opt &&\
+#     tar xvf /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
+#     rm /tmp/julia-${JULIA_VER}-linux-x86_64.tar.gz &&\
+#     mv julia-${JULIA_VER} julia &&\
+#     /opt/julia/bin/julia --version
+# 
+# ARG ATOM_VERSION=v1.46.0
+# ARG ATOM_PKG_TMP=/tmp/atom_packages.txt
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#         ca-certificates \
+#         curl \
+#         fakeroot \
+#         gconf2 \
+#         gconf-service \
+#         git \
+#         gvfs-bin \
+#         libasound2 \
+#         libcap2 \
+#         libgconf-2-4 \
+#         libgcrypt20 \
+#         libgtk2.0-0 \
+#         libgtk-3-0 \
+#         libnotify4 \
+#         libnss3 \
+#         libx11-xcb1 \
+#         libxkbfile1 \
+#         libxss1 \
+#         libxtst6 \
+#         libgl1-mesa-glx \
+#         libgl1-mesa-dri \
+#         policykit-1 \
+#         python \
+#         xdg-utils &&\
+#     rm -rf /var/lib/apt/lists/* &&\
+#     curl -L https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb > /tmp/atom.deb && \
+#     dpkg -i /tmp/atom.deb && \
+#     rm -f /tmp/atom.deb && \
+#     echo "ink" >> ${ATOM_PKG_TMP} &&\ 
+#     echo "uber-juno" >> ${ATOM_PKG_TMP} &&\ 
+#     echo "tool-bar" >> ${ATOM_PKG_TMP} &&\
+#     echo "indent-detective" >> ${ATOM_PKG_TMP} &&\
+#     echo "latex-completions" >> ${ATOM_PKG_TMP} &&\
+#     echo "hyperclick" >> ${ATOM_PKG_TMP} &&\ 
+#     echo "language-julia" >> ${ATOM_PKG_TMP} &&\ 
+#     echo "julia-client" >> ${ATOM_PKG_TMP} &&\
+#     apm install --packages-file ${ATOM_PKG_TMP} &&\
+#     cp -r /root/.atom /opt/dotatom &&\
+#     find /opt/dotatom -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # TODO: these packages are not available to the user.
 # Follow: https://discourse.julialang.org/t/how-does-one-set-up-a-centralized-julia-installation/13922/21
