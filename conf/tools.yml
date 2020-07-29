@@ -11,6 +11,8 @@ services:
       - 8888:8888
     stdin_open: true
     tty: true
+    dns:
+      - 8.8.8.8
 
 devenv:
   version: '1.0'
