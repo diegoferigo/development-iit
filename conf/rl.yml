@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
   rl:
-    image: "diegoferigo/rl:master"
+    image: "diegoferigo/rl:latest"
     container_name: "rl"
     command: "bash"
     init: true
@@ -11,6 +11,7 @@ services:
     ports:
       - 8000:8000
       - 8888:8888
+    working_dir: "$HOME"
     stdin_open: true
     tty: true
     network_mode: "host"
@@ -31,10 +32,11 @@ devenv:
         - "$HOME/.dockerdot/ccache:$HOME/.ccache"
         - "$HOME/.dockerdot/gitkraken:$HOME/.gitkraken"
         - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
-        - "$HOME/.dockerdot/PyCharmCE2019.3/:$HOME/.PyCharmCE2019.3"
+        - "$HOME/.dockerdot/config/JetBrains:$HOME/.config/JetBrains"
         - "$HOME/.dockerdot/julia:$HOME/.julia"
         - "$HOME/.dockerdot/cache:$HOME/.cache"
       files:
+        - "$HOME/.dockerdot/z:$HOME/.z"
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
     gpu: "intel"
     x11: "xauth"
