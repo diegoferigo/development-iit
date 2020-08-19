@@ -52,7 +52,7 @@ RUN apt-get update &&\
 # PyCharm
 # =======
 
-ARG PYCHARM_VER=2020.1.2
+ARG PYCHARM_VER=2020.1.4
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python-setuptools \
