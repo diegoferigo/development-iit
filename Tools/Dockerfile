@@ -22,7 +22,6 @@ RUN apt-get update &&\
         dbus-x11 \
         tree \
         bash-completion \
-        libgnome-keyring0 \
         gnupg2 \
         colordiff \
         octave \
@@ -66,7 +65,6 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         libllvm${CLANG_VER} \
         gdb \
         valgrind \
-        valkyrie \
         kcachegrind \
         ccache \
         cppcheck \
@@ -203,7 +201,6 @@ ARG STARSHIP_VERSION=0.44.0
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
     # https://github.com/ogham/exa
-    apt-get update && apt-get install libhttp-parser2.7.1 && rm -rf /var/lib/apt/lists/* &&\
     wget https://github.com/ogham/exa/releases/download/v${EXA_VERSION}/exa-linux-x86_64-${EXA_VERSION}.zip &&\
     unzip exa-linux-x86_64-${EXA_VERSION}.zip &&\
     mv exa-linux-x86_64 /usr/local/bin/exa &&\
