@@ -203,8 +203,6 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
 RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip
 
-ENV CC="gcc-8"
-ENV CXX="g++-8"
 ARG IGN_SOURCES_DATE="20200816"
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
