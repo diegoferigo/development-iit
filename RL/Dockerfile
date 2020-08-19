@@ -8,7 +8,7 @@ ENV RL_DIR=/rl
 ENV RL_INSTALL=${RL_DIR}/local
 ENV RL_SOURCES=${RL_DIR}/sources
 ENV PATH=${RL_INSTALL}/bin:${PATH}
-ENV CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:${RL_INSTALL}
+ENV CMAKE_PREFIX_PATH=${RL_INSTALL}:${CMAKE_PREFIX_PATH}
 
 RUN mkdir -p ${RL_SOURCES}
 
@@ -37,7 +37,7 @@ RUN apt-get update &&\
         numpy \
         setuptools_scm \
         pybullet \
-        ray[debug,rllib,tune,dashboard] gputil \
+        ray[all] gputil \
         torch torchvision \
         tensorboard tensorboardX \
         tensorflow tensorflow-probability \
@@ -323,7 +323,6 @@ RUN apt-get update &&\
 # =============
 
 RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ====================
