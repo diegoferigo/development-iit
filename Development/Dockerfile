@@ -157,10 +157,10 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
 RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
     # https://github.com/robotology/icub-model-generator/blob/master/.travis.yml#L56
     git checkout 31474b9baaf7c3845b40e5a9aa87d5900a2282c3 &&\
-    python setup.py install &&\
+    python3 setup.py install &&\
     # Project
     cd ${IIT_SOURCES}/simmechanics-to-urdf &&\
-    python setup.py install &&\
+    python3 setup.py install &&\
     find ${IIT_SOURCES}/urdf_parser_py -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${IIT_SOURCES}/simmechanics-to-urdf -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
