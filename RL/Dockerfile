@@ -164,16 +164,13 @@ RUN apt-get update &&\
     make install
 
 # Setup locales and timezone
-ENV TZ=Europe/Rome
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
-ENV LANGUAGE=en_US.UTF-8
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update &&\
+ARG TZ=Europe/Rome
+ARG DEBIAN_FRONTEND=noninteractive
+RUN rm -f /etc/localtime &&\
+    ln -s /usr/share/zoneinfo/"${TZ}" /etc/localtime &&\
+    apt-get update &&\
     apt-get install -y --no-install-recommends locales locales-all tzdata &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    echo "${TZ}" | tee /etc/timezone &&\
-    dpkg-reconfigure --frontend noninteractive tzdata
+    rm -rf /var/lib/apt/lists/*
 
 ARG IGNITION_DEFAULT_CHANNEL="prerelease"
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
