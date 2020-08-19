@@ -18,7 +18,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
     rm -rf /var/lib/apt/lists/*
 
 # https://github.com/osrf/docker_images/blob/master/ros/
-ENV ROS_DISTRO melodic
+ENV ROS_DISTRO noetic
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
                 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 &&\
@@ -26,19 +26,16 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
         > /etc/apt/sources.list.d/ros-latest.list
 RUN apt-get update &&\
     apt-get install --no-install-recommends -y \
-        python-rosdep \
-        python-rosinstall \
-        python-vcstools \
+        python3-rosdep \
+        python3-rosinstall-generator \
+        python3-vcstools \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     rosdep init &&\
     rosdep update
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
-        ros-${ROS_DISTRO}-desktop \
-        # ros-${ROS_DISTRO}-desktop-full \
-        #ros-${ROS_DISTRO}-fake-localization \
-        #ros-${ROS_DISTRO}-map-server \#
+        ros-${ROS_DISTRO}-desktop-full \
         &&\
     rm -rf /var/lib/apt/lists/*
 
