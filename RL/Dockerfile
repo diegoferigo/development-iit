@@ -205,7 +205,7 @@ RUN pip install vcstool colcon-common-extensions &&\
 
 ENV CC="gcc-8"
 ENV CXX="g++-8"
-ARG IGN_SOURCES_DATE="20200612"
+ARG IGN_SOURCES_DATE="20200816"
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
     wget https://raw.githubusercontent.com/robotology/gym-ignition/devel/.docker/tags.yaml &&\
