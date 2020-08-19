@@ -147,23 +147,6 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 # https://ignitionrobotics.org/docs/citadel/install
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
-# Install protobuf
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        libtool \
-        autoconf \
-        automake \
-        &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd ${RL_SOURCES} &&\
-    git clone --depth 1 -b v3.8.0 https://github.com/google/protobuf &&\
-    cd protobuf &&\
-    git submodule update --init --recursive &&\
-    ./autogen.sh &&\
-    ./configure &&\
-    make -j8 &&\
-    make install
-
 # Setup locales and timezone
 ARG TZ=Europe/Rome
 ARG DEBIAN_FRONTEND=noninteractive
