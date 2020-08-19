@@ -22,11 +22,12 @@ ENV IGN_INSTALL_PREFIX_PATH="/usr"
 
 ENV VIRTUAL_ENV=/rl/venv
 ENV PATH=${VIRTUAL_ENV}/bin:$PATH
+ARG GET_PYTHON_VERSION="python3 -c 'from sys import version_info as i; print(f\"{i[0]}.{i[1]}\")'"
 
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends virtualenv &&\
     rm -rf /var/lib/apt/lists/* &&\
-    virtualenv -p $(which python3) ${VIRTUAL_ENV} &&\
+    virtualenv -p python$(eval ${GET_PYTHON_VERSION}) ${VIRTUAL_ENV} &&\
     pip install \
         jupyter \
         docker \
@@ -84,16 +85,16 @@ RUN cd ${RL_SOURCES} &&\
           -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
           -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
           -DIDYNTREE_USES_PYTHON:BOOL=ON \
-          -DIDYNTREE_USES_PYTHON_VERSION=3.6 \
+          -DIDYNTREE_USES_PYTHON_VERSION=$(eval ${GET_PYTHON_VERSION}) \
           -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
-          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python3.6/site-packages/numpy/core/include \
+          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python$(eval ${GET_PYTHON_VERSION})/site-packages/numpy/core/include \
           -DIDYNTREE_USES_KDL:BOOL=OFF \
           -DYCM_USE_DEPRECATED=OFF \
           .. &&\
     cmake --build . --target install &&\
     find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV PYTHONPATH=${RL_INSTALL}/lib/python3.6/site-packages:${PYTHONPATH}
+ENV PYTHONPATH=${RL_INSTALL}/lib/python$(eval ${GET_PYTHON_VERSION})/site-packages:${PYTHONPATH}
 
 # ============
 # Common tools
