@@ -40,10 +40,10 @@ devenv:
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
     gpu: "intel"
     x11: "xauth"
-    matlab:
-      folder: "/opt/MATLAB/R2018a"
-      # mac: "wlp2s0"
-      dotdir: "$HOME/.dockerdot/matlab:$HOME/.matlab:rw"
+    # matlab:
+    #   folder: "/opt/MATLAB/R2018a"
+    #   # mac: "wlp2s0"
+    #   dotdir: "$HOME/.dockerdot/matlab:$HOME/.matlab:rw"
     gdb: true
     git:
       username: "Diego Ferigo"

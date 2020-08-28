@@ -24,10 +24,10 @@ devenv:
       gid: 1001
     gpu: "intel"
     x11: "xauth"
-    matlab:
-      folder: "/usr/local/MATLAB/R2018a"
-      mac: "wlp2s0"
-      dotdir: "$HOME/.dockerdot/matlab:$HOME/.matlab"
+    # matlab:
+    #   folder: "/opt/MATLAB/R2018a"
+    #   # mac: "wlp2s0"
+    #   dotdir: "$HOME/.dockerdot/matlab:$HOME/.matlab:rw"
     git:
       username: "Diego Ferigo"
       email: "diego.ferigo@iit.it"
