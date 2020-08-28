@@ -27,13 +27,11 @@ devenv:
     project_dir: "$HOME/git"
     resources:
       directories:
-        - "$HOME/.dockerdot/atom:$HOME/.atom"
-        - "$HOME/.dockerdot/config/atom:$HOME/.config/Atom"
         - "$HOME/.dockerdot/ccache:$HOME/.ccache"
-        - "$HOME/.dockerdot/gitkraken:$HOME/.gitkraken"
+        - "$HOME/.dockerdot/ignition:$HOME/.ignition"
         - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
         - "$HOME/.dockerdot/config/JetBrains:$HOME/.config/JetBrains"
-        - "$HOME/.dockerdot/julia:$HOME/.julia"
+        - "$HOME/.dockerdot/local/share/JetBrains:$HOME/.local/share/JetBrains"
         - "$HOME/.dockerdot/cache:$HOME/.cache"
       files:
         - "$HOME/.dockerdot/z:$HOME/.z"
