@@ -90,6 +90,7 @@ RUN apt-get update &&\
         libxml2-dev \
         python3-tk \
         ssh \
+        x11-utils \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -137,23 +138,57 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
     apt-get update &&\
     # Install deps of Ignition Gazebo
     apt-get install -y --no-install-recommends \
-        cmake freeglut3-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
-        libbenchmark-dev libcurl4-openssl-dev \
-        libdart-collision-ode-dev libdart-dev libdart-utils-urdf-dev \
-        libfreeimage-dev libgflags-dev libglew-dev libgts-dev libjsoncpp-dev \
-        libogre-1.9-dev libogre-2.1-dev \
-        libprotobuf-dev libprotobuf-dev libprotoc-dev \
-        libqt5core5a libsqlite3-dev libswscale-dev libtinyxml-dev libtinyxml2-dev \
-        libwebsockets-dev libyaml-dev libzip-dev libzmq3-dev pkg-config \
+        cmake \
+        freeglut3-dev \
+        libavcodec-dev \
+        libavdevice-dev \
+        libavformat-dev \
+        libavutil-dev \
+        libbenchmark-dev \
+        libcurl4-openssl-dev \
+        libfreeimage-dev \
+        libgflags-dev \
+        libglew-dev \
+        libgts-dev \
+        libjsoncpp-dev \
+        libogre-1.9-dev \
+        libogre-2.1-dev \
+        libprotobuf-dev \
+        libprotoc-dev \
+        libqt5core5a \
+        libsqlite3-dev \
+        libswscale-dev \
+        libtinyxml-dev \
+        libtinyxml2-dev \
+        libwebsockets-dev \
+        libyaml-dev \
+        libzip-dev \
+        libzmq3-dev \
+        pkg-config \
         protobuf-compiler \
-        python qml-module-qt-labs-folderlistmodel \
-        qml-module-qt-labs-settings qml-module-qtcharts qml-module-qtqml-models2 \
-        qml-module-qtquick-controls qml-module-qtquick-controls2 \
-        qml-module-qtquick-dialogs qml-module-qtquick-layouts qml-module-qtquick2 \
-        qtbase5-dev qtdeclarative5-dev qtquickcontrols2-5-dev \
-        ruby ruby-dev ruby-ronn \
+        python \
+        qml-module-qt-labs-folderlistmodel \
+        qml-module-qt-labs-settings \
+        qml-module-qtqml-models2 \
+        qml-module-qtquick-controls \
+        qml-module-qtquick-controls2 \
+        qml-module-qtquick-dialogs \
+        qml-module-qtquick-layouts \
+        qml-module-qtquick2 \
+        qtbase5-dev \
+        qtdeclarative5-dev \
+        qtquickcontrols2-5-dev \
+        ruby \
+        ruby-dev \
+        ruby-ronn \
         swig \
         uuid-dev \
+        # Additional
+        libdart-collision-ode-dev \
+        libdart-dev \
+        libdart-external-ikfast-dev \
+        libdart-external-odelcpsolver-dev \
+        libdart-utils-urdf-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
