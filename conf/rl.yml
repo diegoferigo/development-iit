@@ -36,7 +36,7 @@ devenv:
       files:
         - "$HOME/.dockerdot/z:$HOME/.z"
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
-    gpu: "intel"
+    gpu: "nvidia"
     x11: "xauth"
     # matlab:
     #   folder: "/opt/MATLAB/R2018a"
