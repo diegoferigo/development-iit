@@ -28,10 +28,6 @@ devenv:
       folder: "/usr/local/MATLAB/R2018a"
       mac: "wlp2s0"
       dotdir: "$HOME/.dockerdot/matlab:$HOME/.matlab"
-    #init: "systemd"
-    #gdb: true
     git:
       username: "Diego Ferigo"
       email: "diego.ferigo@iit.it"
-      ##gpg:
-      ##  - key: XXXX
