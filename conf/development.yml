@@ -11,6 +11,7 @@ services:
     ports:
       - 8000:8000
       - 8888:8888
+    working_dir: "$HOME"
     stdin_open: true
     tty: true
     network_mode: "host"

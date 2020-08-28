@@ -9,6 +9,7 @@ services:
     ports:
       - 8000:8000
       - 8888:8888
+    working_dir: "$HOME"
     stdin_open: true
     tty: true
     dns:
@@ -17,7 +18,10 @@ services:
 devenv:
   version: '1.0'
   tools:
-    user: "dferigo"
+    user:
+      name: "dferigo"
+      uid: 1001
+      gid: 1001
     gpu: "intel"
     x11: "xauth"
     matlab:
