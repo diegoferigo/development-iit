@@ -122,6 +122,23 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 # https://ignitionrobotics.org/docs/citadel/install
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
+# Install protobuf
+# RUN apt-get update &&\
+#     apt-get install -y --no-install-recommends \
+#         libtool \
+#         autoconf \
+#         automake \
+#         &&\
+#     rm -rf /var/lib/apt/lists/* &&\
+#     cd ${RL_SOURCES} &&\
+#     git clone --depth 1 -b v3.8.0 https://github.com/google/protobuf &&\
+#     cd protobuf &&\
+#     git submodule update --init --recursive &&\
+#     ./autogen.sh &&\
+#     ./configure &&\
+#     make -j8 &&\
+#     make install
+
 # Setup locales and timezone
 ARG TZ=Europe/Rome
 ARG DEBIAN_FRONTEND=noninteractive
@@ -136,6 +153,11 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
+    # Remove Gazebo Classic
+    #apt remove -y gazebo11 libgazebo11-dev &&\
+    #libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
+    #apt autoremove -y &&\#
+    #apt-get install -y --no-install-recommends libxmu-dev libxi-dev &&\#
     # Install deps of Ignition Gazebo
     apt-get install -y --no-install-recommends \
         cmake \
@@ -195,11 +217,13 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
 RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip
 
-ARG IGN_SOURCES_DATE="20200816"
+ENV CC=gcc
+ENV CXX=g++
+ARG IGN_SOURCES_DATE="20200827"
+ADD tags_citadel.yaml /tmp/tags.yaml
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
-    wget https://raw.githubusercontent.com/robotology/gym-ignition/devel/.docker/tags.yaml &&\
-    vcs import < tags.yaml &&\
+    vcs import < /tmp/tags.yaml &&\
     cd ${RL_SOURCES}/workspace &&\
     colcon graph &&\
     colcon build \
@@ -207,7 +231,6 @@ RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
         -G"$CMAKE_GENERATOR" \
         -DBUILD_TESTING:BOOL=OFF \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-        -DCMAKE_INSTALL_PREFIX=${IGN_INSTALL_PREFIX_PATH} \
         --merge-install \
         &&\
     find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
@@ -285,6 +308,28 @@ RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec
 #        "PyPlot",\
 #        "LaTeXStrings",\
 #        ]);'
+
+# =======================
+# Install projects for RL
+# =======================
+
+# Install SWIG 4 from sources
+# ARG SWIG_REL="rel-4.0.2"
+# RUN apt-get update &&\
+#     apt-get install -y --no-install-recommends \
+#         autotools-dev \
+#         automake \
+#         bison \
+#         libpcre3-dev &&\
+#     rm -rf /var/lib/apt/lists/* &&\
+#     cd /tmp/ &&\
+#     git clone --depth 1 -b ${SWIG_REL} https://github.com/swig/swig.git &&\
+#     cd swig &&\
+#     sh autogen.sh &&\
+#     ./configure &&\
+#     make -j2 &&\
+#     make install &&\
+#     rm -r /tmp/swig
 
 # =============
 # FIX OWNERSHIP
