@@ -70,32 +70,6 @@ RUN apt-get update &&\
     python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
-# ========
-# iDynTree
-# ========
-
-# Use python bindings from fork
-RUN cd ${RL_SOURCES} &&\
-    git clone -b feature/numpy-and-ik --depth=1 https://github.com/diegoferigo/idyntree &&\
-    mkdir -p idyntree/build &&\
-    cd idyntree/build &&\
-    cmake \
-          -GNinja \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-          -DIDYNTREE_SHARED_LIBRARY:BOOL=OFF \
-          -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-          -DIDYNTREE_USES_PYTHON:BOOL=ON \
-          -DIDYNTREE_USES_PYTHON_VERSION=$(eval ${GET_PYTHON_VERSION}) \
-          -DPYTHON_EXECUTABLE=${VIRTUAL_ENV}/bin/python \
-          -DPYTHON_NUMPY_INCLUDE_DIR:PATH=${VIRTUAL_ENV}/lib/python$(eval ${GET_PYTHON_VERSION})/site-packages/numpy/core/include \
-          -DIDYNTREE_USES_KDL:BOOL=OFF \
-          -DYCM_USE_DEPRECATED=OFF \
-          .. &&\
-    cmake --build . --target install &&\
-    find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-ENV PYTHONPATH=${RL_INSTALL}/lib/python$(eval ${GET_PYTHON_VERSION})/site-packages:${PYTHONPATH}
-
 # ============
 # Common tools
 # ============

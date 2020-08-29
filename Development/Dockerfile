@@ -150,12 +150,18 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DBUILD_TESTING:BOOL=OFF \
           -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
           -DROBOTOLOGY_PROJECT_TAGS=${ROBOTOLOGY_PROJECT_TAGS} \
+          -DiDynTree_REPOSITORY:STRING=diegoferigo/idyntree.git \
+          -DiDynTree_TAG:STRING=feature/numpy \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
     echo "source ${IIT_INSTALL}/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/robotology/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
     find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+RUN cd ${IIT_SOURCES}/robotology-superbuild/build/robotology/iDynTree &&\
+    cmake -DIDYNTREE_USES_PYTHON:BOOL=ON . &&\
+    ninja install
 
 # SIMMECHANICS-TO-URDF
 RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
