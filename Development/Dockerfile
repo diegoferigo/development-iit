@@ -161,7 +161,9 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
 
 RUN cd ${IIT_SOURCES}/robotology-superbuild/build/robotology/iDynTree &&\
     cmake -DIDYNTREE_USES_PYTHON:BOOL=ON . &&\
-    ninja install
+    ninja install &&\
+    echo "export PYTHONPATH=${IIT_INSTALL}/lib/python3/dist-packages:$PYTHONPATH" >> /etc/bash.bashrc &&\
+    find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # SIMMECHANICS-TO-URDF
 RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
