@@ -81,7 +81,6 @@ RUN apt-get update &&\
         apt-utils \
         gnupg \
         gnupg2 \
-        apt-utils \
         ca-certificates \
         curl \
         lsb-release \
@@ -122,23 +121,6 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 # https://ignitionrobotics.org/docs/citadel/install
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
-# Install protobuf
-# RUN apt-get update &&\
-#     apt-get install -y --no-install-recommends \
-#         libtool \
-#         autoconf \
-#         automake \
-#         &&\
-#     rm -rf /var/lib/apt/lists/* &&\
-#     cd ${RL_SOURCES} &&\
-#     git clone --depth 1 -b v3.8.0 https://github.com/google/protobuf &&\
-#     cd protobuf &&\
-#     git submodule update --init --recursive &&\
-#     ./autogen.sh &&\
-#     ./configure &&\
-#     make -j8 &&\
-#     make install
-
 # Setup locales and timezone
 ARG TZ=Europe/Rome
 ARG DEBIAN_FRONTEND=noninteractive
@@ -153,11 +135,6 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
     apt-get update &&\
-    # Remove Gazebo Classic
-    #apt remove -y gazebo11 libgazebo11-dev &&\
-    #libprotobuf-dev protobuf-compiler libprotobuf10 libprotobuf-lite10 &&\
-    #apt autoremove -y &&\#
-    #apt-get install -y --no-install-recommends libxmu-dev libxi-dev &&\#
     # Install deps of Ignition Gazebo
     apt-get install -y --no-install-recommends \
         cmake \
