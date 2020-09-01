@@ -150,8 +150,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DBUILD_TESTING:BOOL=OFF \
           -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
           -DROBOTOLOGY_PROJECT_TAGS=${ROBOTOLOGY_PROJECT_TAGS} \
-          -DiDynTree_REPOSITORY:STRING=diegoferigo/idyntree.git \
-          -DiDynTree_TAG:STRING=feature/numpy \
+          -DiDynTree_TAG:STRING=devel \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
