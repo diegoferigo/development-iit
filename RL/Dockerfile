@@ -290,6 +290,16 @@ RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec
 # Install projects for RL
 # =======================
 
+# Execute RUN commands in an interactive shell (loading /etc/bash.bashrc)
+SHELL ["/bin/bash", "-i", "-c"]
+
+RUN pip install \
+        git+https://github.com/robotology/idyntree@devel \
+        git+https://github.com/robotology/gym-ignition@devel \
+        git+https://github.com/dic-iit/gazebo-scenario-plugins \
+    &&\
+    rm -rf $HOME/.cache/pip
+
 # =============
 # FIX OWNERSHIP
 # =============
