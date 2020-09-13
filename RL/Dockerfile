@@ -38,7 +38,7 @@ RUN apt-get update &&\
         numpy \
         setuptools_scm \
         pybullet \
-        ray[all] gputil \
+        ray[all]==0.8.5 gputil \
         torch torchvision \
         tensorboard tensorboardX \
         tensorflow tensorflow-probability \
