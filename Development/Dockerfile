@@ -143,7 +143,6 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DROBOTOLOGY_ENABLE_ROBOT_TESTING:BOOL=ON \
           -DROBOTOLOGY_ENABLE_HUMAN_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_USES_GAZEBO:BOOL=ON \
-          #-DROBOTOLOGY_USES_PYTHON:BOOL=ON \#
           -DROBOTOLOGY_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
@@ -156,12 +155,6 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
     echo "source ${IIT_INSTALL}/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/robotology/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
-    find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-RUN cd ${IIT_SOURCES}/robotology-superbuild/build/robotology/iDynTree &&\
-    cmake -DIDYNTREE_USES_PYTHON:BOOL=ON . &&\
-    ninja install &&\
-    echo "export PYTHONPATH=${IIT_INSTALL}/lib/python3/dist-packages:$PYTHONPATH" >> /etc/bash.bashrc &&\
     find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # SIMMECHANICS-TO-URDF
