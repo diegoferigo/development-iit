@@ -183,13 +183,53 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         swig \
         uuid-dev \
         # Additional
-        libdart-collision-ode-dev \
-        libdart-dev \
-        libdart-external-ikfast-dev \
-        libdart-external-odelcpsolver-dev \
-        libdart-utils-urdf-dev \
+        #libdart-collision-ode-dev \#
+        #libdart-dev \#
+        #libdart-external-ikfast-dev \#
+        #libdart-external-odelcpsolver-dev \#
+        #libdart-utils-urdf-dev \#
         &&\
     rm -rf /var/lib/apt/lists/*
+
+# Install DART from sources
+# https://dartsim.github.io/install_dart_on_ubuntu.html
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        libeigen3-dev \
+        libassimp-dev \
+        libccd-dev \
+        libfcl-dev \
+        libboost-regex-dev \
+        libboost-system-dev \
+        libopenscenegraph-dev \
+        libnlopt-cxx-dev \
+        coinor-libipopt-dev \
+        libbullet-dev \
+        libode-dev \
+        liboctomap-dev \
+        libflann-dev \
+        libtinyxml2-dev \
+        liburdfdom-dev \
+        libxi-dev \
+        libxmu-dev \
+        freeglut3-dev \
+        libopenscenegraph-dev \
+    &&\
+    cd /tmp &&\
+    git clone https://github.com/azeey/dart &&\
+    mkdir dart/build && cd dart/build &&\
+    cmake .. \
+        -G"$CMAKE_GENERATOR" \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+        -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DHAVE_BULLET:BOOL=ON \
+        -DHAVE_DOXYGEN:BOOL=OFF \
+        -DHAVE_ODE:BOOL=ON \
+    &&\
+    cmake --build . --target install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    rm -r /tmp/dart
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${RL_INSTALL}/lib
 
 RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip
