@@ -336,8 +336,8 @@ SHELL ["/bin/bash", "-i", "-c"]
 RUN pip install \
         git+https://github.com/robotology/idyntree@devel \
         git+https://github.com/robotology/gym-ignition@devel \
-        git+https://github.com/dic-iit/gazebo-scenario-plugins \
     &&\
+    pip install git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
     rm -rf $HOME/.cache/pip
 
 # =============
