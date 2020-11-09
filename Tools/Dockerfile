@@ -120,7 +120,7 @@ RUN cd /tmp &&\
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         gconf2 \
-        libgtk2.0-0 \
+        libgtk-3-0 \
         gvfs-bin \
         libnotify4 \
         libnss3 \
