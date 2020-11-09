@@ -131,7 +131,7 @@ RUN rm -f /etc/localtime &&\
     apt-get install -y --no-install-recommends locales locales-all tzdata &&\
     rm -rf /var/lib/apt/lists/*
 
-ARG IGNITION_DEFAULT_CHANNEL="prerelease"
+ARG IGNITION_DEFAULT_CHANNEL="stable"
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
         /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
     wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
