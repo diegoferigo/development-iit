@@ -236,11 +236,12 @@ RUN pip install vcstool colcon-common-extensions &&\
 
 ENV CC=gcc
 ENV CXX=g++
-ARG IGN_SOURCES_DATE="20200912"
+ARG IGN_SOURCES_DATE="20201109"
+ARG IGNITION_DISTRIBUTION="dome"
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
-    wget https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-citadel.yaml &&\
-    vcs import < collection-citadel.yaml &&\
+    wget https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-${IGNITION_DISTRIBUTION}.yaml &&\
+    vcs import < collection-${IGNITION_DISTRIBUTION}.yaml &&\
     cd ${RL_SOURCES}/workspace &&\
     colcon graph &&\
     colcon build \
