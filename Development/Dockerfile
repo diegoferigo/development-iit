@@ -101,7 +101,7 @@ ARG IIT_BIN=${IIT_INSTALL}/bin
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20200816"
+ARG IIT_DOCKER_SOURCES="20201109"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
@@ -149,7 +149,6 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DBUILD_TESTING:BOOL=OFF \
           -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
           -DROBOTOLOGY_PROJECT_TAGS=${ROBOTOLOGY_PROJECT_TAGS} \
-          -DiDynTree_TAG:STRING=devel \
           .. &&\
     cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
