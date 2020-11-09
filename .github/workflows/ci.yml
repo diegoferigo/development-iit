@@ -124,6 +124,9 @@ jobs:
           docker rmi $(docker image ls -aq)
           dpkg-query --show --showformat='${Installed-Size}\t${Package}\n' | sort -rh | head -50 | awk '{print $1/1024, $2}'
           df -h
+          sudo swapoff -a
+          sudo rm -rf /swapfile /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          df -h
 
       - name: 'Build [rl:${{ matrix.target }}]'
         run: make rl-${{ matrix.target }}
