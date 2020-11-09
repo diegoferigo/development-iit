@@ -14,7 +14,7 @@ jobs:
 
   tools:
     name: Tools
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@master
@@ -45,7 +45,7 @@ jobs:
 
   development:
     name: Development
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: tools
     strategy:
       matrix:
@@ -98,7 +98,7 @@ jobs:
 
   rl:
     name: RL
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: development
     strategy:
       matrix:
@@ -117,10 +117,12 @@ jobs:
           sudo apt-get remove -y '^dotnet-.*'
           sudo apt-get remove -y '^llvm-.*'
           sudo apt-get remove -y 'php.*'
+          sudo apt-get remove -y 'adoptopenjdk-*'
           sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel
           sudo apt-get autoremove -y
           sudo apt clean
           docker rmi $(docker image ls -aq)
+          dpkg-query --show --showformat='${Installed-Size}\t${Package}\n' | sort -rh | head -50 | awk '{print $1/1024, $2}'
           df -h
 
       - name: 'Build [rl:${{ matrix.target }}]'
