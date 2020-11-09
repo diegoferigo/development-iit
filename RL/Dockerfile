@@ -338,6 +338,42 @@ RUN pip install --pre gym-ignition[all] &&\
     pip install git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
     rm -rf $HOME/.cache/pip
 
+RUN cd ${RL_SOURCES} &&\
+    git clone https://github.com/artivis/manif.git &&\
+    mkdir -p manif/build && cd manif/build &&\
+    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
+    ninja install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+RUN cd ${RL_SOURCES} &&\
+    git clone https://github.com/qhull/qhull.git &&\
+    mkdir -p qhull/build && cd qhull/build &&\
+    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
+    ninja install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+RUN cd ${RL_SOURCES} &&\
+    git clone https://github.com/coin-or/CppAD.git &&\
+    mkdir -p CppAD/build && cd CppAD/build &&\
+    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
+    ninja install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+RUN cd ${RL_SOURCES} &&\
+    git clone https://github.com/casadi/casadi.git &&\
+    mkdir -p casadi/build && cd casadi/build &&\
+    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
+    ninja install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+RUN cd ${RL_SOURCES} &&\
+    git clone -b v2.13.3 https://github.com/catchorg/Catch2.git &&\
+    mkdir -p Catch2/build && cd Catch2/build &&\
+    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DBUILD_TESTING:BOOL=OFF -DCATCH_BUILD_TESTING:BOOL=OFF -DCATCH_INSTALL_DOCS:BOOL=OFF .. &&\
+    ninja install &&\
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
 # =============
 # FIX OWNERSHIP
 # =============
