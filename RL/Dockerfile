@@ -216,8 +216,8 @@ RUN apt-get update &&\
         freeglut3-dev \
         libopenscenegraph-dev \
     &&\
-    cd /tmp &&\
-    git clone https://github.com/azeey/dart &&\
+    cd ${RL_SOURCES} &&\
+    git clone --depth=1 https://github.com/diegoferigo/dart &&\
     mkdir dart/build && cd dart/build &&\
     cmake .. \
         -G"$CMAKE_GENERATOR" \
@@ -228,9 +228,8 @@ RUN apt-get update &&\
         -DHAVE_ODE:BOOL=ON \
     &&\
     cmake --build . --target install &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    rm -r /tmp/dart
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${RL_INSTALL}/lib
+    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+ENV LD_LIBRARY_PATH=${RL_INSTALL}/lib:${LD_LIBRARY_PATH}
 
 RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip
