@@ -335,7 +335,7 @@ RUN echo "source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
 # Execute RUN commands in an interactive shell (loading /etc/bash.bashrc)
 SHELL ["/bin/bash", "-i", "-c"]
 
-RUN pip install --pre gym-ignition[all] &&\
+RUN pip install --pre gym-ignition[website] &&\
     pip install git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
     rm -rf $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
