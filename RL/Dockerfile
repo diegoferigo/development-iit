@@ -239,7 +239,7 @@ RUN pip install vcstool colcon-common-extensions &&\
 
 ENV CC=gcc
 ENV CXX=g++
-ARG IGN_SOURCES_DATE="20201109"
+ARG IGN_SOURCES_DATE="20201113"
 ARG IGNITION_DISTRIBUTION="dome"
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
@@ -352,7 +352,8 @@ RUN cd ${RL_SOURCES} &&\
 RUN cd ${RL_SOURCES} &&\
     git clone https://github.com/qhull/qhull.git &&\
     mkdir -p qhull/build && cd qhull/build &&\
-    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
+    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DLINK_APP_SHARED:BOOL=ON .. &&\
     ninja install &&\
     find . -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
