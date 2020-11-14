@@ -23,8 +23,8 @@ ENV ROS_DISTRO noetic
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
                 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 &&\
     echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -cs` main" \
-        > /etc/apt/sources.list.d/ros-latest.list
-RUN apt-get update &&\
+        > /etc/apt/sources.list.d/ros-latest.list &&\
+    apt-get update &&\
     apt-get install --no-install-recommends -y \
         python3-rosdep \
         python3-rosinstall-generator \
@@ -32,8 +32,8 @@ RUN apt-get update &&\
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     rosdep init &&\
-    rosdep update
-RUN apt-get update &&\
+    rosdep update &&\
+    apt-get update &&\
     apt-get install -y --no-install-recommends \
         ros-${ROS_DISTRO}-desktop-full \
         &&\
