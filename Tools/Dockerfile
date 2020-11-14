@@ -28,6 +28,7 @@ RUN apt-get update &&\
         trash-cli \
         xterm \
         curl \
+        zip \
         unzip \
         mesa-utils \
         &&\
