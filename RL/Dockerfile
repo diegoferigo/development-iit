@@ -228,11 +228,14 @@ RUN apt-get update &&\
         -DHAVE_ODE:BOOL=ON \
     &&\
     cmake --build . --target install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 ENV LD_LIBRARY_PATH=${RL_INSTALL}/lib:${LD_LIBRARY_PATH}
 
 RUN pip install vcstool colcon-common-extensions &&\
-    rm -r $HOME/.cache/pip
+    rm -r $HOME/.cache/pip &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 ENV CC=gcc
 ENV CXX=g++
@@ -251,11 +254,9 @@ RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         --merge-install \
         &&\
+    find build/ -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 RUN echo "source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
-
-# Fix permissions of the directories inside RL_DIR
-RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # =============
 # Install Julia
@@ -336,13 +337,16 @@ SHELL ["/bin/bash", "-i", "-c"]
 
 RUN pip install --pre gym-ignition[all] &&\
     pip install git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
-    rm -rf $HOME/.cache/pip
+    rm -rf $HOME/.cache/pip &&\
+    find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 RUN cd ${RL_SOURCES} &&\
     git clone https://github.com/artivis/manif.git &&\
     mkdir -p manif/build && cd manif/build &&\
     cmake -GNinja -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 RUN cd ${RL_SOURCES} &&\
@@ -350,6 +354,8 @@ RUN cd ${RL_SOURCES} &&\
     mkdir -p qhull/build && cd qhull/build &&\
     cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 RUN cd ${RL_SOURCES} &&\
@@ -357,6 +363,8 @@ RUN cd ${RL_SOURCES} &&\
     mkdir -p CppAD/build && cd CppAD/build &&\
     cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 RUN cd ${RL_SOURCES} &&\
@@ -364,6 +372,8 @@ RUN cd ${RL_SOURCES} &&\
     mkdir -p casadi/build && cd casadi/build &&\
     cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 RUN cd ${RL_SOURCES} &&\
@@ -372,6 +382,8 @@ RUN cd ${RL_SOURCES} &&\
     cmake -GNinja -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DBUILD_TESTING:BOOL=OFF -DCATCH_BUILD_TESTING:BOOL=OFF -DCATCH_INSTALL_DOCS:BOOL=OFF .. &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # =============

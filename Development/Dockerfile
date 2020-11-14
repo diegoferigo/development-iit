@@ -154,6 +154,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
     echo "source ${IIT_INSTALL}/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/robotology/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
+    find robotology/ -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # SIMMECHANICS-TO-URDF
