@@ -101,7 +101,7 @@ ARG IIT_BIN=${IIT_INSTALL}/bin
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20201109"
+ARG IIT_DOCKER_SOURCES="20201113"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
@@ -169,19 +169,20 @@ RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
     find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # ICUB-MODEL-GENERATOR
-# RUN cd ${IIT_SOURCES}/icub-model-generator &&\
-#     mkdir -p build && cd build &&\
-#     CMAKE_PREFIX_PATH=${IIT_INSTALL} cmake \
-#           -G $CMAKE_GENERATOR \
-#           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
-#           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-#           -DICUB_MODEL_GENERATE_DH:BOOL=OFF \
-#           -DICUB_MODEL_GENERATE_SIMMECHANICS:BOOL=ON \
-#           -DICUB_MODELS_SOURCE_DIR=${IIT_SOURCES}/icub-models \
-#           .. &&\
-#     cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
-#     find ${IIT_SOURCES}/icub-model-generator -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-#     find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+RUN cd ${IIT_SOURCES}/icub-model-generator &&\
+    mkdir -p build && cd build &&\
+    CMAKE_PREFIX_PATH=${IIT_INSTALL} cmake \
+          -G $CMAKE_GENERATOR \
+          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+          -DICUB_MODEL_GENERATE_DH:BOOL=OFF \
+          -DICUB_MODEL_GENERATE_SIMMECHANICS:BOOL=ON \
+          -DICUB_MODELS_SOURCE_DIR=${IIT_SOURCES}/icub-models \
+          .. &&\
+    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${IIT_SOURCES}/icub-model-generator -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # Misc setup of the image
 # =======================
