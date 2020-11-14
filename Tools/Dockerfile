@@ -92,7 +92,8 @@ RUN apt-get update &&\
         python-language-server[all] \
         colour-valgrind \
         mkdocs \
-        mkdocs-material
+        mkdocs-material &&\
+    rm -rf $HOME/.cache/pip
 
 # Setup HW Acceleration for Intel graphic cards
 RUN apt-get update &&\
