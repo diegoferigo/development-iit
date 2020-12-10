@@ -57,9 +57,7 @@ RUN apt-get update &&\
 ARG PYCHARM_VER=2020.2.5
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
-        python-setuptools \
         python3-setuptools \
-        libpython2-dev \
         libpython3-dev \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
@@ -67,7 +65,6 @@ RUN apt-get update &&\
     curl -L https://download.jetbrains.com/python/pycharm-community-${PYCHARM_VER}.tar.gz -o /opt/pycharm/installer.tgz &&\
     tar --strip-components=1 -xzf installer.tgz &&\
     rm installer.tgz &&\
-    python2 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
