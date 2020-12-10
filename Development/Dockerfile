@@ -96,6 +96,19 @@ ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
 
+# Install source dependencies
+# ---------------------------
+
+RUN cd ${IIT_SOURCES} &&\
+    git clone -b v2.13.3 https://github.com/catchorg/Catch2.git &&\
+    mkdir -p Catch2/build && cd Catch2/build &&\
+    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+        -DBUILD_TESTING:BOOL=OFF -DCATCH_BUILD_TESTING:BOOL=OFF -DCATCH_INSTALL_DOCS:BOOL=OFF .. &&\
+    ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${IIT_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
 # Download all sources with git
 # -----------------------------
 
