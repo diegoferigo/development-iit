@@ -75,6 +75,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         net-tools \
         iputils-ping \
         strace \
+        pybind11-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
