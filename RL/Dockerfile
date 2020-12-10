@@ -259,6 +259,9 @@ RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 RUN echo "source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
 
+# TODO: figure out why
+ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=${RL_SOURCES}/workspace/install/lib/ign-physics-3/engine-plugins
+
 # =============
 # Install Julia
 # =============
