@@ -113,7 +113,7 @@ RUN cd ${IIT_SOURCES} &&\
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20201113"
+ARG IIT_DOCKER_SOURCES="20201210"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
@@ -152,6 +152,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -G $CMAKE_GENERATOR \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
+          -DROBOTOLOGY_ENABLE_DYNAMICS_FULL_DEPS:BOOL=ON \
           -DROBOTOLOGY_ENABLE_ROBOT_TESTING:BOOL=ON \
           -DROBOTOLOGY_ENABLE_HUMAN_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_USES_GAZEBO:BOOL=ON \

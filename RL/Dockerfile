@@ -340,59 +340,18 @@ RUN pip install --pre gym-ignition[website] &&\
     rm -rf $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
-RUN cd ${RL_SOURCES} &&\
-    git clone https://github.com/artivis/manif.git &&\
-    mkdir -p manif/build && cd manif/build &&\
-    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-RUN cd ${RL_SOURCES} &&\
-    git clone https://github.com/qhull/qhull.git &&\
-    mkdir -p qhull/build && cd qhull/build &&\
-    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON -DLINK_APP_SHARED:BOOL=ON .. &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-RUN cd ${RL_SOURCES} &&\
-    git clone https://github.com/coin-or/CppAD.git &&\
-    mkdir -p CppAD/build && cd CppAD/build &&\
-    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-RUN cd ${RL_SOURCES} &&\
-    git clone https://github.com/casadi/casadi.git &&\
-    mkdir -p casadi/build && cd casadi/build &&\
-    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} .. &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
-RUN cd ${RL_SOURCES} &&\
-    git clone -b v2.13.3 https://github.com/catchorg/Catch2.git &&\
-    mkdir -p Catch2/build && cd Catch2/build &&\
-    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF -DCATCH_BUILD_TESTING:BOOL=OFF -DCATCH_INSTALL_DOCS:BOOL=OFF .. &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
 # =============
 # FIX OWNERSHIP
 # =============
 
 RUN find ${RL_DIR} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+    
+# VSCode
+# RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - &&\
+#     sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" &&\
+#     sudo apt-get install -y --no-install-recommends code &&\
+#     sudo rm -rf /var/lib/apt/lists/*
 
 # ====================
 # Image initialization
