@@ -344,6 +344,21 @@ RUN pip install --pre gym-ignition[website] &&\
     rm -rf $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
+# Install micromamba
+RUN cd /usr/local &&\
+    wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest \
+        | tar -xvj bin/micromamba &&\
+    echo 'eval "$(micromamba shell hook -s bash)"' >> /etc/bash.bashrc
+
+# Install libgfortran 3.0
+ENV CONDA_PREFIX=/conda
+ENV MAMBA_ROOT_PREFIX=${CONDA_PREFIX}/.micromamba
+RUN micromamba create -y -p ${CONDA_PREFIX} libgfortran=3.0.0 -c conda-forge &&\
+    echo "micromamba activate ${CONDA_PREFIX}" >> /etc/bash.bashrc &&\
+    rm -rf ${CONDA_PREFIX}/.micromamba/pkgs/cache &&\
+    find ${CONDA_PREFIX} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ 
+ENV LD_LIBRARY_PATH=$CONDA_PREFIX/lib/:$LD_LIBRARY_PATH
+
 # =============
 # FIX OWNERSHIP
 # =============
