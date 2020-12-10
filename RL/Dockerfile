@@ -236,12 +236,16 @@ RUN pip install vcstool colcon-common-extensions &&\
 
 ENV CC=gcc
 ENV CXX=g++
-ARG IGN_SOURCES_DATE="20201113"
+ARG IGN_SOURCES_DATE="20201210"
 ARG IGNITION_DISTRIBUTION="dome"
 RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
     wget https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-${IGNITION_DISTRIBUTION}.yaml &&\
+    sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-dome.yaml &&\
+    sed -i -e "s|ign-physics3|fix/get_force2|g" collection-dome.yaml &&\
     vcs import < collection-${IGNITION_DISTRIBUTION}.yaml &&\
+    sed -i -e "s|this->dataPtr->SetRemovedComponentsMsgs|//this->dataPtr->SetRemovedComponentsMsgs|g" \
+        ign-gazebo/src/EntityComponentManager.cc &&\
     cd ${RL_SOURCES}/workspace &&\
     colcon graph &&\
     colcon build \
