@@ -45,7 +45,7 @@ RUN apt-get update &&\
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
         sphinx sphinx-rtd-theme sphinx-autodoc-typehints \
         sphinx_fontawesome sphinx-multiversion breathe \
-        cvxpy osqp \
+        cvxpy osqp casadi \
         &&\
     rm -r $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
