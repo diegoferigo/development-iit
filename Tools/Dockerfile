@@ -199,8 +199,8 @@ RUN apt-get update &&\
 
 # Extra tools
 ARG EXA_VERSION=0.9.0
-ARG BAT_VERSION=0.15.4
-ARG STARSHIP_VERSION=0.46.2
+ARG BAT_VERSION=0.17.1
+ARG STARSHIP_VERSION=0.47.0
 RUN \
     mkdir /opt/extra && cd /opt/extra &&\
     # https://github.com/ogham/exa
@@ -208,24 +208,30 @@ RUN \
     unzip exa-linux-x86_64-${EXA_VERSION}.zip &&\
     mv exa-linux-x86_64 /usr/local/bin/exa &&\
     # https://github.com/junegunn/fzf
+    cd /opt/extra &&\
     git clone --depth 1 https://github.com/junegunn/fzf &&\
     yes | ./fzf/install --no-update-rc &&\
     mv ~/.fzf.bash /opt/extra/fzf.bash &&\
     echo "[ -f /opt/extra/fzf.bash ] && source /opt/extra/fzf.bash" >> /etc/bash.bashrc &&\
     # https://github.com/sharkdp/bat
+    cd /opt/extra &&\
     wget https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat_${BAT_VERSION}_amd64.deb &&\
     dpkg -i bat_*_amd64.deb && rm bat_*_amd64.deb &&\
     # https://github.com/jonas/tig
+    cd /opt/extra &&\
     git clone --depth 1 https://github.com/jonas/tig &&\
     cd tig && make install prefix=/usr/local && cd .. && rm -r tig &&\
     # https://github.com/nvbn/thefuck
+    cd /opt/extra &&\
     pip3 install thefuck &&\
     echo '[ -x /usr/local/bin/thefuck ] && eval $(thefuck --alias)' >> /etc/bash.bashrc &&\
     # Enable bash completion
+    cd /opt/extra &&\
     LINESTART=$(grep -nr "if ! shopt -oq posix; then" /etc/bash.bashrc | cut -d : -f1) &&\
     LINEEND=$((LINESTART+6)) &&\
     sed -i "$LINESTART,$LINEEND s/#*//" /etc/bash.bashrc &&\
     # https://github.com/starship/starship
+    cd /opt/extra &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends fonts-powerline &&\
     rm -rf /var/lib/apt/lists/* &&\
@@ -235,6 +241,7 @@ RUN \
     echo '[ -x /opt/extra/starship ] && eval "$(/opt/extra/starship init bash)"' >> /etc/bash.bashrc &&\
     # https://github.com/rupa/z
     # Always keep this entry as last one
+    cd /opt/extra &&\
     wget https://raw.githubusercontent.com/rupa/z/master/z.sh &&\
     echo "[ -f /opt/extra/z.sh ] && . /opt/extra/z.sh" >> /etc/bash.bashrc
 
