@@ -35,7 +35,7 @@ RUN apt-get update &&\
     rm -rf /var/lib/apt/lists/*
 
 # Updated clang ppa
-ARG clang_version=10
+ARG clang_version=11
 ENV CLANG_VER=${clang_version}
 
 # Build and development tools
