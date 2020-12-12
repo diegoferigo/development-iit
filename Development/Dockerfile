@@ -96,27 +96,15 @@ ENV IIT_INSTALL=${IIT_DIR}/local
 ENV IIT_SOURCES=${IIT_DIR}/sources
 ARG IIT_BIN=${IIT_INSTALL}/bin
 
-# Install source dependencies
-# ---------------------------
-
-RUN cd ${IIT_SOURCES} &&\
-    git clone -b v2.13.3 https://github.com/catchorg/Catch2.git &&\
-    mkdir -p Catch2/build && cd Catch2/build &&\
-    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
-        -DBUILD_TESTING:BOOL=OFF -DCATCH_BUILD_TESTING:BOOL=OFF -DCATCH_INSTALL_DOCS:BOOL=OFF .. &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${IIT_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
-    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-
 # Download all sources with git
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20201210"
+ARG IIT_DOCKER_SOURCES="20201212"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
+    git clone -b v2.13.3 https://github.com/catchorg/Catch2.git &&\
     git clone https://github.com/ros/urdf_parser_py &&\
     git clone https://github.com/robotology/simmechanics-to-urdf.git &&\
     git clone https://github.com/robotology-playground/icub-model-generator.git &&\
@@ -169,6 +157,16 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/robotology/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
     find robotology/ -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+# CATCH2
+RUN cd ${IIT_SOURCES}/Catch2 &&\
+    mkdir -p build && cd build &&\
+    cmake -GNinja -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
+        -DBUILD_TESTING:BOOL=OFF -DCATCH_BUILD_TESTING:BOOL=OFF -DCATCH_INSTALL_DOCS:BOOL=OFF .. &&\
+    ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
+    find ${IIT_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 # SIMMECHANICS-TO-URDF
 RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
