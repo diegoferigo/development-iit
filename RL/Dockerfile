@@ -67,67 +67,6 @@ RUN apt-get update &&\
 # https://ignitionrobotics.org/docs/citadel/install
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
 
-ARG IGNITION_DEFAULT_CHANNEL="stable"
-RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
-        /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
-    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
-    apt-get update &&\
-    # Install deps of Ignition Gazebo
-    apt-get install -y --no-install-recommends \
-        cmake \
-        freeglut3-dev \
-        libavcodec-dev \
-        libavdevice-dev \
-        libavformat-dev \
-        libavutil-dev \
-        libbenchmark-dev \
-        libcurl4-openssl-dev \
-        libfreeimage-dev \
-        libgflags-dev \
-        libglew-dev \
-        libgts-dev \
-        libjsoncpp-dev \
-        libogre-1.9-dev \
-        libogre-2.1-dev \
-        libprotobuf-dev \
-        libprotoc-dev \
-        libqt5core5a \
-        libsqlite3-dev \
-        libswscale-dev \
-        libtinyxml-dev \
-        libtinyxml2-dev \
-        libwebsockets-dev \
-        libyaml-dev \
-        libzip-dev \
-        libzmq3-dev \
-        pkg-config \
-        protobuf-compiler \
-        python \
-        qml-module-qt-labs-folderlistmodel \
-        qml-module-qt-labs-settings \
-        qml-module-qtqml-models2 \
-        qml-module-qtquick-controls \
-        qml-module-qtquick-controls2 \
-        qml-module-qtquick-dialogs \
-        qml-module-qtquick-layouts \
-        qml-module-qtquick2 \
-        qtbase5-dev \
-        qtdeclarative5-dev \
-        qtquickcontrols2-5-dev \
-        ruby \
-        ruby-dev \
-        ruby-ronn \
-        swig \
-        uuid-dev \
-        # Additional
-        #libdart-collision-ode-dev \#
-        #libdart-dev \#
-        #libdart-external-ikfast-dev \#
-        #libdart-external-odelcpsolver-dev \#
-        #libdart-utils-urdf-dev \#
-        &&\
-    rm -rf /var/lib/apt/lists/*
-
 # Install DART from sources
 # https://dartsim.github.io/install_dart_on_ubuntu.html
 RUN apt-get update &&\
@@ -173,16 +112,25 @@ RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
-ENV CC=gcc
-ENV CXX=g++
-ARG IGN_SOURCES_DATE="20201210"
+ARG CC=gcc
+ARG CXX=g++
+ARG IGN_SOURCES_DATE="20201231"
 ARG IGNITION_DISTRIBUTION="dome"
-RUN mkdir -p ${RL_SOURCES}/workspace/src &&\
+ARG IGNITION_DEFAULT_CHANNEL="stable"
+
+RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
+        /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
+    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
+    mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
     wget https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-${IGNITION_DISTRIBUTION}.yaml &&\
-    sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-dome.yaml &&\
-    sed -i -e "s|ign-physics3|fix/get_force2|g" collection-dome.yaml &&\
     vcs import < collection-${IGNITION_DISTRIBUTION}.yaml &&\
+    apt-get update &&\
+    sudo apt -y install --no-install-recommends \
+        $(sort -u $(find . -iname 'packages-'$(lsb_release -cs)'.apt' -o -iname 'packages.apt') | grep -v -E "dart|^libignition|^libsdformat" | tr '\n' ' ') &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-${IGNITION_DISTRIBUTION}.yaml &&\
+    sed -i -e "s|ign-physics3|fix/get_force2|g" collection-${IGNITION_DISTRIBUTION}.yaml &&\
     sed -i -e "s|this->dataPtr->SetRemovedComponentsMsgs|//this->dataPtr->SetRemovedComponentsMsgs|g" \
         ign-gazebo/src/EntityComponentManager.cc &&\
     cd ${RL_SOURCES}/workspace &&\
