@@ -31,9 +31,6 @@ RUN apt-get update &&\
         docker \
         PyYAML \
         matplotlib \
-        pytest \
-        gym \
-        numpy \
         setuptools_scm \
         pybullet \
         ray[all] \
@@ -41,8 +38,6 @@ RUN apt-get update &&\
         tensorboard tensorboardX \
         tensorflow tensorflow-probability \
         PyVirtualDisplay PILLOW imageio imageio-ffmpeg \
-        sphinx sphinx-rtd-theme sphinx-autodoc-typehints \
-        sphinx_fontawesome sphinx-multiversion breathe \
         cvxpy osqp casadi \
         &&\
     rm -r $HOME/.cache/pip &&\
@@ -284,7 +279,7 @@ ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=${RL_SOURCES}/workspace/install/lib/ign-physi
 # Execute RUN commands in an interactive shell (loading /etc/bash.bashrc)
 SHELL ["/bin/bash", "-i", "-c"]
 
-RUN pip install --pre gym-ignition[website] &&\
+RUN pip install --pre gym-ignition[website,test] &&\
     pip install git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
     rm -rf $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
