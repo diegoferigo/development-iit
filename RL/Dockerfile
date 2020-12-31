@@ -91,13 +91,14 @@ RUN apt-get update &&\
         freeglut3-dev \
         libopenscenegraph-dev \
     &&\
+    rm -rf /var/lib/apt/lists/* &&\
     cd ${RL_SOURCES} &&\
     git clone --depth=1 https://github.com/diegoferigo/dart &&\
-    mkdir dart/build && cd dart/build &&\
+    mkdir -p dart/build && cd dart/build &&\
     cmake .. \
         -G"$CMAKE_GENERATOR" \
-        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
+        -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DHAVE_BULLET:BOOL=ON \
         -DHAVE_DOXYGEN:BOOL=OFF \
         -DHAVE_ODE:BOOL=ON \
