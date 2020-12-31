@@ -11,7 +11,6 @@ RUN mkdir -p ${RL_SOURCES}
 
 ENV CMAKE_GENERATOR="Ninja"
 ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
-ENV IGN_INSTALL_PREFIX_PATH="/usr"
 
 # =================
 # Python VirtualEnv
@@ -275,9 +274,6 @@ ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=${RL_SOURCES}/workspace/install/lib/ign-physi
 # =======================
 # Install projects for RL
 # =======================
-
-# Execute RUN commands in an interactive shell (loading /etc/bash.bashrc)
-SHELL ["/bin/bash", "-i", "-c"]
 
 RUN pip install --pre gym-ignition[website,test] &&\
     pip install git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
