@@ -28,6 +28,7 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends virtualenv &&\
     rm -rf /var/lib/apt/lists/* &&\
     virtualenv -p python$(eval ${GET_PYTHON_VERSION}) ${VIRTUAL_ENV} &&\
+    python -m pip install --upgrade pip &&\
     pip install \
         jupyter \
         docker \
