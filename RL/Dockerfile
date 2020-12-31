@@ -1,8 +1,5 @@
-ARG from=diegoferigo/development:nvidia-master
+ARG from=diegoferigo/development:latest
 FROM ${from}
-
-# Create a new runtimeusers group (it might already exist)
-RUN groupadd runtimeusers || true
 
 ENV RL_DIR=/rl
 ENV RL_INSTALL=${RL_DIR}/local
@@ -69,65 +66,12 @@ RUN apt-get update &&\
     python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 
-# ============
-# Common tools
-# ============
-
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        apt-transport-https \
-        ca-certificates \
-        apt-utils \
-        gnupg \
-        gnupg2 \
-        ca-certificates \
-        curl \
-        lsb-release \
-        software-properties-common \
-        wget \
-        libxml2-dev \
-        python3-tk \
-        ssh \
-        x11-utils \
-        &&\
-    rm -rf /var/lib/apt/lists/*
-
-# =================
-# Development tools
-# =================
-
-RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - &&\
-    apt-add-repository "deb https://apt.kitware.com/ubuntu/ `lsb_release -cs` main" &&\
-    apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        git \
-        cmake \
-        cmake-curses-gui \
-        build-essential \
-        gcc-8 \
-        g++-8 \
-        ninja-build \
-        mercurial \
-        python3-pip \
-        xvfb \
-        &&\
-    rm -rf /var/lib/apt/lists/*
-
 # =================
 # Ignition Robotics
 # =================
 
 # https://ignitionrobotics.org/docs/citadel/install
 # http://gazebosim.org/tutorials?tut=install_dependencies_from_source
-
-# Setup locales and timezone
-ARG TZ=Europe/Rome
-ARG DEBIAN_FRONTEND=noninteractive
-RUN rm -f /etc/localtime &&\
-    ln -s /usr/share/zoneinfo/"${TZ}" /etc/localtime &&\
-    apt-get update &&\
-    apt-get install -y --no-install-recommends locales locales-all tzdata &&\
-    rm -rf /var/lib/apt/lists/*
 
 ARG IGNITION_DEFAULT_CHANNEL="stable"
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
