@@ -38,6 +38,10 @@ RUN apt-get update &&\
 ARG clang_version=11
 ENV CLANG_VER=${clang_version}
 
+# Use clang 11 as default compiler
+ENV CC=clang-${CLANG_VER}
+ENV CXX=clang++-${CLANG_VER}
+
 # Build and development tools
 RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
     apt-add-repository -y "deb http://apt.llvm.org/`lsb_release -cs`/ llvm-toolchain-`lsb_release -cs`-${CLANG_VER} main" &&\
@@ -77,7 +81,8 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         strace \
         pybind11-dev \
         &&\
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* &&\
+    echo '[[ $(id -u) -gt 0 ]] && export PATH=/usr/lib/ccache:$PATH' >> /etc/bash.bashrc
 
 # Install and setup python tools
 RUN apt-get update &&\
