@@ -11,13 +11,6 @@ else
     echo "==> Parent tools image configured"
 fi
 
-# Setup the custom bashrc
-echo "==> Including additional bashrc configurations"
-cp /usr/etc/skel/bashrc-dev /home/$USERNAME/.bashrc-dev
-chown ${USERNAME}:${USERNAME} /home/$USERNAME/.bashrc-dev
-echo "source /home/$USERNAME/.bashrc-dev" >> /home/${USERNAME}/.bashrc
-echo "source /home/$USERNAME/.bashrc-dev" >> /root/.bashrc
-
 # Change the permission of all persistent resources mounted inside $HOME.
 # If you don't want to get a chowned resource, mount it somewhere else.
 if [ -n "$(mount | tr -s " " | cut -d " " -f 3 | grep /home/${USERNAME})" ] ; then

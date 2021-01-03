@@ -14,7 +14,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_releas
         gazebo11 \
         libgazebo11-dev \
         &&\
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* &&\
+    echo "[[ -f /usr/share/gazebo/setup.sh ]] && source /usr/share/gazebo/setup.sh" >> /etc/bash.bashrc
 
 # https://github.com/osrf/docker_images/blob/master/ros/
 ENV ROS_DISTRO noetic
@@ -36,11 +37,85 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
     apt-get install -y --no-install-recommends \
         ros-${ROS_DISTRO}-desktop-full \
         &&\
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* &&\
+    echo 'if [[ -f /opt/ros/$ROS_DISTRO/setup.bash ]] ; then' >>/etc/bash.bashrc &&\
+    echo '    old_path=$ROS_PACKAGE_PATH' >>/etc/bash.bashrc &&\
+    echo '    source /opt/ros/$ROS_DISTRO/setup.bash' >>/etc/bash.bashrc &&\
+    echo '    [[ -n ${old_path} ]] && export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$old_path' >>/etc/bash.bashrc &&\
+    echo '    unset old_path' >>/etc/bash.bashrc &&\
+    echo 'fi' >>/etc/bash.bashrc
 
 # ===========================
 # Install libraries and tools
 # ===========================
+
+# RUN mamba install -y -c conda-forge cmake compilers make ninja pkg-config &&\
+#     rm -rf ${CONDA_PREFIX}/.micromamba/pkgs/cache 
+    #&&\
+    # find ${CONDA_PREFIX} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+# RUN mamba install -y -c conda-forge \
+#         ace \
+#         asio \
+#         boost \
+#         eigen \
+#         gazebo \
+#         glew \
+#         glfw \
+#         gsl \
+#         ipopt \
+#         libjpeg-turbo \
+#         libmatio \
+#         libode \
+#         libxml2 \
+#         opencv \
+#         pkg-config \
+#         portaudio \
+#         qt \
+#         sdl \
+#         sdl2 \
+#         sqlite \
+#         tinyxml &&\
+#     rm -rf ${CONDA_PREFIX}/.micromamba/pkgs/cache 
+    #&&\
+    #find ${CONDA_PREFIX} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+# RUN mamba install -y -c conda-forge \
+#         expat-cos6-x86_64 \
+#         freeglut \
+#         libselinux-cos6-x86_64 \
+#         libxau-cos6-x86_64 \
+#         libxcb-cos6-x86_64 \
+#         libxdamage-cos6-x86_64 \
+#         libxext-cos6-x86_64 \
+#         libxfixes-cos6-x86_64 \
+#         libxxf86vm-cos6-x86_64 \
+#         mesalib \
+#         mesa-libgl-cos6-x86_64 &&\
+#     rm -rf ${CONDA_PREFIX}/.micromamba/pkgs/cache 
+    #&&\
+    #find ${CONDA_PREFIX} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
+
+# RUN cd /tmp &&\
+#     git clone https://github.com/artivis/manif.git &&\
+#     mkdir -p manif/build && cd manif/build &&\
+#     cmake -GNinja .. &&\
+#     ninja install &&\
+#     rm -rf /tmp/manif
+#     
+# RUN cd /tmp &&\
+#     git clone https://github.com/coin-or/CppAD.git &&\
+#     mkdir -p CppAD/build && cd CppAD/build &&\
+#     cmake -GNinja -DCMAKE_BUILD_TYPE=Release .. &&\
+#     ninja install &&\
+#     rm -rf /tmp/CppAD
+#     
+# RUN mamba install -y -c conda-forge \
+#         casadi \
+#         catch2 \
+#         qhull \
+#     &&\
+#     rm -rf /tmp/CppAD
+# RUN false
 
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
@@ -198,11 +273,6 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
 
 # Misc setup of the image
 # =======================
-
-# Include a custom bashrc
-COPY bashrc /usr/etc/skel/bashrc-dev
-COPY bashrc-colors /usr/etc/skel/bashrc-colors
-COPY bashrc-functions /usr/etc/skel/bashrc-functions
 
 # Include an additional entrypoint script
 COPY entrypoint.sh /usr/sbin/entrypoint_development.sh

@@ -11,8 +11,7 @@ else
     echo "==> Parent devenv image configured"
 fi
 
-# Enable colors in nanorc
-if [ ! -f /home/$USERNAME/.nanorc ] ; then
-    echo "include /usr/share/nano/*.nanorc" > /home/$USERNAME/.nanorc
-    chown $USERNAME:$USERNAME /home/$USERNAME/.nanorc
+# Bootstrap dotfiles
+if [[ $(id -u ${USERNAME:-root}) -gt 0 && -f /usr/local/dotfiles/bootstrap ]] ; then
+    su -c "bash /usr/local/dotfiles/bootstrap" $USERNAME || echo "Failed to initialize dotfiles"
 fi
