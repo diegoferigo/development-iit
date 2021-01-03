@@ -46,7 +46,7 @@ RUN apt-get update &&\
 # PyCharm
 # =======
 
-ARG PYCHARM_VER=2020.2.5
+ARG PYCHARM_VER=2020.3.2
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python3-setuptools \
@@ -115,7 +115,7 @@ RUN pip install vcstool colcon-common-extensions &&\
 
 ARG CC=gcc
 ARG CXX=g++
-ARG IGN_SOURCES_DATE="20201231"
+ARG IGN_SOURCES_DATE="20210103"
 ARG IGNITION_DISTRIBUTION="dome"
 ARG IGNITION_DEFAULT_CHANNEL="stable"
 
