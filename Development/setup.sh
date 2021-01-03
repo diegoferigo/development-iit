@@ -28,5 +28,7 @@ fi
 [ -d /home/${USERNAME}/.config ] && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
 # Configure YARP namespace
-echo "==> Setting YARP namespace"
-su -c "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE:-/$USERNAME}" $USERNAME
+if [[ -n $(type -t yarp) ]] ; then
+    echo "==> Setting YARP namespace"
+    su -c "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE:-/$USERNAME}" $USERNAME
+fi
