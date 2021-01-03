@@ -16,7 +16,7 @@ ENV SOURCES_BUILD_TYPE="RelWithDebInfo"
 # Python VirtualEnv
 # =================
 
-ENV VIRTUAL_ENV=/rl/venv
+ENV VIRTUAL_ENV=/venv
 ENV PATH=${VIRTUAL_ENV}/bin:$PATH
 ARG GET_PYTHON_VERSION="python3 -c 'from sys import version_info as i; print(f\"{i[0]}.{i[1]}\")'"
 
