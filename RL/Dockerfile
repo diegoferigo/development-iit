@@ -144,10 +144,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         --merge-install \
         &&\
     find build/ -type f -not -name 'CMakeCache.txt' -delete &&\
-    find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
-RUN echo "source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
-
-# TODO: figure out why
+    find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
+    echo "[[ -f ${RL_SOURCES}/workspace/install/setup.bash ]] && source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
 ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=${RL_SOURCES}/workspace/install/lib/ign-physics-3/engine-plugins
 
 # =============
