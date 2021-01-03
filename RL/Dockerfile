@@ -96,14 +96,14 @@ RUN apt-get update &&\
     git clone --depth=1 https://github.com/diegoferigo/dart &&\
     mkdir -p dart/build && cd dart/build &&\
     cmake .. \
-        -G"$CMAKE_GENERATOR" \
+        -GNinja \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
         -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
         -DHAVE_BULLET:BOOL=ON \
         -DHAVE_DOXYGEN:BOOL=OFF \
         -DHAVE_ODE:BOOL=ON \
     &&\
-    cmake --build . --target install &&\
+    ninja install &&\
     find . -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${RL_SOURCES} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${RL_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+

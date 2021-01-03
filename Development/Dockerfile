@@ -212,7 +212,7 @@ ARG ROBOTOLOGY_PROJECT_TAGS=Stable
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     mkdir -p build && cd build &&\
     cmake \
-          -G $CMAKE_GENERATOR \
+          -GNinja \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS_FULL_DEPS:BOOL=ON \
@@ -226,7 +226,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
           -DROBOTOLOGY_PROJECT_TAGS=${ROBOTOLOGY_PROJECT_TAGS} \
           .. &&\
-    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
+    ninja &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
     echo "source ${IIT_INSTALL}/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/robotology/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
@@ -259,14 +259,14 @@ RUN cd ${IIT_SOURCES}/urdf_parser_py &&\
 RUN cd ${IIT_SOURCES}/icub-model-generator &&\
     mkdir -p build && cd build &&\
     CMAKE_PREFIX_PATH=${IIT_INSTALL} cmake \
-          -G $CMAKE_GENERATOR \
+          -GNinja \
           -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DICUB_MODEL_GENERATE_DH:BOOL=OFF \
           -DICUB_MODEL_GENERATE_SIMMECHANICS:BOOL=ON \
           -DICUB_MODELS_SOURCE_DIR=${IIT_SOURCES}/icub-models \
           .. &&\
-    cmake --build . -- $CMAKE_EXTRA_OPTIONS &&\
+    ninja &&\
     find . -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${IIT_SOURCES}/icub-model-generator -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     find ${IIT_INSTALL} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
