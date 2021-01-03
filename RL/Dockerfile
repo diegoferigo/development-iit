@@ -113,8 +113,6 @@ RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
-ARG CC=gcc
-ARG CXX=g++
 ARG IGN_SOURCES_DATE="20210103"
 ARG IGNITION_DISTRIBUTION="dome"
 ARG IGNITION_DEFAULT_CHANNEL="stable"
@@ -136,6 +134,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         ign-gazebo/src/EntityComponentManager.cc &&\
     cd ${RL_SOURCES}/workspace &&\
     colcon graph &&\
+    export CC=gcc && export CXX=g++ &&\
     colcon build \
         --cmake-args \
         -G"$CMAKE_GENERATOR" \

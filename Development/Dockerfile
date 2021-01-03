@@ -211,6 +211,7 @@ ENV YARP_COLORED_OUTPUT=1
 ARG ROBOTOLOGY_PROJECT_TAGS=Stable
 RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     mkdir -p build && cd build &&\
+    export CC=gcc && export CXX=g++ &&\
     cmake \
           -GNinja \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
