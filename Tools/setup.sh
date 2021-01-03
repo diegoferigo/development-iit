@@ -13,5 +13,7 @@ fi
 
 # Bootstrap dotfiles
 if [[ $(id -u ${USERNAME:-root}) -gt 0 && -f /usr/local/dotfiles/bootstrap ]] ; then
+    mkdir -p /home/${USERNAME}/.local && chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.local
+    mkdir -p /home/${USERNAME}/.config/fish && chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
     su -c "bash /usr/local/dotfiles/bootstrap" $USERNAME || echo "Failed to initialize dotfiles"
 fi
