@@ -119,10 +119,10 @@ ARG IGNITION_DEFAULT_CHANNEL="stable"
 
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
         /etc/apt/sources.list.d/gazebo-${IGNITION_DEFAULT_CHANNEL}.list &&\
-    wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add - &&\
+    wget http://packages.osrfoundation.org/gazebo.key -qO - | apt-key add - &&\
     mkdir -p ${RL_SOURCES}/workspace/src &&\
     cd ${RL_SOURCES}/workspace/src &&\
-    wget https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-${IGNITION_DISTRIBUTION}.yaml &&\
+    wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-${IGNITION_DISTRIBUTION}.yaml &&\
     vcs import < collection-${IGNITION_DISTRIBUTION}.yaml &&\
     apt-get update &&\
     sudo apt -y install --no-install-recommends \
