@@ -1,0 +1,41 @@
+version: '2.3'
+
+services:
+  conda:
+    image: "diegoferigo/conda:10.1"
+    container_name: "conda"
+    command: "bash"
+    init: true
+    working_dir: "$HOME"
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+    security_opt:
+      - apparmor:unconfined
+    dns:
+      - 8.8.8.8
+
+devenv:
+  version: '1.0'
+  conda:
+    user: "dferigo"
+    project_dir: "$HOME/git"
+    resources:
+      directories:
+        - "$HOME/.dockerdot/ccache:$HOME/.ccache"
+        - "$HOME/.dockerdot/ignition:$HOME/.ignition"
+        - "$HOME/.dockerdot/config/qtcreator:$HOME/.config/QtProject"
+        - "$HOME/.dockerdot/config/JetBrains:$HOME/.config/JetBrains"
+        - "$HOME/.dockerdot/local/share/JetBrains:$HOME/.local/share/JetBrains"
+        - "$HOME/.dockerdot/cache:$HOME/.cache"
+        - "$HOME/.dockerdot/local/share/z:$HOME/.local/share/z"
+      files:
+        - "$HOME/.dockerdot/z:$HOME/.z"
+        - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
+        - "$HOME/.dockerdot/local/share/fish/fish_history:$HOME/.local/share/fish_history"
+    gpu: "nvidia"
+    x11: "xauth"
+    gdb: true
+    git:
+      username: "Diego Ferigo"
+      email: "diego.ferigo@iit.it"
