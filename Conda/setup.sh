@@ -1,0 +1,116 @@
+#!/bin/bash
+set -eu -o pipefail
+
+# These variables can be overridden by docker environment variables
+USER_UID=${USER_UID:-1000}
+USER_GID=${USER_GID:-1000}
+USERNAME=${USERNAME:-docker}
+USER_HOME=${USER_HOME:-/home/$USERNAME}
+
+# Get the uid from pwd if it is not owned by root
+if [[ $USER_UID = "1000" && $(stat -c "%u" $(pwd)) -ne 0 ]] ; then
+    USER_UID=$(stat -c "%u" $(pwd))
+fi
+
+# Get the gid from pwd if it is not owned by root
+if [[ $USER_GID = "1000" && $(stat -c "%g" $(pwd)) -ne 0 ]] ; then
+    USER_GID=$(stat -c "%g" $(pwd))
+fi
+
+create_user() {
+    # If the home folder exists, set a flag.
+    # Creating the user during container initialization often is anticipated
+    # by the mount of a docker volume. In this case the home directory is already
+    # present in the file system and adduser skips by default the copy of the
+    # configuration files.
+    HOME_FOLDER_EXISTS=0
+    if [ -d $USER_HOME ] ; then HOME_FOLDER_EXISTS=1 ; fi
+
+    # Create a group with USER_GID
+    if ! getent group ${USERNAME} >/dev/null; then
+        groupadd -f -g ${USER_GID} ${USERNAME} >/dev/null
+    fi
+
+    # Create a user with USER_UID
+    if ! getent passwd ${USERNAME} >/dev/null; then
+        adduser --quiet \
+                --disabled-login \
+                --home ${USER_HOME} \
+                --uid ${USER_UID} \
+                --gid ${USER_GID} \
+                --gecos 'Workspace' \
+                ${USERNAME}
+    fi
+
+    # The home must belong to the user
+    chown ${USER_UID}:${USER_GID} ${USER_HOME}
+
+    # If configuration files have not been copied, do it manually
+    if [ ${HOME_FOLDER_EXISTS} -ne 0 ] ; then
+
+        for file in .bashrc .bash_logout .profile ; do
+            if [[ ! -f ${USER_HOME}/${file} ]] ; then
+                install -m 644 -g ${USERNAME} -o ${USERNAME} /etc/skel/${file} ${USER_HOME}
+            fi
+        done
+    fi
+}
+
+# Create the user if run -u is not passed
+if [[ $(id -u) -eq 0 && $(id -g) -eq 0 ]] ; then
+    echo "==> Creating runtime user" "'""${USERNAME}:${USERNAME}""'"
+    create_user
+
+    # Set a default root password
+    echo "==> Setting the default root password"
+    ROOT_PASSWORD="root"
+    echo "root:${ROOT_PASSWORD}" | chpasswd
+
+    # Set a default password
+    echo "==> Setting the default user password"
+    USER_PASSWORD=${USERNAME}
+    echo "${USERNAME}:${USER_PASSWORD}" | chpasswd
+    echo "${USERNAME}    ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+    # Add the user to video group for HW acceleration (Intel GPUs)
+    usermod -aG video ${USERNAME}
+
+    # Assign the user to the runtimeusers group
+    gpasswd -a ${USERNAME} runtimeusers >/dev/null
+fi
+
+# Configure git
+if [[ -n ${GIT_USER_NAME:+x} && -n ${GIT_USER_EMAIL:+x} ]] ; then
+    echo "==> Setting up git"
+    su -c "git config --global user.name ${GIT_USER_NAME}" $USERNAME
+    su -c "git config --global user.email ${GIT_USER_EMAIL}" $USERNAME
+    su -c "git config --global color.pager true" $USERNAME
+    su -c "git config --global color.ui auto" $USERNAME
+    su -c "git config --global push.default upstream" $USERNAME
+    su -c "git config --global core.autocrlf input" $USERNAME
+    su -c "git config --global pager.branch false" $USERNAME
+fi
+
+# Adding matlab to PATH
+if [[ -n ${Matlab_ROOT_DIR:+x} ]] ; then
+    echo "==> Setting up matlab"
+    echo 'PATH=$PATH:$Matlab_ROOT_DIR/bin' >> /etc/bash.bashrc
+fi
+
+# Bootstrap dotfiles
+if [[ $(id -u ${USERNAME:-root}) -gt 0 && -f /usr/local/dotfiles/bootstrap ]] ; then
+    echo "==> Setting up dotfiles for the runtime user"
+    [[ -d /home/${USERNAME}/.local ]] && chown ${USER_UID}:${USER_GID} /home/${USERNAME}/.local
+    [[ -d /home/${USERNAME}/.local/share ]] && chown ${USER_UID}:${USER_GID} /home/${USERNAME}/.local/share
+    [[ -d /home/${USERNAME}/.config ]] && chown ${USER_UID}:${USER_GID} /home/${USERNAME}/.config
+    su -c "mkdir -p /home/${USERNAME}/.local" $USERNAME
+    su -c "mkdir -p /home/${USERNAME}/.config/fish" $USERNAME
+    su -c "bash /usr/local/dotfiles/bootstrap" $USERNAME || echo "Failed to initialize dotfiles"
+fi
+
+# Configure YARP namespace
+if [[ -n $(type -t yarp) ]] ; then
+    echo "==> Setting YARP namespace"
+    su -c "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE:-/$USERNAME}" $USERNAME
+fi
+
