@@ -180,6 +180,7 @@ RUN cd $SRC_DIR &&\
 RUN mamba install -y \
         ipython \
         pytorch-gpu \
+        tensorboard \
         scipy \
         numpy \
         gym \
