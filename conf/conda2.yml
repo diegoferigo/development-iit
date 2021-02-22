@@ -1,9 +1,9 @@
 version: '2.3'
 
 services:
-  conda:
+  conda2:
     image: "diegoferigo/conda:10.1"
-    container_name: "conda"
+    container_name: "conda2"
     command: "bash"
     init: true
     #environment:
@@ -23,7 +23,7 @@ services:
 
 devenv:
   version: '1.0'
-  conda:
+  conda2:
     user: "dferigo"
     project_dir: "$HOME/git"
     resources:

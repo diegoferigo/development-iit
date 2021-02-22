@@ -8,6 +8,19 @@ FROM ${from}
 # Change default shell to bash. This is effective only in the Dockerfile.
 SHELL ["/bin/bash", "-i", "-c"]
 
+# Create a new runtimeusers group and add root
+RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers &&\
+    gpasswd -a root runtimeusers
+
+# Execute commands as root:runtimeusers so that any user created during runtime has rights
+# to operate on the filesystem, and particularly the conda environment
+USER root:runtimeusers
+
+# TODO:
+# 1. add root to runtimeusers?
+# 1. chown runtimeusers
+# 2. chmod -R g=u on all files not already owned by runtimeusers
+
 # Setup locales and timezone
 ARG TZ=Europe/Rome
 ARG DEBIAN_FRONTEND=noninteractive
@@ -52,7 +65,9 @@ RUN cd /usr/local &&\
     micromamba create -y -p $CONDA_PREFIX python==$CONDA_PYTHON_VERSION mamba -c conda-forge &&\
     micromamba activate $CONDA_PREFIX &&\
     conda config --system --add channels conda-forge &&\
-    conda config --system --set channel_priority strict
+    conda config --system --set channel_priority strict &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    # find $CONDA_PREFIX -not -group runtimeusers -and "!" -type l -exec chgrp runtimeusers {} ";" -exec chmod g+rw {} +
 
 # Enable by default the conda environment for non-root users
 RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
@@ -61,9 +76,18 @@ RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
     echo '}' >> /etc/bash.bashrc &&\
     echo '[[ -z $NO_CONDA ]] && activate_conda' >> /etc/bash.bashrc
 
+# RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers
+# RUN chown -R :runtimeusers $CONDA_PREFIX
+# RUN ls -al $CONDA_PREFIX
+# RUN mamba install curl
+# RUN ls -al $CONDA_PREFIX
+# RUN chmod -R g=u $CONDA_PREFIX
+# RUN ls -al $CONDA_PREFIX && false
+
 # Install buildchain
 RUN mamba install -y \
-        compilers cmake make pkg-config ninja pybind11 git
+        compilers cmake make pkg-config ninja pybind11 git &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Default directory with sources
 ARG SRC_DIR=/usr/local/src
@@ -83,7 +107,9 @@ RUN mamba install -y \
         -DHAVE_DOXYGEN:BOOL=OFF \
         -DHAVE_ODE:BOOL=ON \
     &&\
-    ninja install
+    ninja install &&\
+    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Ignition Robotics
 RUN mamba install -y \
@@ -91,7 +117,21 @@ RUN mamba install -y \
         ruby tinyxml2 tinyxml protobuf urdfdom zeromq cppzmq \
         ogre==1.10.12 \
         jsoncpp libzip qt \
-        mesa-libgl-devel-cos7-x86_64 libglu
+        mesa-libgl-devel-cos7-x86_64 libglu &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+#RUN activate_conda &&\
+#    mamba install -y libxrandr-devel-cos7-x86_64 xorg-libxrandr &&\
+#    cd $SRC_DIR &&\
+#    git clone --depth=1 --branch 1.9.1 https://github.com/OGRECave/ogre &&\
+#    mkdir -p ogre/build && cd ogre/build &&\
+#    cmake .. \
+#        -GNinja \
+#        -DCMAKE_BUILD_TYPE=Release \
+#        -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+#        -DOGRE_BUILD_COMPONENT_CSHARP=OFF \
+#        -DOGRE_BUILD_COMPONENT_PYTHON=OFF \
+#    &&\
+#    ninja install
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
     wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-dome.yaml &&\
@@ -100,7 +140,8 @@ RUN cd $SRC_DIR &&\
     vcs import < collection-dome.yaml &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.3)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
-    colcon graph
+    colcon graph &&\
+    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" /conda/x86_64-conda-linux-gnu/sysroot/usr/include/GL/glx.h &&\
     cd $SRC_DIR/workspace &&\
     colcon build \
@@ -111,7 +152,8 @@ RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" /conda/x86_64-c
         -DBUILD_TESTING:BOOL=OFF \
         -DCMAKE_BUILD_TYPE=Release \
         &&\
-    echo "[[ -f $SRC_DIR/workspace/install/setup.sh ]] && source $SRC_DIR/workspace/install/setup.sh" >> /etc/bash.bashrc
+    echo "[[ -f $SRC_DIR/workspace/install/setup.sh ]] && source $SRC_DIR/workspace/install/setup.sh" >> /etc/bash.bashrc &&\
+    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=$SRC_DIR/workspace/install/lib/ign-physics-3/engine-plugins
 
 # Superbuild
@@ -149,7 +191,8 @@ RUN mamba install -y \
         libxfixes-cos7-x86_64 \
         libxxf86vm-cos7-x86_64 \
         mesalib \
-        mesa-libgl-cos7-x86_64
+        mesa-libgl-cos7-x86_64 &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 RUN cd $SRC_DIR &&\
     git clone https://github.com/robotology/robotology-superbuild &&\
     mkdir -p robotology-superbuild/build && cd robotology-superbuild/build &&\
@@ -175,10 +218,12 @@ RUN cd $SRC_DIR &&\
     sed -i 's/_object/object/g' $SRC_DIR/robotology-superbuild/build/install/lib/python3/site-packages/casadi/casadi.py &&\
     echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/src/robotology-superbuild/build/install/lib/python3.8/dist-packages/' >> /etc/bash.bashrc &&\
     echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/src/robotology-superbuild/build/install/lib/python3.8/site-packages/' >> /etc/bash.bashrc &&\
-    echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc
+    echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
+    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 RUN mamba install -y \
         ipython \
+        #tensorflow-gpu \#
         pytorch-gpu \
         tensorboard \
         scipy \
@@ -190,7 +235,8 @@ RUN mamba install -y \
         lxml \
         matplotlib \
         setuptools_scm \
-        ray-rllib ray-tune ray-dashboard
+        ray-rllib ray-tune ray-dashboard &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 RUN cd $SRC_DIR &&\
     git clone -b devel https://github.com/robotology/gym-ignition &&\
     mkdir gym-ignition/build && cd gym-ignition/build &&\
@@ -200,13 +246,16 @@ RUN cd $SRC_DIR &&\
         -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         &&\
     ninja install &&\
-    pip install -e ..
+    pip install -e .. &&\
+    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Dotfiles
 ENV DOTFILES_SHARE=/usr/local
 RUN mamba install -y fish &&\
     git clone https://github.com/diegoferigo/dotfiles /usr/local/dotfiles &&\
-    bash /usr/local/dotfiles/bootstrap
+    bash /usr/local/dotfiles/bootstrap &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1
@@ -218,7 +267,7 @@ RUN apt-get update &&\
         gosu \
         &&\
     rm -rf /var/lib/apt/lists/*
-RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers
+# RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
 ENV USER_UID=1000
@@ -254,6 +303,13 @@ RUN mamba install -y \
     pip install colour-valgrind &&\
     rm -rf $HOME/.cache/pip
 
+# Setup HW Acceleration for Intel graphic cards
+#RUN apt-get update &&\
+#    apt-get install -y \
+#        libgl1-mesa-glx \
+#        libgl1-mesa-dri &&\
+#    rm -rf /var/lib/apt/lists/*
+
 # QtCreator
 ARG QTCREATOR_VERSION=4.14.0
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
@@ -281,3 +337,5 @@ RUN apt-get update &&\
     rm installer.tgz &&\
     python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
+
+USER root:root
