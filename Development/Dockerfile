@@ -125,6 +125,7 @@ RUN apt-get update &&\
         libboost-system-dev \
         libboost-filesystem-dev \
         libboost-thread-dev \
+        libirrlicht-dev \
         libtinyxml-dev \
         libedit-dev \
         libace-dev \
