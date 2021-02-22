@@ -176,7 +176,7 @@ ARG IIT_BIN=${IIT_INSTALL}/bin
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20210102"
+ARG IIT_DOCKER_SOURCES="20210222"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
@@ -189,9 +189,6 @@ RUN mkdir -p ${IIT_SOURCES} &&\
 
 # Env variables for configuring the sources
 # -----------------------------------------
-
-ENV CMAKE_GENERATOR=Ninja
-ENV SOURCES_BUILD_TYPE=RelWithDebInfo
 
 # Select the main development robot (model loading)
 ENV YARP_ROBOT_NAME="iCubGazeboV2_5"
@@ -215,6 +212,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     export CC=gcc && export CXX=g++ &&\
     cmake \
           -GNinja \
+          -GCMAKE_BUILD_TYPE=Release \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS_FULL_DEPS:BOOL=ON \
@@ -262,7 +260,7 @@ RUN cd ${IIT_SOURCES}/icub-model-generator &&\
     mkdir -p build && cd build &&\
     CMAKE_PREFIX_PATH=${IIT_INSTALL} cmake \
           -GNinja \
-          -DCMAKE_BUILD_TYPE=${SOURCES_BUILD_TYPE} \
+          -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=${IIT_INSTALL} \
           -DICUB_MODEL_GENERATE_DH:BOOL=OFF \
           -DICUB_MODEL_GENERATE_SIMMECHANICS:BOOL=ON \
