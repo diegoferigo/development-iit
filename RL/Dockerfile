@@ -237,7 +237,7 @@ ENV CONDA_PREFIX=/conda
 ENV MAMBA_ROOT_PREFIX=${CONDA_PREFIX}/.micromamba
 RUN micromamba create -y -p ${CONDA_PREFIX} libgfortran=3.0.0 -c conda-forge &&\
     echo "micromamba activate ${CONDA_PREFIX}" >> /etc/bash.bashrc &&\
-    rm -rf ${CONDA_PREFIX}/.micromamba/pkgs/cache &&\
+    rm -rf ${MAMBA_ROOT_PREFIX}/pkgs &&\
     find ${CONDA_PREFIX} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ 
 ENV LD_LIBRARY_PATH=$CONDA_PREFIX/lib/:$LD_LIBRARY_PATH
 
