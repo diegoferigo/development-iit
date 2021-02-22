@@ -212,7 +212,7 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     export CC=gcc && export CXX=g++ &&\
     cmake \
           -GNinja \
-          -GCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_BUILD_TYPE=Release \
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS_FULL_DEPS:BOOL=ON \
