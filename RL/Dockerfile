@@ -21,7 +21,7 @@ ENV PATH=${VIRTUAL_ENV}/bin:$PATH
 ARG GET_PYTHON_VERSION="python3 -c 'from sys import version_info as i; print(f\"{i[0]}.{i[1]}\")'"
 
 RUN apt-get update &&\
-    apt-get install -y --no-install-recommends virtualenv &&\
+    apt-get install -y --no-install-recommends virtualenv python3-tk &&\
     rm -rf /var/lib/apt/lists/* &&\
     virtualenv -p python$(eval ${GET_PYTHON_VERSION}) ${VIRTUAL_ENV} &&\
     python -m pip install --upgrade pip &&\
