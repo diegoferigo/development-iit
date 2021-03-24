@@ -50,6 +50,7 @@ RUN apt-get update &&\
         iputils-ping \
         strace \
         less \
+        tree \
         &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -179,6 +180,8 @@ RUN mamba install -y \
         sqlite \
         tinyxml \
         jsoncpp \
+        spdlog \
+        irrlicht \
         &&\
     mamba install -y \
         expat-cos7-x86_64 \
@@ -226,6 +229,8 @@ RUN mamba install -y \
         #tensorflow-gpu \#
         pytorch-gpu \
         tensorboard \
+        pytorch-lightning \
+        pandas \
         scipy \
         numpy \
         gym \
@@ -235,7 +240,12 @@ RUN mamba install -y \
         lxml \
         matplotlib \
         setuptools_scm \
-        ray-rllib ray-tune ray-dashboard &&\
+        ray-rllib ray-tune ray-dashboard \
+        &&\
+    pip install \
+        mashumaro \
+        tables \
+        &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 RUN cd $SRC_DIR &&\
     git clone -b devel https://github.com/robotology/gym-ignition &&\
