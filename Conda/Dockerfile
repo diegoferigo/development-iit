@@ -311,7 +311,7 @@ RUN mamba install -y \
 #    rm -rf /var/lib/apt/lists/*
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.14.0
+ARG QTCREATOR_VERSION=4.14.2
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
 RUN apt-get update &&\
