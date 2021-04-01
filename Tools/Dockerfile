@@ -113,7 +113,7 @@ RUN apt-get update &&\
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.14.0
+ARG QTCREATOR_VERSION=4.14.2
 COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
 COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
 RUN cd /tmp &&\
