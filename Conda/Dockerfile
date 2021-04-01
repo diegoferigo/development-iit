@@ -67,8 +67,8 @@ RUN cd /usr/local &&\
     micromamba activate $CONDA_PREFIX &&\
     conda config --system --add channels conda-forge &&\
     conda config --system --set channel_priority strict &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
-    # find $CONDA_PREFIX -not -group runtimeusers -and "!" -type l -exec chgrp runtimeusers {} ";" -exec chmod g+rw {} +
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
 
 # Enable by default the conda environment for non-root users
 RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
@@ -88,7 +88,8 @@ RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
 # Install buildchain
 RUN mamba install -y \
         compilers cmake make pkg-config ninja pybind11 git &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
 
 # Default directory with sources
 ARG SRC_DIR=/usr/local/src
@@ -110,7 +111,8 @@ RUN mamba install -y \
     &&\
     ninja install &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
 
 # Ignition Robotics
 RUN mamba install -y \
@@ -119,7 +121,8 @@ RUN mamba install -y \
         ogre==1.10.12 \
         jsoncpp libzip qt \
         mesa-libgl-devel-cos7-x86_64 libglu &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
 #RUN activate_conda &&\
 #    mamba install -y libxrandr-devel-cos7-x86_64 xorg-libxrandr &&\
 #    cd $SRC_DIR &&\
@@ -194,8 +197,11 @@ RUN mamba install -y \
         libxfixes-cos7-x86_64 \
         libxxf86vm-cos7-x86_64 \
         mesalib \
-        mesa-libgl-cos7-x86_64 &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+        mesa-libgl-cos7-x86_64 \
+    &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
+    
 RUN cd $SRC_DIR &&\
     git clone https://github.com/robotology/robotology-superbuild &&\
     mkdir -p robotology-superbuild/build && cd robotology-superbuild/build &&\
@@ -246,7 +252,9 @@ RUN mamba install -y \
         mashumaro \
         tables \
         &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
+    
 RUN cd $SRC_DIR &&\
     git clone -b devel https://github.com/robotology/gym-ignition &&\
     mkdir gym-ignition/build && cd gym-ignition/build &&\
@@ -265,7 +273,8 @@ ENV DOTFILES_SHARE=/usr/local
 RUN mamba install -y fish &&\
     git clone https://github.com/diegoferigo/dotfiles /usr/local/dotfiles &&\
     bash /usr/local/dotfiles/bootstrap &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    conda clean -afy
 
 # Some QT-Apps/Gazebo don't show controls without this
 ENV QT_X11_NO_MITSHM=1
@@ -311,7 +320,8 @@ RUN mamba install -y \
         openssh \
         &&\
     pip install colour-valgrind &&\
-    rm -rf $HOME/.cache/pip
+    rm -rf $HOME/.cache/pip &&\
+    conda clean -afy
 
 # Setup HW Acceleration for Intel graphic cards
 #RUN apt-get update &&\
