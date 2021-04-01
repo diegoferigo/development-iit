@@ -16,11 +16,6 @@ RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers &&\
 # to operate on the filesystem, and particularly the conda environment
 USER root:runtimeusers
 
-# TODO:
-# 1. add root to runtimeusers?
-# 1. chown runtimeusers
-# 2. chmod -R g=u on all files not already owned by runtimeusers
-
 # Setup locales and timezone
 ARG TZ=Europe/Rome
 ARG DEBIAN_FRONTEND=noninteractive
@@ -70,20 +65,12 @@ RUN cd /usr/local &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
 
-# Enable by default the conda environment for non-root users
+# Enable by default the conda environment for all users
 RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
     echo '  eval "$(micromamba shell hook -s bash)"' >> /etc/bash.bashrc &&\
     echo '  micromamba activate $CONDA_PREFIX' >> /etc/bash.bashrc &&\
     echo '}' >> /etc/bash.bashrc &&\
     echo '[[ -z $NO_CONDA ]] && activate_conda' >> /etc/bash.bashrc
-
-# RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers
-# RUN chown -R :runtimeusers $CONDA_PREFIX
-# RUN ls -al $CONDA_PREFIX
-# RUN mamba install curl
-# RUN ls -al $CONDA_PREFIX
-# RUN chmod -R g=u $CONDA_PREFIX
-# RUN ls -al $CONDA_PREFIX && false
 
 # Install buildchain
 RUN mamba install -y \
@@ -114,7 +101,7 @@ RUN mamba install -y \
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
 
-# Ignition Robotics
+# Ignition Robotics dependencies
 RUN mamba install -y \
         vcstool colcon-common-extensions eigen freeimage gts glib ffmpeg \
         ruby tinyxml2 tinyxml protobuf urdfdom zeromq cppzmq \
@@ -123,19 +110,8 @@ RUN mamba install -y \
         mesa-libgl-devel-cos7-x86_64 libglu &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
-#RUN activate_conda &&\
-#    mamba install -y libxrandr-devel-cos7-x86_64 xorg-libxrandr &&\
-#    cd $SRC_DIR &&\
-#    git clone --depth=1 --branch 1.9.1 https://github.com/OGRECave/ogre &&\
-#    mkdir -p ogre/build && cd ogre/build &&\
-#    cmake .. \
-#        -GNinja \
-#        -DCMAKE_BUILD_TYPE=Release \
-#        -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-#        -DOGRE_BUILD_COMPONENT_CSHARP=OFF \
-#        -DOGRE_BUILD_COMPONENT_PYTHON=OFF \
-#    &&\
-#    ninja install
+
+# Ignition Robotics
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
     wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-dome.yaml &&\
@@ -146,6 +122,8 @@ RUN cd $SRC_DIR &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     colcon graph &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+
+# Workaround for GL headers
 RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" /conda/x86_64-conda-linux-gnu/sysroot/usr/include/GL/glx.h &&\
     cd $SRC_DIR/workspace &&\
     colcon build \
@@ -160,7 +138,7 @@ RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" /conda/x86_64-c
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=$SRC_DIR/workspace/install/lib/ign-physics-3/engine-plugins
 
-# Superbuild
+# Superbuild dependencies
 RUN mamba install -y \
         ace \
         asio \
@@ -202,6 +180,7 @@ RUN mamba install -y \
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
     
+# Superbuild
 RUN cd $SRC_DIR &&\
     git clone https://github.com/robotology/robotology-superbuild &&\
     mkdir -p robotology-superbuild/build && cd robotology-superbuild/build &&\
@@ -230,6 +209,7 @@ RUN cd $SRC_DIR &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" >> /etc/bash.bashrc &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
+# Application dependencies
 RUN mamba install -y \
         ipython \
         #tensorflow-gpu \#
@@ -255,6 +235,7 @@ RUN mamba install -y \
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
     
+# gym-ignition
 RUN cd $SRC_DIR &&\
     git clone -b devel https://github.com/robotology/gym-ignition &&\
     mkdir gym-ignition/build && cd gym-ignition/build &&\
@@ -286,7 +267,6 @@ RUN apt-get update &&\
         gosu \
         &&\
     rm -rf /var/lib/apt/lists/*
-# RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
 ENV USER_UID=1000
