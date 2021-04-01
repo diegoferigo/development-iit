@@ -326,7 +326,7 @@ RUN apt-get update &&\
     rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js &&\
     ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
 
-ARG PYCHARM_VER=2020.3.3
+ARG PYCHARM_VER=2020.3.5
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         libxtst-dev libxext-dev libxrender-dev libfreetype6-dev libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 &&\
