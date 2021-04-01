@@ -157,7 +157,9 @@ RUN apt-get update &&\
         # MISC
         liboctave-dev \
         libqt5opengl5-dev \
-        libasio-dev &&\
+        libasio-dev \
+        libspdlog-dev \
+        &&\
     rm -rf /var/lib/apt/lists/*
 
 # ===========================================
