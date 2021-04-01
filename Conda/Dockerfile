@@ -114,10 +114,10 @@ RUN mamba install -y \
 # Ignition Robotics
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
-    wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-dome.yaml &&\
-    sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-dome.yaml &&\
-    sed -i -e "s|ign-physics3|fix/get_force2|g" collection-dome.yaml &&\
-    vcs import < collection-dome.yaml &&\
+    wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-edifice.yaml &&\
+    sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-edifice.yaml &&\
+    sed -i -e "s|ign-physics4|fix/compute_joint_force_edifice|g" collection-edifice.yaml &&\
+    vcs import < collection-edifice.yaml &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.3)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     colcon graph &&\
@@ -136,7 +136,6 @@ RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" /conda/x86_64-c
         &&\
     echo "[[ -f $SRC_DIR/workspace/install/setup.sh ]] && source $SRC_DIR/workspace/install/setup.sh" >> /etc/bash.bashrc &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
-ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=$SRC_DIR/workspace/install/lib/ign-physics-3/engine-plugins
 
 # Superbuild dependencies
 RUN mamba install -y \
