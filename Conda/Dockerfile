@@ -1,6 +1,8 @@
 ARG from=ubuntu:focal
 FROM ${from}
 
+# TODO: https://jcristharif.com/conda-docker-tips.html
+
 # ========
 # HEADLESS
 # ========
@@ -112,6 +114,7 @@ RUN mamba install -y \
     conda clean -afy
 
 # Ignition Robotics
+ARG IGN=0
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
     wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-edifice.yaml &&\
@@ -122,6 +125,7 @@ RUN cd $SRC_DIR &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     colcon graph &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+# ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=$SRC_DIR/workspace/install/lib/ign-physics-3/engine-plugins
 
 # Workaround for GL headers
 RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" \
@@ -242,7 +246,7 @@ RUN mamba install -y \
     
 # gym-ignition
 RUN cd $SRC_DIR &&\
-    git clone -b devel https://github.com/robotology/gym-ignition &&\
+    git clone -b fix/edifice_deprecations https://github.com/robotology/gym-ignition &&\
     mkdir gym-ignition/build && cd gym-ignition/build &&\
     cmake .. \
         -GNinja \
@@ -293,6 +297,8 @@ CMD ["bash"]
 RUN mamba install -y \
         gdb \
         clang \
+        # TODO
+        #llvmdev \#
         clang-tools \
         ccache \
         valgrind \
@@ -306,6 +312,7 @@ RUN mamba install -y \
         &&\
     pip install colour-valgrind &&\
     rm -rf $HOME/.cache/pip &&\
+    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
 
 # Setup HW Acceleration for Intel graphic cards
