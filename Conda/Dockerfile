@@ -90,6 +90,8 @@ RUN mamba install -y \
     cd $SRC_DIR &&\
     git clone https://github.com/diegoferigo/dart &&\
     mkdir -p dart/build && cd dart/build &&\
+    sed -i "s/if(TARGET dart AND NOT DART_BUILD_DARTPY)/if(TARGET dart AND NOT DART_BUILD_DARTPY AND OFF)/g" \
+       ../CMakeLists.txt &&\
     cmake .. \
         -GNinja \
         -DCMAKE_BUILD_TYPE=Release \
@@ -97,6 +99,8 @@ RUN mamba install -y \
         -DHAVE_BULLET:BOOL=ON \
         -DHAVE_DOXYGEN:BOOL=OFF \
         -DHAVE_ODE:BOOL=ON \
+        -DDART_BUILD_DARTPY:BOOL=OFF \
+        -DDART_BUILD_EXTRAS:BOOL=OFF \
     &&\
     ninja install &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
