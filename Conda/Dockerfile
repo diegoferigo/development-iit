@@ -60,7 +60,7 @@ RUN cd /usr/local &&\
     wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest \
         | tar -xvj bin/micromamba &&\
     eval "$(micromamba shell hook -s bash)" &&\    
-    micromamba create -y -p $CONDA_PREFIX 'python==$CONDA_PYTHON_VERSION.*' mamba -c conda-forge &&\
+    micromamba create -y -p $CONDA_PREFIX "python==$CONDA_PYTHON_VERSION.*" mamba -c conda-forge &&\
     micromamba activate $CONDA_PREFIX &&\
     conda config --system --add channels conda-forge &&\
     conda config --system --set channel_priority strict &&\
