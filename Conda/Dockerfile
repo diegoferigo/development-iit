@@ -208,15 +208,11 @@ RUN cd $SRC_DIR &&\
         -DBUILD_TESTING:BOOL=OFF \
         -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
         -DROBOTOLOGY_PROJECT_TAGS=Stable \
-        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_PYTHON=ON -DWITH_PYTHON3=ON -DPYTHON_PREFIX=$SRC_DIR/robotology-superbuild/build/install/lib/python3/site-packages -DWITH_QPOASES=ON" \
+        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_PYTHON=ON -DWITH_PYTHON3=ON -DPYTHON_PREFIX=$SRC_DIR/robotology-superbuild/build/install/lib/python$CONDA_PYTHON_VERSION/site-packages -DWITH_QPOASES=ON" \
         .. &&\
     ninja &&\
     sed -i 's/_object/object/g' \
-        $SRC_DIR/robotology-superbuild/build/install/lib/python3/site-packages/casadi/casadi.py &&\
-    echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/src/robotology-superbuild/build/install/lib/python3.8/dist-packages/' \
-        >>  /etc/bash.bashrc &&\
-    echo 'export PYTHONPATH=$PYTHONPATH:/usr/local/src/robotology-superbuild/build/install/lib/python3.8/site-packages/' \
-        >> /etc/bash.bashrc &&\
+        $SRC_DIR/robotology-superbuild/build/install/lib/python$CONDA_PYTHON_VERSION/site-packages/casadi/casadi.py &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" \
         >> /etc/bash.bashrc &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
