@@ -129,7 +129,6 @@ RUN cd $SRC_DIR &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     colcon graph &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
-# ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=$SRC_DIR/workspace/install/lib/ign-physics-3/engine-plugins
 
 # Workaround for GL headers
 RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" \
