@@ -118,7 +118,7 @@ RUN pip install vcstool colcon-common-extensions &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
 ARG IGN_SOURCES_DATE="20210103"
-ARG IGNITION_DISTRIBUTION="dome"
+ARG IGNITION_DISTRIBUTION="edifice"
 ARG IGNITION_DEFAULT_CHANNEL="stable"
 
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT_CHANNEL} `lsb_release -cs` main" > \
@@ -133,9 +133,7 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
         $(sort -u $(find . -iname 'packages-'$(lsb_release -cs)'.apt' -o -iname 'packages.apt') | grep -v -E "dart|^libignition|^libsdformat" | tr '\n' ' ') &&\
     rm -rf /var/lib/apt/lists/* &&\
     sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-${IGNITION_DISTRIBUTION}.yaml &&\
-    sed -i -e "s|ign-physics3|fix/get_force2|g" collection-${IGNITION_DISTRIBUTION}.yaml &&\
-    sed -i -e "s|this->dataPtr->SetRemovedComponentsMsgs|//this->dataPtr->SetRemovedComponentsMsgs|g" \
-        ign-gazebo/src/EntityComponentManager.cc &&\
+    sed -i -e "s|ign-physics4|fix/compute_joint_force_edifice|g" collection-${IGNITION_DISTRIBUTION}.yaml &&\
     cd ${RL_SOURCES}/workspace &&\
     colcon graph &&\
     export CC=gcc && export CXX=g++ &&\
@@ -149,7 +147,6 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
     find build/ -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${RL_SOURCES}/workspace -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+ &&\
     echo "[[ -f ${RL_SOURCES}/workspace/install/setup.bash ]] && source ${RL_SOURCES}/workspace/install/setup.bash" >> /etc/bash.bashrc
-ENV IGN_GAZEBO_PHYSICS_ENGINE_PATH=${RL_SOURCES}/workspace/install/lib/ign-physics-3/engine-plugins
 
 # =============
 # Install Julia
