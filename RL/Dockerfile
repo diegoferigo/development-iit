@@ -95,6 +95,8 @@ RUN apt-get update &&\
     cd ${RL_SOURCES} &&\
     git clone --depth=1 https://github.com/diegoferigo/dart &&\
     mkdir -p dart/build && cd dart/build &&\
+    sed -i "s/if(TARGET dart AND NOT DART_BUILD_DARTPY)/if(TARGET dart AND NOT DART_BUILD_DARTPY AND OFF)/g" \
+       ../CMakeLists.txt &&\
     cmake .. \
         -GNinja \
         -DCMAKE_INSTALL_PREFIX=${RL_INSTALL} \
@@ -102,6 +104,8 @@ RUN apt-get update &&\
         -DHAVE_BULLET:BOOL=ON \
         -DHAVE_DOXYGEN:BOOL=OFF \
         -DHAVE_ODE:BOOL=ON \
+        -DDART_BUILD_DARTPY:BOOL=OFF \
+        -DDART_BUILD_EXTRAS:BOOL=OFF \
     &&\
     ninja install &&\
     find . -type f -not -name 'CMakeCache.txt' -delete &&\
