@@ -48,6 +48,7 @@ RUN apt-get update &&\
         strace \
         less \
         tree \
+        htop \
         &&\
     rm -rf /var/lib/apt/lists/*
 
