@@ -105,7 +105,7 @@ if [[ $(id -u ${USERNAME:-root}) -gt 0 && -f /usr/local/dotfiles/bootstrap ]] ; 
     [[ -d /home/${USERNAME}/.config ]] && chown ${USER_UID}:${USER_GID} /home/${USERNAME}/.config
     su -c "mkdir -p /home/${USERNAME}/.local" $USERNAME
     su -c "mkdir -p /home/${USERNAME}/.config/fish" $USERNAME
-    su -c "bash /usr/local/dotfiles/bootstrap" $USERNAME || echo "Failed to initialize dotfiles"
+    su -c "bash -i /usr/local/dotfiles/bootstrap" $USERNAME || echo "Failed to initialize dotfiles"
 fi
 
 # Configure YARP namespace
@@ -113,4 +113,3 @@ if [[ -n $(type -t yarp) ]] ; then
     echo "==> Setting YARP namespace"
     su -c "${IIT_INSTALL}/bin/yarp namespace ${YARP_NAME_SPACE:-/$USERNAME}" $USERNAME
 fi
-
