@@ -119,7 +119,6 @@ RUN mamba install -y \
     conda clean -afy
 
 # Ignition Robotics
-ARG IGN=0
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
     wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-edifice.yaml &&\
@@ -256,6 +255,7 @@ RUN cd $SRC_DIR &&\
         &&\
     ninja install &&\
     pip install -e .. &&\
+    rm -rf $HOME/.cache/pip &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
