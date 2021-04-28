@@ -114,7 +114,7 @@ RUN mamba install -y \
         ruby tinyxml2 tinyxml protobuf urdfdom zeromq cppzmq \
         ogre==1.10.12 \
         jsoncpp libzip qt \
-        mesa-libgl-devel-cos7-x86_64 libglu &&\
+        mesa-libgl-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libglu &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
 
