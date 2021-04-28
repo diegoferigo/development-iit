@@ -310,6 +310,8 @@ RUN mamba install -y \
         mkdocs-material \
         pygments \
         openssh \
+        palettable \
+        tikzplotlib \
         &&\
     pip install colour-valgrind &&\
     rm -rf $HOME/.cache/pip &&\
