@@ -172,6 +172,7 @@ RUN mamba install -y \
         jsoncpp \
         spdlog \
         irrlicht \
+        manif \
         &&\
     mamba install -y \
         expat-cos7-x86_64 \
