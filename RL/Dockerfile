@@ -222,7 +222,8 @@ RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-${IGNITION_DEFAULT
 # Install projects for RL
 # =======================
 
-RUN pip install --pre gym-ignition[website,test] &&\
+RUN pip install cmake-build-extension &&\
+    pip install --pre gym-ignition[website,test] &&\
     pip install --no-build-isolation git+https://github.com/dic-iit/gazebo-scenario-plugins &&\
     rm -rf $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
