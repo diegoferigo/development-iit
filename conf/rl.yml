@@ -37,7 +37,7 @@ devenv:
       files:
         - "$HOME/.dockerdot/z:$HOME/.z"
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
-        - "$HOME/.dockerdot/local/share/fish/fish_history:$HOME/.local/share/fish_history"
+        - "$HOME/.dockerdot/local/share/fish/fish_history:$HOME/.local/share/fish/fish_history"
     gpu: "nvidia"
     x11: "xauth"
     # matlab:
