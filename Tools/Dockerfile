@@ -188,7 +188,7 @@ RUN apt-get update &&\
 ENV DOTFILES_SHARE=/usr/local
 RUN apt-add-repository ppa:fish-shell/release-3 &&\
     apt-get install -y --no-install-recommends \
-        nano git wget curl unzip fish \
+        nano git wget curl unzip bash-completion fish \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
     git clone https://github.com/diegoferigo/dotfiles /usr/local/dotfiles &&\
