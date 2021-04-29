@@ -117,7 +117,7 @@ RUN pip install vcstool colcon-common-extensions &&\
     rm -r $HOME/.cache/pip &&\
     find ${VIRTUAL_ENV} -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
-ARG IGN_SOURCES_DATE="20210103"
+ARG IGN_SOURCES_DATE="20210429"
 ARG IGNITION_DISTRIBUTION="edifice"
 ARG IGNITION_DEFAULT_CHANNEL="stable"
 
