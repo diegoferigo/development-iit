@@ -246,7 +246,7 @@ RUN mamba install -y \
     
 # gym-ignition
 RUN cd $SRC_DIR &&\
-    git clone -b fix/edifice_deprecations https://github.com/robotology/gym-ignition &&\
+    git clone -b devel https://github.com/robotology/gym-ignition &&\
     mkdir gym-ignition/build && cd gym-ignition/build &&\
     cmake .. \
         -GNinja \
