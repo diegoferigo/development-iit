@@ -33,10 +33,10 @@ devenv:
         - "$HOME/.dockerdot/config/JetBrains:$HOME/.config/JetBrains"
         - "$HOME/.dockerdot/local/share/JetBrains:$HOME/.local/share/JetBrains"
         - "$HOME/.dockerdot/cache:$HOME/.cache"
+        - "$HOME/.dockerdot/local/share/z:$HOME/.local/share/z"
       files:
         - "$HOME/.dockerdot/z:$HOME/.z"
         - "$HOME/.dockerdot/bash_history:$HOME/.bash_history"
-        - "$HOME/.dockerdot/local/share/z/data:$HOME/.local/share/z/data"
         - "$HOME/.dockerdot/local/share/fish/fish_history:$HOME/.local/share/fish_history"
     gpu: "nvidia"
     x11: "xauth"
