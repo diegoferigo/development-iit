@@ -46,7 +46,7 @@ RUN apt-get update &&\
 # PyCharm
 # =======
 
-ARG PYCHARM_VER=2021.1
+ARG PYCHARM_VER=2021.1.1
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         python3-setuptools \
