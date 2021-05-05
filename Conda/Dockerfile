@@ -312,7 +312,7 @@ RUN mamba install -y \
         #llvmdev \#
         clang-tools \
         ccache \
-        valgrind \
+        #valgrind \#
         doxygen \
         graphviz \
         cppcheck \
@@ -323,6 +323,9 @@ RUN mamba install -y \
         palettable \
         tikzplotlib \
         &&\
+    apt-get update &&\
+    apt-get install -y --no-install-recommends valgrind xterm &&\
+    rm -rf /var/lib/apt/lists/* &&\
     pip install colour-valgrind &&\
     rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
