@@ -243,6 +243,7 @@ RUN mamba install -y \
     pip install \
         mashumaro \
         tables \
+        cmake-build-extension \
         &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
