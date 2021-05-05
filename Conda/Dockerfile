@@ -171,7 +171,7 @@ RUN mamba install -y \
         jsoncpp \
         spdlog \
         irrlicht \
-        manif \
+        #manif \#
         &&\
     mamba install -y \
         expat-cos7-x86_64 \
@@ -210,13 +210,15 @@ RUN cd $SRC_DIR &&\
         -DBUILD_TESTING:BOOL=OFF \
         -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
         -DROBOTOLOGY_PROJECT_TAGS=Stable \
-        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_PYTHON=ON -DWITH_PYTHON3=ON -DPYTHON_PREFIX=$SRC_DIR/robotology-superbuild/build/install/lib/python$CONDA_PYTHON_VERSION/site-packages -DWITH_QPOASES=ON" \
+        -Dbipedal-locomotion-framework_TAG=master \
+        -Dmanif_TAG=devel \
+        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_QPOASES=ON" \
         .. &&\
     ninja &&\
-    sed -i 's/_object/object/g' \
-        $SRC_DIR/robotology-superbuild/build/install/lib/python$CONDA_PYTHON_VERSION/site-packages/casadi/casadi.py &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" \
         >> /etc/bash.bashrc &&\
+    pip install git+https://github.com/artivis/manif@devel &&\
+    rm -rf $HOME/.cache/pip &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Application dependencies
