@@ -238,13 +238,19 @@ RUN mamba install -y \
         lxml \
         matplotlib \
         setuptools_scm \
-        ray-rllib ray-tune ray-dashboard \
+        #ray-rllib ray-tune ray-dashboard \#
         &&\
     pip install \
         mashumaro \
         tables \
         cmake-build-extension \
         &&\
+    # Install ray from pip
+    mamba install -y \
+        tensorboardx py-spy uvicorn fastapi starlette opencv pydantic atari_py kubernetes websocket-client h11 &&\
+    pip install ray[all] \
+        &&\
+    rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
     
