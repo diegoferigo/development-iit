@@ -5,6 +5,7 @@
 // Sources:
 //
 // - https://doc.qt.io/qtinstallerframework/noninteractive.html
+// - https://forum.qt.io/topic/117066/qt-silent-installation-on-linux-server/12
 // - https://github.com/benlau/qtci/blob/master/bin/extract-qt-installer
 // - https://stackoverflow.com/questions/25105269/silent-install-qt-run-installer-on-ubuntu-server
 
