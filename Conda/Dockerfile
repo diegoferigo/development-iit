@@ -188,7 +188,7 @@ RUN mamba install -y \
     &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
-    
+
 # Superbuild
 RUN cd $SRC_DIR &&\
     git clone https://github.com/robotology/robotology-superbuild &&\
@@ -253,7 +253,7 @@ RUN mamba install -y \
     rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
-    
+
 # gym-ignition
 RUN cd $SRC_DIR &&\
     git clone -b devel https://github.com/robotology/gym-ignition &&\
