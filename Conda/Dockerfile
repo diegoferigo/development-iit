@@ -361,7 +361,8 @@ RUN apt-get update &&\
 ARG PYCHARM_VERSION=2021.1.1
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
-        libxtst-dev libxext-dev libxrender-dev libfreetype6-dev libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 &&\
+        libxtst6 libxext6 libxrender1 libfreetype6 libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 \
+        libnss3 libnspr4 libatk-bridge2.0-0 libgbm1 libasound2 libatspi2.0-0 &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /opt && mkdir pycharm && cd pycharm &&\
     curl -L https://download.jetbrains.com/python/pycharm-community-${PYCHARM_VERSION}.tar.gz -o /opt/pycharm/installer.tgz &&\
