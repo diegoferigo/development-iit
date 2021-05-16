@@ -1,0 +1,19 @@
+version: '3.0'
+
+services:
+
+  conda_cuda11.1:
+    build:
+      args:
+        from: nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu20.04
+      context: .
+      dockerfile: Dockerfile
+    image: diegoferigo/conda:11.1.1
+  
+  conda_cuda10.1:
+    build:
+      args:
+        from: diegoferigo/cuda:10.1-cudnn7-devel-ubuntu20.04
+      context: .
+      dockerfile: Dockerfile
+    image: diegoferigo/conda:10.1
