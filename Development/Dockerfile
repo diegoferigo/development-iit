@@ -110,7 +110,7 @@ ARG IIT_BIN=${IIT_INSTALL}/bin
 # -----------------------------
 
 # Use docker cache for steps above
-ARG IIT_DOCKER_SOURCES="20210429"
+ARG IIT_DOCKER_SOURCES="20210520"
 
 RUN mkdir -p ${IIT_SOURCES} &&\
     cd ${IIT_SOURCES} &&\
@@ -150,15 +150,19 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
           -DROBOTOLOGY_ENABLE_CORE:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_ENABLE_DYNAMICS_FULL_DEPS:BOOL=ON \
-          -DROBOTOLOGY_ENABLE_ROBOT_TESTING:BOOL=ON \
+          -DROBOTOLOGY_ENABLE_ROBOT_TESTING:BOOL=OFF \
           -DROBOTOLOGY_ENABLE_HUMAN_DYNAMICS:BOOL=ON \
           -DROBOTOLOGY_USES_GAZEBO:BOOL=ON \
+          -DROBOTOLOGY_USES_IGNITION:BOOL=OFF \
+          -DROBOTOLOGY_USES_PYTHON:BOOL=ON \
           -DROBOTOLOGY_USES_OCTAVE:BOOL=${ROBOTOLOGY_USES_OCTAVE} \
           -DROBOTOLOGY_USES_MATLAB:BOOL=${ROBOTOLOGY_USES_MATLAB} \
           -DNON_INTERACTIVE_BUILD:BOOL=ON \
           -DBUILD_TESTING:BOOL=OFF \
           -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
           -DROBOTOLOGY_PROJECT_TAGS=${ROBOTOLOGY_PROJECT_TAGS} \
+          -Dbipedal-locomotion-framework_TAG=master \
+          -Dmanif_TAG=devel \
           .. &&\
     ninja &&\
     ln -s ${IIT_SOURCES}/robotology-superbuild/build/install ${IIT_INSTALL} &&\
