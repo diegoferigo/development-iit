@@ -113,16 +113,23 @@ RUN apt-get update &&\
 # ====================
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.14.2
-COPY QtCreatorSetup.js /tmp/QtCreatorSetup.js
+ARG QTCREATOR_VERSION=4.15.0
 COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
-RUN cd /tmp &&\
-    wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
-    chmod +x qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run &&\
-    ./qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run --platform minimal --script QtCreatorSetup.js &&\
-    rm /tmp/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run /tmp/QtCreatorSetup.js &&\
-    ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator &&\
-    rm /root/.local/share/Qt/qtaccount.ini
+RUN apt-get update &&\
+    # Must find all libs during runtime
+    # - ldd /tmp/qtcreator.run
+    # - ldd /opt/qtcreator/bin/qtcreator
+    # - ldd /opt/qtcreator/lib/Qt/plugins/platforms/libqxcb.so
+    apt-get install -y --no-install-recommends \
+        libgl1 libxcomposite1 libwayland-cursor0 libx11-xcb1 libxcb-glx0 libxkbcommon-x11-0 libxcb* &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    cd /tmp &&\
+    wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run -O qtcreator.run &&\
+    chmod +x qtcreator.run &&\
+    # https://wiki.qt.io/Online_Installer_4.x
+    ./qtcreator.run --accept-licenses --accept-messages --accept-obligations --confirm-command --root /opt/qtcreator install &&\
+    rm /tmp/qtcreator.run &&\
+    ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
 
 # rr
 # RUN apt-get update &&\
