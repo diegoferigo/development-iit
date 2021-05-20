@@ -79,6 +79,7 @@ RUN wget -nv -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&\
         net-tools \
         iputils-ping \
         strace \
+        swig \
         pybind11-dev \
         &&\
     rm -rf /var/lib/apt/lists/* &&\
@@ -154,24 +155,6 @@ RUN apt-get update &&\
 #     cmake --build . &&\
 #     cmake --build . --target install &&\
 #     rm -r /tmp/rr
-
-# SWIG with Matlab / Octave support
-# ... waiting its upstream merge
-RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-        autotools-dev \
-        automake \
-        bison \
-        libpcre3-dev &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd /tmp/ &&\
-    git clone --depth 1 -b matlab https://github.com/robotology-dependencies/swig.git &&\
-    cd swig &&\
-    sh autogen.sh &&\
-    CC=clang-${CLANG_VER} CXX=clang++-${CLANG_VER} ./configure &&\
-    make -j2 &&\
-    make install &&\
-    rm -r /tmp/swig
 
 # IWYU
 RUN apt-get update &&\
