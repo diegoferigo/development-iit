@@ -128,10 +128,8 @@ RUN cd $SRC_DIR &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.3)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     colcon graph &&\
-    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
-
-# Workaround for GL headers
-RUN sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" \
+    # Workaround for GL headers
+    sed -i "s|#include <GL/glxext.h>|//#include <GL/glxext.h>|g" \
         $CONDA_PREFIX/x86_64-conda-linux-gnu/sysroot/usr/include/GL/glx.h &&\
     cd $SRC_DIR/workspace &&\
     colcon build \
