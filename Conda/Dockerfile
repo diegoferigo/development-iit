@@ -215,6 +215,7 @@ RUN cd $SRC_DIR &&\
     ninja &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" \
         >> /etc/bash.bashrc &&\
+    ln -s $SRC_DIR/robotology-superbuild/src/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
     pip install git+https://github.com/artivis/manif@devel &&\
     rm -rf $HOME/.cache/pip &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
