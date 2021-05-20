@@ -171,6 +171,10 @@ RUN cd ${IIT_SOURCES}/robotology-superbuild &&\
     find src/ -type f -not -name 'CMakeCache.txt' -delete &&\
     find ${IIT_SOURCES}/robotology-superbuild -not -group runtimeusers -exec chgrp runtimeusers {} \; -exec chmod g+rw {} \+
 
+# Use gcc instead of clang
+ENV CC=gcc
+ENV CXX=g++
+
 # CATCH2
 RUN cd ${IIT_SOURCES}/Catch2 &&\
     mkdir -p build && cd build &&\
