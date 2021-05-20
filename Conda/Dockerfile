@@ -104,6 +104,7 @@ RUN mamba install -y \
         -DDART_BUILD_EXTRAS:BOOL=OFF \
     &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
@@ -140,6 +141,7 @@ RUN cd $SRC_DIR &&\
         -DBUILD_TESTING:BOOL=OFF \
         -DCMAKE_BUILD_TYPE=Release \
         &&\
+    find build/ -type f -not -name 'CMakeCache.txt' -delete &&\
     echo "[[ -f $SRC_DIR/workspace/install/setup.sh ]] && source $SRC_DIR/workspace/install/setup.sh" \
         >> /etc/bash.bashrc &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
@@ -213,6 +215,7 @@ RUN cd $SRC_DIR &&\
         -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_QPOASES=ON" \
         .. &&\
     ninja &&\
+    find src/ -type f -not -name 'CMakeCache.txt' -delete &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" \
         >> /etc/bash.bashrc &&\
     ln -s $SRC_DIR/robotology-superbuild/src/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
@@ -264,6 +267,7 @@ RUN cd $SRC_DIR &&\
         -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         &&\
     ninja install &&\
+    find . -type f -not -name 'CMakeCache.txt' -delete &&\
     pip install -e .. &&\
     rm -rf $HOME/.cache/pip &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
