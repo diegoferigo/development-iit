@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
   conda:
-    image: "diegoferigo/conda:10.1"
+    image: "diegoferigo/conda:11.2"
     container_name: "conda"
     command: "bash"
     init: true

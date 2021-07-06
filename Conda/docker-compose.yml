@@ -2,13 +2,13 @@ version: '3.0'
 
 services:
 
-  conda_cuda11.1:
+  conda_cuda11.2:
     build:
       args:
-        from: nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu20.04
+        from: nvidia/cuda:11.2.2-cudnn8-runtime
       context: .
       dockerfile: Dockerfile
-    image: diegoferigo/conda:11.1.1
+    image: diegoferigo/conda:11.2
   
   conda_cuda10.1:
     build:
