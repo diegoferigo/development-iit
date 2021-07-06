@@ -170,6 +170,7 @@ RUN mamba install -y \
         sqlite \
         tinyxml \
         jsoncpp \
+        nlohmann_json \
         spdlog \
         irrlicht \
         #manif \#
@@ -241,6 +242,7 @@ RUN mamba install -y \
         lxml \
         matplotlib \
         setuptools_scm \
+        bazel \
         #ray-rllib ray-tune ray-dashboard \#
         &&\
     pip install \
