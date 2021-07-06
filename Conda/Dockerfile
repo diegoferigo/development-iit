@@ -348,7 +348,7 @@ RUN mamba install -y \
 #    rm -rf /var/lib/apt/lists/*
 
 # QtCreator
-ARG QTCREATOR_VERSION=4.15.0
+ARG QTCREATOR_VERSION=4.15.1
 COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
 RUN apt-get update &&\
     # Must find all libs during runtime
@@ -370,7 +370,7 @@ RUN apt-get update &&\
     rm /tmp/qtcreator.run &&\
     ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
 
-ARG PYCHARM_VERSION=2021.1.1
+ARG PYCHARM_VERSION=2021.1.3
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         libxtst6 libxext6 libxrender1 libfreetype6 libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 \
