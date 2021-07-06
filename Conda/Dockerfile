@@ -264,15 +264,16 @@ RUN mamba install -y \
 # gym-ignition
 RUN cd $SRC_DIR &&\
     git clone -b devel https://github.com/robotology/gym-ignition &&\
-    mkdir gym-ignition/build && cd gym-ignition/build &&\
-    cmake .. \
+    cd gym-ignition &&\
+    cmake -S . -B build/ \
         -GNinja \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         &&\
-    ninja install &&\
-    find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    pip install -e .. &&\
+    cmake --build build/ --target install &&\
+    find build/ -type f -not -name 'CMakeCache.txt' -delete &&\
+    pip install -e scenario/ &&\
+    pip install -e . &&\
     rm -rf $HOME/.cache/pip &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
