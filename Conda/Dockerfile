@@ -118,6 +118,7 @@ RUN mamba install -y \
         mesa-libgl-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libglu &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
+RUN echo 'protobuf 3.17.*' >> $CONDA_PREFIX/conda-meta/pinned
 
 # Ignition Robotics
 RUN cd $SRC_DIR &&\
@@ -240,7 +241,6 @@ RUN mamba install -y \
         lxml \
         matplotlib \
         setuptools_scm \
-        "protobuf>=3.17" \
         #ray-rllib ray-tune ray-dashboard \#
         &&\
     pip install \
