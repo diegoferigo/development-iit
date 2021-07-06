@@ -255,6 +255,8 @@ RUN mamba install -y \
         tensorboardx py-spy uvicorn fastapi starlette opencv pydantic atari_py kubernetes websocket-client h11 &&\
     pip install ray[all] \
         &&\
+    pip install black isort build twine \
+        &&\
     rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
