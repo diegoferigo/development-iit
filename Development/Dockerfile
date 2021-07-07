@@ -91,6 +91,7 @@ RUN apt-get update &&\
         libqt5opengl5-dev \
         libasio-dev \
         libspdlog-dev \
+        nlohmann-json3-dev \
         &&\
     rm -rf /var/lib/apt/lists/*
 
