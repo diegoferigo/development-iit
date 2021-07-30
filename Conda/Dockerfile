@@ -363,13 +363,9 @@ RUN apt-get update &&\
     # - ldd /opt/qtcreator/lib/Qt/plugins/platforms/libqxcb.so
     apt-get install -y --no-install-recommends \
         libgl1 libxcomposite1 libwayland-cursor0 libx11-xcb1 libxcb-glx0 libxkbcommon-x11-0 libxcb* &&\
-    # Use system compilers otherwise QtCreator cannot autocomplete with conda's compilers
-    apt-get install -y --no-install-recommends \
-        clang clang-format &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run -O qtcreator.run &&\
-    # wget https://download.qt.io/snapshots/qtcreator/4.15/4.15.0/427/qt-creator-opensource-linux-x86_64-4.15.0_427.run -O qtcreator.run &&\#
     chmod +x qtcreator.run &&\
     # https://wiki.qt.io/Online_Installer_4.x
     ./qtcreator.run --accept-licenses --accept-messages --accept-obligations --confirm-command --root /opt/qtcreator install &&\
@@ -388,5 +384,19 @@ RUN apt-get update &&\
     rm installer.tgz &&\
     python3 /opt/pycharm/plugins/python-ce/helpers/pydev/setup_cython.py build_ext --inplace &&\
     ln -s /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
+
+# The autocompletion feature of QtCreator does not work with conda compilers.
+# We set here the system's clang as default compiler, and enable ccache.
+ARG CCACHE_DISABLE=1
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends \
+        clang clang-format &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    echo 'CC="ccache $(which clang)"' >> /etc/bash.bashrc &&\
+    echo 'CXX="ccache $(which clang++)"' >> /etc/bash.bashrc
+
+# This is not working in the base environment:
+# https://github.com/conda-forge/compilers-feedstock/issues/31
+# conda env config vars set CC="ccache $(which clang)" CXX="ccache $(which clang++)"
 
 USER root:root
