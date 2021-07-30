@@ -331,6 +331,7 @@ RUN mamba install -y \
         openssh \
         palettable \
         tikzplotlib \
+        jq \
         &&\
     apt-get update &&\
     apt-get install -y --no-install-recommends valgrind xterm &&\
