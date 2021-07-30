@@ -228,9 +228,11 @@ RUN cd $SRC_DIR &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Application dependencies
+ARG cudatoolkit_version="11.2.*"
 RUN mamba install -y \
         ipython \
         #tensorflow-gpu \#
+        "cudatoolkit==$cudatoolkit_version" \
         pytorch-gpu \
         tensorboard \
         pytorch-lightning \

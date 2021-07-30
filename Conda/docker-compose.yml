@@ -5,7 +5,8 @@ services:
   conda_cuda11.2:
     build:
       args:
-        from: nvidia/cuda:11.2.2-cudnn8-runtime
+        from: ubuntu:focal
+        cudatoolkit_version: "11.2.*"
       context: .
       dockerfile: Dockerfile
     image: diegoferigo/conda:11.2
