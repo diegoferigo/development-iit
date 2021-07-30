@@ -76,6 +76,8 @@ RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
     echo '[[ -z $NO_CONDA ]] && activate_conda' >> /etc/bash.bashrc
 
 # Install buildchain
+# https://github.com/diegoferigo/development-iit/issues/9
+RUN echo 'binutils < 2.36' >> $CONDA_PREFIX/conda-meta/pinned
 RUN mamba install -y \
         compilers cmake make pkg-config ninja pybind11 git boa &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
