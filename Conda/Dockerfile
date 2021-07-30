@@ -112,7 +112,7 @@ RUN mamba install -y \
 # Ignition Robotics dependencies
 RUN mamba install -y \
         vcstool colcon-common-extensions eigen freeimage gts glib ffmpeg \
-        ruby tinyxml2 tinyxml "protobuf>=3.17" urdfdom zeromq cppzmq \
+        ruby tinyxml2 tinyxml "protobuf>=3.17" urdfdom zeromq cppzmq libwebsockets \
         ogre==1.10.12 \
         jsoncpp libzip qt \
         mesa-libgl-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libglu &&\
