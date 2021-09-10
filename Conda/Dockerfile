@@ -393,8 +393,8 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         clang clang-format &&\
     rm -rf /var/lib/apt/lists/* &&\
-    echo 'CC="ccache $(which clang)"' >> /etc/bash.bashrc &&\
-    echo 'CXX="ccache $(which clang++)"' >> /etc/bash.bashrc
+    echo 'CC="ccache /usr/bin/clang"' >> /etc/bash.bashrc &&\
+    echo 'CXX="ccache /usr/bin/clang++"' >> /etc/bash.bashrc
 
 # This is not working in the base environment:
 # https://github.com/conda-forge/compilers-feedstock/issues/31
