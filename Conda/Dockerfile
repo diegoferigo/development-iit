@@ -229,7 +229,8 @@ RUN cd $SRC_DIR &&\
 
 # Application dependencies
 ARG cudatoolkit_version="11.2.*"
-RUN mamba install -y \
+RUN echo 'bazel < 4' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    mamba install -y \
         ipython \
         #tensorflow-gpu \#
         "cudatoolkit==$cudatoolkit_version" \
