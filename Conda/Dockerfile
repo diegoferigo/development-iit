@@ -112,12 +112,12 @@ RUN mamba install -y \
     conda clean -afy
 
 # Ignition Robotics dependencies
-RUN echo 'protobuf 3.15.*' >> $CONDA_PREFIX/conda-meta/pinned
+RUN echo 'protobuf 3.15.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo 'ogre 1.10.*' >> $CONDA_PREFIX/conda-meta/pinned
 RUN mamba install -y \
         vcstool colcon-common-extensions eigen freeimage gts glib ffmpeg \
         ruby tinyxml2 tinyxml protobuf urdfdom zeromq cppzmq libwebsockets \
-        ogre==1.10.12 \
-        jsoncpp libzip qt \
+        ogre jsoncpp libzip qt \
         mesa-libgl-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libglu &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
