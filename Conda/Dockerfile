@@ -216,16 +216,17 @@ RUN cd $SRC_DIR &&\
         -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
         -DROBOTOLOGY_PROJECT_TAGS=Stable \
         -Dbipedal-locomotion-framework_TAG=master \
+        -Dmanif_REPOSITORY=artivis/manif \
         -Dmanif_TAG=devel \
-        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_QPOASES=ON" \
+        # casadi: lapack/mumps/osqp/qpoases
+        # manif: python destination
+        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_QPOASES=ON -DMANIFPY_INSTDIR=$SRC_DIR/robotology-superbuild/build/install/lib/python3.8/site-packages/manifpy" \
         .. &&\
     ninja &&\
     find src/ -type f -not -name 'CMakeCache.txt' -delete &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" \
         >> /etc/bash.bashrc &&\
     ln -s $SRC_DIR/robotology-superbuild/src/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
-    pip install git+https://github.com/artivis/manif@devel &&\
-    rm -rf $HOME/.cache/pip &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
 # Application dependencies
