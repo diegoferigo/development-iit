@@ -83,6 +83,9 @@ RUN mamba install -y \
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
 
+# Packages installed later switch blas implementation to mkl, pinning it from the beginning here
+RUN echo 'libblas=*=*mkl' >> $CONDA_PREFIX/conda-meta/pinned
+
 # Default directory with sources
 ARG SRC_DIR=/usr/local/src
 
@@ -232,10 +235,10 @@ RUN cd $SRC_DIR &&\
 # Application dependencies
 ARG cudatoolkit_version="11.2.*"
 RUN echo 'bazel < 4' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y \
         ipython \
         #tensorflow-gpu \#
-        "cudatoolkit==$cudatoolkit_version" \
         pytorch-gpu \
         tensorboard \
         pytorch-lightning \
