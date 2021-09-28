@@ -327,8 +327,7 @@ CMD ["bash"]
 RUN mamba install -y \
         gdb \
         clang \
-        # TODO
-        #llvmdev \#
+        clangdev \
         clang-tools \
         ccache \
         #valgrind \#
