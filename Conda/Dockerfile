@@ -205,6 +205,7 @@ RUN mamba install -y \
 
 # Superbuild
 RUN cd $SRC_DIR &&\
+    mamba install -y casadi && conda clean -afy &&\
     git clone https://github.com/robotology/robotology-superbuild &&\
     mkdir -p robotology-superbuild/build && cd robotology-superbuild/build &&\
     cmake \
@@ -224,12 +225,11 @@ RUN cd $SRC_DIR &&\
         -DBUILD_TESTING:BOOL=OFF \
         -DYCM_DISABLE_SYSTEM_PACKAGES:BOOL=ON \
         -DROBOTOLOGY_PROJECT_TAGS=Stable \
-        -Dbipedal-locomotion-framework_TAG=master \
         -Dmanif_REPOSITORY=artivis/manif \
         -Dmanif_TAG=devel \
         # casadi: lapack/mumps/osqp/qpoases
         # manif: python destination
-        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_OSQP=ON -DWITH_QPOASES=ON -DMANIFPY_INSTDIR=$SRC_DIR/robotology-superbuild/build/install/lib/python3.8/site-packages/manifpy" \
+        -DYCM_EP_ADDITIONAL_CMAKE_ARGS="-DWITH_LAPACK=ON -DWITH_MUMPS=ON -DWITH_QPOASES=ON -DMANIFPY_INSTDIR=$SRC_DIR/robotology-superbuild/build/install/lib/python3.8/site-packages/manifpy" \
         .. &&\
     ninja &&\
     find src/ -type f -not -name 'CMakeCache.txt' -delete &&\
