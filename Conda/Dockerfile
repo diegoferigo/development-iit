@@ -93,7 +93,7 @@ RUN mamba install -y \
         eigen assimp libccd boost openscenegraph nlopt ipopt bullet libode octomap flann tinyxml2 \
         urdfdom xorg-libxi xorg-libxmu freeglut fcl &&\
     cd $SRC_DIR &&\
-    git clone https://github.com/diegoferigo/dart &&\
+    git clone --depth=1 https://github.com/ignition-forks/dart &&\
     mkdir -p dart/build && cd dart/build &&\
     sed -i "s/if(TARGET dart AND NOT DART_BUILD_DARTPY)/if(TARGET dart AND NOT DART_BUILD_DARTPY AND OFF)/g" \
        ../CMakeLists.txt &&\
