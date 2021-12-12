@@ -241,6 +241,7 @@ RUN cd $SRC_DIR &&\
 # Application dependencies
 ARG cudatoolkit_version="11.2.*"
 RUN echo 'bazel < 4' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "pytorch 1.9.*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y \
         ipython \
