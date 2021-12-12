@@ -157,16 +157,21 @@ RUN cd $SRC_DIR &&\
 RUN mamba install -y \
         ace \
         asio \
+        assimp \
         boost \
         eigen \
+        #gazebo \#
         glew \
         glfw \
         gsl \
         ipopt \
+        irrlicht \
         libjpeg-turbo \
         libmatio \
         libode \
         libxml2 \
+        jsoncpp \
+        nlohmann_json \
         opencv \
         pkg-config \
         portaudio \
@@ -175,15 +180,14 @@ RUN mamba install -y \
         sdl2 \
         sqlite \
         tinyxml \
-        jsoncpp \
-        nlohmann_json \
         spdlog \
-        irrlicht \
-        #manif \#
+        #lua \#
         &&\
     mamba install -y \
+        bash-completion \
         expat-cos7-x86_64 \
         freeglut \
+        libdc1394 \
         libselinux-cos7-x86_64 \
         libxau-cos7-x86_64 \
         libxcb-cos7-x86_64 \
@@ -191,9 +195,11 @@ RUN mamba install -y \
         libxext-cos7-x86_64 \
         libxfixes-cos7-x86_64 \
         libxxf86vm-cos7-x86_64 \
-        mesalib \
         mesa-libgl-cos7-x86_64 \
-    &&\
+        libxshmfence-cos7-x86_64 \
+        libxshmfence-devel-cos7-x86_64 \
+        mesalib \
+        &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
 
