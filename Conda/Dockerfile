@@ -76,7 +76,8 @@ RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
     echo '[[ -z $NO_CONDA ]] && activate_conda' >> /etc/bash.bashrc
 
 # Install buildchain
-RUN mamba install -y \
+RUN echo 'sysroot_linux-64>=2.17' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    mamba install -y \
         compilers cmake make pkg-config ninja pybind11 git boa &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     conda clean -afy
