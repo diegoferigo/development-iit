@@ -114,7 +114,7 @@ RUN mamba install -y \
     conda clean -afy
 
 # Ignition Robotics dependencies
-RUN echo 'protobuf 3.15.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo 'protobuf 3.18.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo 'ogre 1.10.*' >> $CONDA_PREFIX/conda-meta/pinned
 RUN mamba install -y \
         vcstool colcon-common-extensions eigen freeimage gts glib ffmpeg \
