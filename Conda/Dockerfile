@@ -384,7 +384,7 @@ RUN apt-get update &&\
     rm /tmp/qtcreator.run &&\
     ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
 
-ARG PYCHARM_VERSION=2021.2
+ARG PYCHARM_VERSION=2021.3
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         libxtst6 libxext6 libxrender1 libfreetype6 libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 \
