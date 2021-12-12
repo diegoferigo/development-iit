@@ -125,7 +125,7 @@ RUN mamba install -y \
     conda clean -afy
 
 # Ignition Robotics
-ARG IGNITION_DISTRIBUTION=edifice
+ARG IGNITION_DISTRIBUTION=fortress
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
     wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-$IGNITION_DISTRIBUTION.yaml &&\
