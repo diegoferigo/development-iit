@@ -365,7 +365,7 @@ RUN mamba install -y \
     conda clean -afy
 
 # QtCreator
-ARG QTCREATOR_VERSION=6.0.0
+ARG QTCREATOR_VERSION=8.0.1
 COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
 
 RUN apt-get update &&\
@@ -374,7 +374,7 @@ RUN apt-get update &&\
     # - ldd /opt/qtcreator/bin/qtcreator
     # - ldd /opt/qtcreator/lib/Qt/plugins/platforms/libqxcb.so
     apt-get install -y --no-install-recommends \
-        libgl1 libxcomposite1 libwayland-cursor0 libx11-xcb1 libxcb-glx0 libxkbcommon-x11-0 libxcb* &&\
+        libgl1 libxcomposite1 libwayland-cursor0 libx11-xcb1 libxcb-glx0 libxkbcommon-x11-0 freeglut3 freeglut3-dev libxcb* &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /tmp &&\
     wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run -O qtcreator.run &&\
