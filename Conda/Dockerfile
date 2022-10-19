@@ -241,13 +241,15 @@ RUN cd $SRC_DIR &&\
 
 # Application dependencies
 ARG cudatoolkit_version="11.2.*"
-RUN echo 'bazel < 4' >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "pytorch 1.9.*" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo "jax <0.3.16" >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "jaxlib =*  =cuda112*" >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "pytorch =*  =cuda112*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
+    mamba install -y cudatoolkit cuda-nvcc -c conda-forge -c nvidia &&\
     mamba install -y \
+        jax \
+        pytorch \
         ipython \
-        #tensorflow-gpu \#
-        pytorch-gpu \
         tensorboard \
         pytorch-lightning \
         pandas \
@@ -260,22 +262,15 @@ RUN echo 'bazel < 4' >> $CONDA_PREFIX/conda-meta/pinned &&\
         lxml \
         matplotlib \
         setuptools_scm \
-        bazel \
-        #ray-rllib ray-tune ray-dashboard \#
-        &&\
-    pip install \
+        ray-all \
+        black \
+        isort \
+        build \
+        twine \
         mashumaro \
-        tables \
+        pytables \
         cmake-build-extension \
         &&\
-    # Install ray from pip
-    mamba install -y \
-        tensorboardx py-spy uvicorn fastapi starlette opencv pydantic atari_py kubernetes websocket-client h11 &&\
-    pip install ray[all] \
-        &&\
-    pip install black isort build twine \
-        &&\
-    rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
