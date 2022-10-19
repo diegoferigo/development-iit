@@ -1,0 +1,65 @@
+repositories:
+  ign-cmake:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-cmake
+    version: 6c4e7daa24d287b3151da80e13973889e8ec0aee
+  ign-common:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-common
+    version: 2af68956f401203048c8b6336b0b3630ae5aca70
+  ign-fuel-tools:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-fuel-tools
+    version: 348bef1e0664682cde0c7b145ed291c12314d658
+  ign-gazebo:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-gazebo
+    version: 57f672d7c2c969bb88baa2ff3d36b548954273b6
+  ign-gui:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-gui
+    version: 653b0fb58abd6ea8b3e3937e43d5aee509e125fc
+  ign-launch:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-launch
+    version: 1c1ef982d8773409bf6391b6c18999efab4285f0
+  ign-math:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-math
+    version: 65a7c249fb1d0c1a4b09880759b8a41ae9dae9b4
+  ign-msgs:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-msgs
+    version: 0514d16b7923b8f128eee5e589f23447310f9b14
+  ign-physics:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-physics
+    version: 42d232088f719d4a65d8f443f5df56dd837367a2
+  ign-plugin:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-plugin
+    version: e4015f312207ceca49bd2ce94d27f119889a0493
+  ign-rendering:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-rendering
+    version: 5c7f216fb04824c4119e7559f59fdd2dab44dc4f
+  ign-sensors:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-sensors
+    version: 16975e9adab17c8408d41cb5f5eac7cc8ccb8229
+  ign-tools:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-tools
+    version: 83d5de7e33da239f714245e53d91b05651601034
+  ign-transport:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-transport
+    version: 73bfba75c4580ed243303d5acd8f539263bbe492
+  ign-utils:
+    type: git
+    url: https://github.com/ignitionrobotics/ign-utils
+    version: e9c439b65e1d773654e0bd6bed2b45d4f8d9e609
+  sdformat:
+    type: git
+    url: https://github.com/osrf/sdformat
+    version: 57badeb188c131f39a3fc5118fdbdb54fd6f6d66

@@ -128,12 +128,11 @@ RUN echo 'protobuf 3.20.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
 
 # Ignition Robotics
 ARG IGNITION_DISTRIBUTION=fortress
+COPY gui.yaml /usr/local/src/gui.yaml
 RUN cd $SRC_DIR &&\
     mkdir -p workspace/src && cd workspace/src &&\
     wget -q https://raw.githubusercontent.com/ignition-tooling/gazebodistro/master/collection-$IGNITION_DISTRIBUTION.yaml &&\
-    sed -i -e "s|ignitionrobotics/ign-physics|diegoferigo/ign-physics|g" collection-$IGNITION_DISTRIBUTION.yaml &&\#
-    sed -i -e "s|ign-physics4|fix/compute_joint_force_edifice|g" collection-$IGNITION_DISTRIBUTION.yaml &&\#
-    vcs import < collection-$IGNITION_DISTRIBUTION.yaml &&\
+    vcs import < /usr/local/src/gui.yaml &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.3)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     sed -i "s|if(OGRE_VERSION VERSION_LESS 1.10.1)|if(OGRE_VERSION VERSION_LESS 1.11.0)|g" ign-rendering/ogre/src/CMakeLists.txt &&\
     colcon graph &&\
