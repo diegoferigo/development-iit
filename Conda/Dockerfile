@@ -65,7 +65,7 @@ RUN cd /usr/local &&\
     micromamba activate $CONDA_PREFIX &&\
     conda config --system --add channels conda-forge &&\
     conda config --system --set channel_priority strict &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Enable by default the conda environment for all users
@@ -79,7 +79,7 @@ RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
 RUN echo 'sysroot_linux-64>=2.17' >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y \
         compilers cmake make pkg-config ninja pybind11 git boa &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Packages installed later switch blas implementation to mkl, pinning it from the beginning here
@@ -109,8 +109,8 @@ RUN mamba install -y \
     &&\
     ninja install &&\
     find . -type f -not -name 'CMakeCache.txt' -delete &&\
-    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $SRC_DIR -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Ignition Robotics dependencies
@@ -121,7 +121,7 @@ RUN mamba install -y \
         ruby tinyxml2 tinyxml protobuf urdfdom zeromq cppzmq libwebsockets \
         ogre jsoncpp libzip qt \
         mesa-libgl-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libglu &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Ignition Robotics
@@ -151,7 +151,7 @@ RUN cd $SRC_DIR &&\
     find build/ -type f -not -name 'CMakeCache.txt' -delete &&\
     echo "[[ -f $SRC_DIR/workspace/install/setup.sh ]] && source $SRC_DIR/workspace/install/setup.sh" \
         >> /etc/bash.bashrc &&\
-    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $SRC_DIR -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
 
 # Superbuild dependencies
 RUN mamba install -y \
@@ -200,7 +200,7 @@ RUN mamba install -y \
         libxshmfence-devel-cos7-x86_64 \
         mesalib \
         &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Superbuild
@@ -236,7 +236,7 @@ RUN cd $SRC_DIR &&\
     echo "source $SRC_DIR/robotology-superbuild/build/install/share/robotology-superbuild/setup.sh" \
         >> /etc/bash.bashrc &&\
     ln -s $SRC_DIR/robotology-superbuild/src/YARP/scripts/yarp_completion /etc/bash_completion.d/yarp_completion &&\
-    find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
+    find $SRC_DIR -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
 
 # Application dependencies
 ARG cudatoolkit_version="11.2.*"
@@ -275,7 +275,7 @@ RUN echo 'bazel < 4' >> $CONDA_PREFIX/conda-meta/pinned &&\
     pip install black isort build twine \
         &&\
     rm -rf $HOME/.cache/pip &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # gym-ignition
@@ -300,7 +300,7 @@ ENV DOTFILES_SHARE=/usr/local
 RUN mamba install -y fish &&\
     git clone https://github.com/diegoferigo/dotfiles /usr/local/dotfiles &&\
     bash /usr/local/dotfiles/bootstrap &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Some QT-Apps/Gazebo don't show controls without this
@@ -354,7 +354,7 @@ RUN mamba install -y \
     rm -rf /var/lib/apt/lists/* &&\
     pip install colour-valgrind &&\
     rm -rf $HOME/.cache/pip &&\
-    find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
+    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
 # Setup HW Acceleration for Intel graphic cards
