@@ -400,12 +400,11 @@ RUN apt-get update &&\
 # The autocompletion feature of QtCreator does not work with conda compilers.
 # We set here the system's clang as default compiler, and enable ccache.
 ARG CCACHE_DISABLE=1
+ENV CMAKE_CXX_COMPILER_LAUNCHER=ccache
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
         clang clang-format &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    echo 'CC="ccache /usr/bin/clang"' >> /etc/bash.bashrc &&\
-    echo 'CXX="ccache /usr/bin/clang++"' >> /etc/bash.bashrc
+    rm -rf /var/lib/apt/lists/*
 
 # This is not working in the base environment:
 # https://github.com/conda-forge/compilers-feedstock/issues/31
