@@ -291,6 +291,12 @@ RUN cd $SRC_DIR &&\
     find $SRC_DIR -perm /u=w -and -not -perm /g=w -exec chmod g=u {} + &&\
     find $CONDA_PREFIX -perm /u=w -and -not -perm /g=w -exec chmod g=u {} +
 
+# Setup HW acceleration for GUIs
+# https://conda-forge.org/docs/maintainer/knowledge_base.html#libgl
+RUN apt-get update &&\
+    apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri &&\
+    rm -rf /var/lib/apt/lists/*
+
 # Dotfiles
 ENV DOTFILES_SHARE=/usr/local
 RUN mamba install -y fish &&\
@@ -352,13 +358,6 @@ RUN mamba install -y \
     rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
-
-# Setup HW Acceleration for Intel graphic cards
-#RUN apt-get update &&\
-#    apt-get install -y \
-#        libgl1-mesa-glx \
-#        libgl1-mesa-dri &&\
-#    rm -rf /var/lib/apt/lists/*
 
 # QtCreator
 ARG QTCREATOR_VERSION=6.0.0
