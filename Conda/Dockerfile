@@ -114,12 +114,14 @@ RUN mamba install -y \
     conda clean -afy
 
 # Ignition Robotics dependencies
-RUN echo 'protobuf 3.18.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo 'ogre 1.10.*' >> $CONDA_PREFIX/conda-meta/pinned
-RUN mamba install -y \
+# TODO: ign-rendering doesn't find ogre-next
+RUN echo 'protobuf 3.20.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo 'ogre 1.10.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo 'ogre-next 2.2.*' >> $CONDA_PREFIX/conda-meta/pinned &&\
+    mamba install -y \
         vcstool colcon-common-extensions eigen freeimage gts glib ffmpeg \
         ruby tinyxml2 tinyxml protobuf urdfdom zeromq cppzmq libwebsockets \
-        ogre jsoncpp libzip qt \
+        ogre ogre-next jsoncpp libzip qt \
         mesa-libgl-devel-cos7-x86_64 libx11-devel-cos7-x86_64 libglu &&\
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
