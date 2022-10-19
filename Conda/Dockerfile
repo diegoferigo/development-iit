@@ -315,13 +315,16 @@ RUN apt-get update &&\
         gosu \
         &&\
     rm -rf /var/lib/apt/lists/*
+
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
+
 ENV USER_UID=1000
 ENV USER_GID=1000
 ENV USERNAME=docker
 
 # Setup an additional entrypoint script
+USER root:root
 COPY setup.sh /usr/sbin/setup_conda.sh
 COPY entrypoint.sh /usr/sbin/entrypoint_conda.sh
 RUN chmod 755 /usr/sbin/setup_conda.sh &&\
@@ -332,6 +335,8 @@ CMD ["bash"]
 # ===========
 # DEVELOPMENT
 # ===========
+
+USER root:runtimeusers
 
 RUN mamba install -y \
         gdb \
