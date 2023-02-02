@@ -364,26 +364,6 @@ RUN mamba install -y \
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' + &&\
     conda clean -afy
 
-# QtCreator
-ARG QTCREATOR_VERSION=8.0.1
-COPY qtaccount.ini /root/.local/share/Qt/qtaccount.ini
-
-RUN apt-get update &&\
-    # Must find all libs during runtime
-    # - ldd /tmp/qtcreator.run
-    # - ldd /opt/qtcreator/bin/qtcreator
-    # - ldd /opt/qtcreator/lib/Qt/plugins/platforms/libqxcb.so
-    apt-get install -y --no-install-recommends \
-        libgl1 libxcomposite1 libwayland-cursor0 libx11-xcb1 libxcb-glx0 libxkbcommon-x11-0 freeglut3 freeglut3-dev libxcb* &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    cd /tmp &&\
-    wget http://download.qt.io/official_releases/qtcreator/${QTCREATOR_VERSION%.*}/${QTCREATOR_VERSION}/qt-creator-opensource-linux-x86_64-${QTCREATOR_VERSION}.run -O qtcreator.run &&\
-    chmod +x qtcreator.run &&\
-    # https://wiki.qt.io/Online_Installer_4.x
-    ./qtcreator.run --accept-licenses --accept-messages --accept-obligations --confirm-command --root /opt/qtcreator install &&\
-    rm /tmp/qtcreator.run &&\
-    ln -s /opt/qtcreator/bin/qtcreator.sh /usr/bin/qtcreator
-
 ARG PYCHARM_VERSION=2022.2.1
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
