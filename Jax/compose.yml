@@ -1,0 +1,62 @@
+name: jaxsim
+
+x-shared-yaml:
+  run_container: &run_container
+    init: true
+    stdin_open: true
+    tty: true
+    dns: [ 8.8.8.8 ]
+    devices:
+      - /dev/dri:/dev/dri
+    shm_size: 1024mb
+    tmpfs: /scratch
+    group_add: [ runtimeusers ]
+    network_mode: host
+    environment: &run_container_environment
+        DISPLAY:
+        CREATE_RUNTIME_USER: 1
+        USER_NAME: ${USER-docker}
+        USER_UID: ${USER_UID-1000}
+        USER_GID: ${USER_GID-1000}
+    volumes:
+      - "/tmp/.X11-unix:/tmp/.X11-unix:ro"
+      - "$HOME/git:/home/${USER-docker}/git:rw"
+      - "$HOME/.dockerdot_jaxsim/config/JetBrains:/home/${USER-docker}/.config/JetBrains:rw"
+      - "$HOME/.dockerdot_jaxsim/local/share/JetBrains:/home/${USER-docker}/.local/share/JetBrains:rw"
+      - "$HOME/.dockerdot_jaxsim/bash_history:/home/${USER-docker}/.bash_history:rw"
+      - "$HOME/.dockerdot_jaxsim/local/share/fish/fish_history:/home/${USER-docker}/.local/share/fish/fish_history:rw"
+    # Lifting apparmor settings prevents GUIs to occasionally hang, and enables syscall necessary to IDEs:
+    # https://github.com/moby/moby/issues/38442
+    security_opt:
+      - apparmor=unconfined
+      - seccomp=unconfined
+
+services:
+  # ===========
+  # CPU service
+  # ===========
+  jaxsim: &jaxsim
+    # =====
+    # Image
+    # =====
+    image: diegoferigo/jaxsim:devel
+    container_name: jaxsim
+    build:
+      args:
+        from: ubuntu:jammy
+        cudatoolkit_version: "11.2.*"
+      context: .
+      dockerfile: Dockerfile
+    <<: *run_container
+  # ===========
+  # GPU service
+  # ===========
+  jaxsim_nvidia:
+    <<: *jaxsim
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
