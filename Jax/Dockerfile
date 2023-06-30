@@ -37,7 +37,7 @@ RUN apt-get update &&\
 
 # Configure conda
 ENV CONDA_PREFIX=/jaxsim
-ARG CONDA_PYTHON_VERSION=3.10.8
+ARG CONDA_PYTHON_VERSION=3.10
 ENV MAMBA_ROOT_PREFIX=$CONDA_PREFIX/.mamba
 
 # Install micromamba and create conda environment
@@ -47,7 +47,7 @@ RUN cd /usr/local &&\
     eval "$(micromamba shell hook -s bash)" &&\    
     micromamba create -y -p $CONDA_PREFIX -c conda-forge \
       "python==$CONDA_PYTHON_VERSION.*" \
-      "mamba==1.2.0" \
+      mamba \
       mesa-libgl-cos7-x86_64 \
       &&\
     micromamba activate $CONDA_PREFIX &&\
@@ -69,7 +69,8 @@ ARG CONDA_OVERRIDE_CUDA="11.2"
 
 # Install CUDA Toolkit
 ARG cudatoolkit_version="11.2.*"
-RUN echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN \
+    echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "cuda-nvcc 12.0.*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y cuda-nvcc -c nvidia &&\
     mamba install -y cudatoolkit cudnn compilers -c conda-forge &&\
@@ -77,15 +78,12 @@ RUN echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
 
 # Application dependencies
-RUN echo "jax = 0.3.15" >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "jaxlib = 0.3.15 = cuda112*" >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "flax < 0.6.0" >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "numpy < 1.23.0" >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "optax < 0.1.5" >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "pytorch = * = cuda112*" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo "jaxlib = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "pytorch = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y \
         black \
         coloredlogs \
+        diffrax \
         flax \
         gz-sim7 \
         idyntree \
@@ -101,19 +99,19 @@ RUN echo "jax = 0.3.15" >> $CONDA_PREFIX/conda-meta/pinned &&\
         pptree \
         pytorch \
         scipy \
-        tensorflow-probability \
+        tensorboard \
         &&\
     conda clean -afy &&\
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
 
 RUN jax_version="$(pip list | grep '^jax ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
     tfp_version="$(pip list | grep '^tensorflow-probability ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
+    numpy_version=="$(pip list | grep '^numpy ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
     pip install \
-      distrax \
       jaxlie \
       "jax==${jax_version}" \
-      "jax_dataclasses<1.4.0" \
-      "tensorflow-probability==${tfp_version}" \
+      "numpy==${numpy_version}" \
+      "jax_dataclasses" \
       &&\
     pip install --pre \
       gymnasium \
@@ -122,13 +120,13 @@ RUN jax_version="$(pip list | grep '^jax ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
       stable-baselines3 \
       &&\
     pip install git+https://github.com/ami-iit/meshcat-viz-python &&\
+    pip install pywebview &&\
     rm -rf $HOME/.cache/pip &&\
     find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
 
 # Configure Nvidia support
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
-
 
 # Install drivers for HW acceleration
 ENV QT_X11_NO_MITSHM=1
