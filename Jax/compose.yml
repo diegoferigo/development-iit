@@ -39,9 +39,9 @@ services:
     # =====
     # Image
     # =====
-    image: diegoferigo/jaxsim:devel
+    image: diegoferigo/jaxsim
     container_name: jaxsim
-    build:
+    build: &jaxsim_build
       args:
         from: ubuntu:jammy
         cudatoolkit_version: "11.2.*"
@@ -51,7 +51,7 @@ services:
   # ===========
   # GPU service
   # ===========
-  jaxsim_nvidia:
+  jaxsim_nvidia: &jaxsim_nvidia
     <<: *jaxsim
     deploy:
       resources:
