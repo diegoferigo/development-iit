@@ -13,6 +13,21 @@ RUN groupadd -K GID_MIN=100 -K GID_MAX=499 runtimeusers &&\
 # This way, a user created together with the container will automatically have r/w access to all resources of this image.
 USER root:runtimeusers
 
+# Helper function to match user and group permissions of all files inside a folder.
+# Switching USER, as done above, allows creating all files as root:runtimeusers. However, in order to allow a seamless
+# usage of resources created in the Dockerfile from the runtime user, we also need to grant writing permission to the
+# runtime group to all files that are readable from the user (root in this case).
+# Using find plays better than chown since we can filter out files more efficiently, preventing unnecessary copies done
+# by Docker in different layers.
+RUN echo "" >> /etc/bash.bashrc &&\
+    echo "function fix_permissions() {" >> /etc/bash.bashrc &&\
+    echo '  dir=$(readlink --canonicalize $1)' >> /etc/bash.bashrc &&\
+    echo '  group=${2:-runtimeusers}' >> /etc/bash.bashrc &&\
+    echo '  [[ ! -d "$dir" ]] && echo "Input $dir is not a directory" >/dev/stderr && exit 1' >> /etc/bash.bashrc &&\
+    echo '  find $1 -group $group -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w "{}" +' >> /etc/bash.bashrc &&\
+    echo "}" >> /etc/bash.bashrc &&\
+    echo "" >> /etc/bash.bashrc
+
 # System utilities
 ENV TZ="Etc/UTC"
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -37,7 +52,7 @@ RUN apt-get update &&\
 
 # Configure conda
 ENV CONDA_PREFIX=/jaxsim
-ARG CONDA_PYTHON_VERSION=3.10
+ARG CONDA_PYTHON_VERSION=3.11
 ENV MAMBA_ROOT_PREFIX=$CONDA_PREFIX/.mamba
 
 # Install micromamba and create conda environment
@@ -54,7 +69,7 @@ RUN cd /usr/local &&\
     conda config --system --add channels conda-forge &&\
     conda config --system --set channel_priority strict &&\
     conda clean -afy &&\
-    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
+    fix_permissions $CONDA_PREFIX
 
 # Enable by default the conda environment for all users
 RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
@@ -69,22 +84,27 @@ ARG CONDA_OVERRIDE_CUDA="11.2"
 
 # Install CUDA Toolkit
 ARG cudatoolkit_version="11.2.*"
-RUN \
-    echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "cuda-nvcc 12.0.*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y cuda-nvcc -c nvidia &&\
     mamba install -y cudatoolkit cudnn compilers -c conda-forge &&\
     conda clean -afy &&\
-    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
+    fix_permissions $CONDA_PREFIX
 
 # Application dependencies
-RUN echo "jaxlib = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo "chex <= 0.1.82" >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "jaxlib = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "pytorch = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y \
         black \
         coloredlogs \
+        # TODO: not working due to too old typing_extensions
+        # TODO: also pytest needs typing_extensions >= 4.6
         diffrax \
+        equinox \
+        #
         flax \
+        gymnasium \
         gz-sim7 \
         idyntree \
         ipython \
@@ -93,6 +113,7 @@ RUN echo "jaxlib = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
         jupyter \
         mashumaro \
         matplotlib \
+        meshcat-python \
         numpy \
         optax \
         pandas \
@@ -100,42 +121,58 @@ RUN echo "jaxlib = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
         pytorch \
         scipy \
         tensorboard \
+        tensorflow-probability \
         &&\
     conda clean -afy &&\
-    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
+    # Dirty workaround: override with pip package
+    pip install "typing_extensions>=4.6" &&\
+    rm -rf $HOME/.cache/pip &&\
+    fix_permissions $CONDA_PREFIX
 
-RUN jax_version="$(pip list | grep '^jax ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
+RUN gymnasium_version=="$(pip list | grep '^gymnasium ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
+    jax_version="$(pip list | grep '^jax ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
+    chex_version="$(pip list | grep '^chex ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
     tfp_version="$(pip list | grep '^tensorflow-probability ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
     numpy_version=="$(pip list | grep '^numpy ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
+    # Pin some conda version to prevent pip to update packages
     pip install \
-      jaxlie \
+      "chex==${chex_version}" \
+      "gymnasium==${gymnasium_version}" \
       "jax==${jax_version}" \
       "numpy==${numpy_version}" \
-      "jax_dataclasses" \
-      &&\
-    pip install --pre \
-      gymnasium \
-      rod \
+      "tensorflow-probability==${tfp_version}" \
+      # PyPI packages
+      git+https://github.com/ami-iit/meshcat-viz-python \
+      # TODO: distrax has a circular import error with tfp
+      #distrax \#
+      jaxlie \
+      jax_dataclasses \
+      loop-rate-limiters \
+      pywebview[qt] \
       sb3_contrib \
       stable-baselines3 \
       &&\
-    pip install git+https://github.com/ami-iit/meshcat-viz-python &&\
-    pip install pywebview &&\
     rm -rf $HOME/.cache/pip &&\
-    find $CONDA_PREFIX -group runtimeusers -not -type l -perm /u+w -not -perm -g+w -print -exec chmod g+w '{}' +
+    fix_permissions $CONDA_PREFIX
 
 # Configure Nvidia support
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
 
 # Install drivers for HW acceleration
+# https://conda-forge.org/docs/maintainer/knowledge_base.html#libgl
 ENV QT_X11_NO_MITSHM=1
 RUN apt-get update &&\
-    # https://conda-forge.org/docs/maintainer/knowledge_base.html#libgl
-    apt-get install -y --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri &&\
-    # Other video drivers
     apt-get install -y --no-install-recommends \
-      libgl1-mesa-dri libglx-amber0 libglx-mesa0 mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers \
+      libegl1 \
+      libgl1 \
+      libgl1-mesa-dri \
+      libgl1-mesa-glx \
+      libglx-amber0 \
+      libglx-mesa0 \
+      mesa-va-drivers \
+      mesa-vdpau-drivers \
+      mesa-vulkan-drivers \
       &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -170,15 +207,15 @@ RUN apt-add-repository ppa:fish-shell/release-3 &&\
     rm -rf /var/lib/apt/lists/* &&\
     git clone https://github.com/diegoferigo/dotfiles /usr/local/dotfiles &&\
     bash -i /usr/local/dotfiles/bootstrap &&\
-    echo '[[ ! -d $HOME/.dotfiles ]] && bash -i /usr/local/dotfiles/bootstrap' >> /etc/bash.bashrc
+    echo '[[ ! -d $HOME/.dotfiles ]] && bash /usr/local/dotfiles/bootstrap' >> /etc/bash.bashrc
 
 # Install PyCharm
-ARG PYCHARM_VERSION=2023.1
+ARG PYCHARM_VERSION=2023.2.2
 ARG PYCHARM_VARIANT=professional
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
-        libxtst6 libxext6 libxrender1 libfreetype6 libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 \
-        libnss3 libnspr4 libatk-bridge2.0-0 libgbm1 libasound2 libatspi2.0-0 dbus-x11 libxcomposite1 libxkbcommon0 libxcb* &&\
+        libxtst6 libxext6 libxrender1 libfreetype6 libfontconfig1 libgtk2.0-0 libxslt1.1 libxxf86vm1 libwayland-cursor0 \
+        libnss3 libnspr4 libatk-bridge2.0-0 libgbm1 libasound2 libatspi2.0-0 dbus-x11 libxcomposite1 libxkbcommon-x11-0 libx11-xcb1 libxcb* &&\
     rm -rf /var/lib/apt/lists/* &&\
     cd /opt && mkdir -p pycharm && cd pycharm &&\
     curl -L https://download.jetbrains.com/python/pycharm-${PYCHARM_VARIANT}-${PYCHARM_VERSION}.tar.gz -o /opt/pycharm/installer.tgz &&\
