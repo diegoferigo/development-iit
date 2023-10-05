@@ -48,6 +48,14 @@ create_user() {
 
 # Create the user if it was not disabled and if run -u is not used
 if [[ ${CREATE_RUNTIME_USER:-1} -eq 1 && $(id -u) -eq 0 ]] ; then
+    # New ubuntu versions already have an 'ubuntu:1000:1000' user
+    if getent passwd ubuntu >/dev/null; then
+        echo "  --> Deleting existing 'ubuntu' user"
+        touch /var/mail/ubuntu
+        chown ubuntu /var/mail/ubuntu
+        userdel -r ubuntu
+    fi
+
     echo "  --> Creating runtime user" "'""${USERNAME}:${USERNAME}""'"
     create_user
 
