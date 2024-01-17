@@ -25,7 +25,7 @@ x-shared-yaml:
       - "$HOME/.dockerdot_jaxsim/local/share/JetBrains:/home/${USER-docker}/.local/share/JetBrains:rw"
       - "$HOME/.dockerdot_jaxsim/bash_history:/home/${USER-docker}/.bash_history:rw"
       - "$HOME/.dockerdot_jaxsim/local/share/fish/fish_history:/home/${USER-docker}/.local/share/fish/fish_history:rw"
-    # Lifting apparmor settings prevents GUIs to occasionally hang, and enables syscall necessary to IDEs:
+    # Lifting apparmor settings prevents GUIs to occasionally hang and enables syscalls necessary to IDEs:
     # https://github.com/moby/moby/issues/38442
     security_opt:
       - apparmor=unconfined
@@ -44,7 +44,6 @@ services:
     build: &jaxsim_build
       args:
         from: ubuntu:jammy
-        cudatoolkit_version: "11.2.*"
       context: .
       dockerfile: Dockerfile
     <<: *run_container

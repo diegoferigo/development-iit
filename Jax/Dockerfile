@@ -56,9 +56,9 @@ ARG CONDA_PYTHON_VERSION=3.11
 ENV MAMBA_ROOT_PREFIX=$CONDA_PREFIX/.mamba
 
 # Install micromamba and create conda environment
-RUN cd /usr/local &&\
-    wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest \
-        | tar -xvj bin/micromamba &&\
+RUN cd /usr/local/bin &&\
+    wget -qO micromamba https://github.com/mamba-org/micromamba-releases/releases/latest/download/micromamba-linux-64 &&\
+    chmod +x micromamba &&\
     eval "$(micromamba shell hook -s bash)" &&\    
     micromamba create -y -p $CONDA_PREFIX -c conda-forge \
       "python==$CONDA_PYTHON_VERSION.*" \
@@ -80,29 +80,25 @@ RUN echo 'function activate_conda() {' >> /etc/bash.bashrc &&\
 
 # Allow installing CUDA packages also if no GPU is detected in Dockerfile:
 # https://conda-forge.org/docs/user/tipsandtricks.html#installing-cuda-enabled-packages-like-tensorflow-and-pytorch
-ARG CONDA_OVERRIDE_CUDA="11.2"
+ARG CONDA_OVERRIDE_CUDA="12.*"
 
 # Install CUDA Toolkit
-ARG cudatoolkit_version="11.2.*"
-RUN echo "cudatoolkit $cudatoolkit_version" >> $CONDA_PREFIX/conda-meta/pinned &&\
-    echo "cuda-nvcc 12.0.*" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo "cuda-nvcc >= 12.0" >> $CONDA_PREFIX/conda-meta/pinned &&\
+    echo "cudatoolkit >= 11.8" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y cuda-nvcc -c nvidia &&\
     mamba install -y cudatoolkit cudnn compilers -c conda-forge &&\
     conda clean -afy &&\
     fix_permissions $CONDA_PREFIX
 
 # Application dependencies
-RUN echo "chex <= 0.1.82" >> $CONDA_PREFIX/conda-meta/pinned &&\
+RUN echo "jax >= 0.4.23" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "jaxlib = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     echo "pytorch = * = cuda*" >> $CONDA_PREFIX/conda-meta/pinned &&\
     mamba install -y \
         black \
         coloredlogs \
-        # TODO: not working due to too old typing_extensions
-        # TODO: also pytest needs typing_extensions >= 4.6
         diffrax \
         equinox \
-        #
         flax \
         gymnasium \
         gz-sim7 \
@@ -110,7 +106,10 @@ RUN echo "chex <= 0.1.82" >> $CONDA_PREFIX/conda-meta/pinned &&\
         ipython \
         isort \
         jax \
+        jaxlie \
+        jax-dataclasses \
         jupyter \
+        loop-rate-limiters \
         mashumaro \
         matplotlib \
         meshcat-python \
@@ -118,36 +117,20 @@ RUN echo "chex <= 0.1.82" >> $CONDA_PREFIX/conda-meta/pinned &&\
         optax \
         pandas \
         pptree \
+        pytest \
         pytorch \
+        resolve-robotics-uri-py \
         scipy \
         tensorboard \
-        tensorflow-probability \
+        #tensorflow-probability \#
         &&\
     conda clean -afy &&\
-    # Dirty workaround: override with pip package
-    pip install "typing_extensions>=4.6" &&\
-    rm -rf $HOME/.cache/pip &&\
     fix_permissions $CONDA_PREFIX
 
-RUN gymnasium_version=="$(pip list | grep '^gymnasium ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
-    jax_version="$(pip list | grep '^jax ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
-    chex_version="$(pip list | grep '^chex ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
-    tfp_version="$(pip list | grep '^tensorflow-probability ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
-    numpy_version=="$(pip list | grep '^numpy ' | tr -s ' ' | cut -d ' ' -f 2)" &&\
-    # Pin some conda version to prevent pip to update packages
+RUN mamba install -y pyqtwebengine &&\
+    conda clean -afy &&\
     pip install \
-      "chex==${chex_version}" \
-      "gymnasium==${gymnasium_version}" \
-      "jax==${jax_version}" \
-      "numpy==${numpy_version}" \
-      "tensorflow-probability==${tfp_version}" \
-      # PyPI packages
       git+https://github.com/ami-iit/meshcat-viz-python \
-      # TODO: distrax has a circular import error with tfp
-      #distrax \#
-      jaxlie \
-      jax_dataclasses \
-      loop-rate-limiters \
       pywebview[qt] \
       sb3_contrib \
       stable-baselines3 \
@@ -210,7 +193,7 @@ RUN apt-add-repository ppa:fish-shell/release-3 &&\
     echo '[[ ! -d $HOME/.dotfiles ]] && bash /usr/local/dotfiles/bootstrap' >> /etc/bash.bashrc
 
 # Install PyCharm
-ARG PYCHARM_VERSION=2023.2.2
+ARG PYCHARM_VERSION=2023.3.2
 ARG PYCHARM_VARIANT=professional
 RUN apt-get update &&\
     apt-get install -y --no-install-recommends \
